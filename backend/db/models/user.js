@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
 		}
 		// ASK ABOUT WHY THIS IS NOT ASYNC ^^
 		static async login({ credential, password }) {
-			const { op } = require("sequelize");
+			const { Op } = require("sequelize");
 			const user = await User.scope("loginUser").findOne({
 				where: {
 					[Op.or]: {
