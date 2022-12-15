@@ -12,7 +12,7 @@
     "build": "node psql-setup-script.js",
     "migrate":"npx dotenv sequelize db:migrate",
     "undomigrate": "npx dotenv sequelize db:migrate:undo",
-    "seed":"npx dotenv sequelize db:seed",
+    "seed":"npx dotenv sequelize db:seed:all",
     "undoseed": "npx dotenv sequelize db:seed:undo:all",
     "dbreset": "npx dotenv sequelize db:seed:undo:all && npx dotenv sequelize db:migrate:undo && npx dotenv sequelize db:migrate && npx dotenv sequelize db:seed:all"
   },
