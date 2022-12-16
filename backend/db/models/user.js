@@ -10,8 +10,8 @@ module.exports = (sequelize, DataTypes) => {
 		validatePassword(password) {
 			return bcrypt.compareSync(password, this.hashedPassword.toString());
 		}
-		static getCurrentUserById(id) {
-			return User.scope("currentUser").findByPk(id);
+		static async getCurrentUserById(id) {
+			return await User.scope("currentUser").findByPk(id);
 		}
 		// ASK ABOUT WHY THIS IS NOT ASYNC ^^
 		static async login({ credential, password }) {
@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
 			}
 		}
 
-		static async singUp({ username, email, password }) {
+		static async signup({ username, email, password }) {
 			const hashedPassword = bcrypt.hashSync(password);
 			const user = await User.create({
 				username,
