@@ -6,20 +6,13 @@ if (process.env.NODE_ENV === "production") {
 module.exports = {
 	async up(queryInterface, Sequelize) {
 		await queryInterface.createTable(
-			"Memberships",
+			"GroupImages",
 			{
 				id: {
 					allowNull: false,
 					autoIncrement: true,
 					primaryKey: true,
 					type: Sequelize.INTEGER
-				},
-				userId: {
-					type: Sequelize.INTEGER,
-					references: {
-						model: "Users"
-					},
-					allowNull: false
 				},
 				groupId: {
 					type: Sequelize.INTEGER,
@@ -28,8 +21,12 @@ module.exports = {
 					},
 					allowNull: false
 				},
-				status: {
+				url: {
 					type: Sequelize.STRING,
+					allowNull: false
+				},
+				preview: {
+					type: Sequelize.BOOLEAN,
 					allowNull: false
 				},
 				createdAt: {
@@ -47,7 +44,7 @@ module.exports = {
 		);
 	},
 	async down(queryInterface, Sequelize) {
-		options.tableName = "Memberships";
+		options.tableName = "GroupImages";
 		await queryInterface.dropTable(options);
 	}
 };

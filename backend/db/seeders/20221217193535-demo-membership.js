@@ -14,7 +14,7 @@ module.exports = {
 				{
 					userId: 1,
 					groupId: 1,
-					status: "member"
+					status: "co-host"
 				},
 				{
 					userId: 1,
@@ -24,12 +24,12 @@ module.exports = {
 				{
 					userId: 1,
 					groupId: 3,
-					status: "member"
+					status: "pending"
 				},
 				{
 					userId: 2,
 					groupId: 2,
-					status: "member"
+					status: "co-host"
 				},
 				{
 					userId: 2,
@@ -39,12 +39,12 @@ module.exports = {
 				{
 					userId: 2,
 					groupId: 3,
-					status: "member"
+					status: "pending"
 				},
 				{
 					userId: 3,
 					groupId: 3,
-					status: "member"
+					status: "co-host"
 				},
 				{
 					userId: 3,
@@ -54,7 +54,7 @@ module.exports = {
 				{
 					userId: 3,
 					groupId: 2,
-					status: "member"
+					status: "pending"
 				}
 			],
 			{}
@@ -67,7 +67,7 @@ module.exports = {
 		return queryInterface.bulkDelete(
 			options,
 			{
-				status: { [Op.in]: ["member"] }
+				status: { [Op.in]: ["member", "co-host", "pending"] }
 			},
 			{}
 		);
