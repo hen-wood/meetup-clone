@@ -2,9 +2,7 @@
 
 ## Database Schema Design
 
-![meetup-dbdiagram]
-
-[meetup-dbdiagram]: ./meetup_dbdiagram.png
+<img src="./Meetup.png">
 
 ## API Documentation
 
@@ -57,10 +55,10 @@ Returns the information about the current user that is logged in.
 - Request
 
   - Method: GET
-  - URL: /api/session
+  - URL: /users/:userId
   - Body: none
 
-- Successful Response
+- Successful Response when there is a logged in user
 
   - Status Code: 200
   - Headers:
@@ -79,6 +77,19 @@ Returns the information about the current user that is logged in.
     }
     ```
 
+- Successful Response when there is no logged in user
+
+  - Status Code: 200
+  - Headers:
+    - Content-Type: application/json
+  - Body:
+
+    ```json
+    {
+    	"user": null
+    }
+    ```
+
 ### Log In a User
 
 Logs in a current user with valid credentials and returns the current user's
@@ -88,7 +99,7 @@ information.
 - Request
 
   - Method: POST
-  - URL: /api/session
+  - URL: /session
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -114,7 +125,8 @@ information.
     		"firstName": "John",
     		"lastName": "Smith",
     		"email": "john.smith@gmail.com",
-    		"username": "JohnSmith"
+    		"username": "JohnSmith",
+    		"token": ""
     	}
     }
     ```
@@ -144,10 +156,7 @@ information.
     {
     	"message": "Validation error",
     	"statusCode": 400,
-    	"errors": {
-    		"email": "Email is required",
-    		"password": "Password is required"
-    	}
+    	"errors": ["Email is required", "Password is required"]
     }
     ```
 
@@ -160,7 +169,7 @@ user's information.
 - Request
 
   - Method: POST
-  - URL: /api/users
+  - URL: /users
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -183,11 +192,14 @@ user's information.
 
     ```json
     {
-    	"id": 1,
-    	"firstName": "John",
-    	"lastName": "Smith",
-    	"email": "john.smith@gmail.com",
-    	"token": ""
+    	"user": {
+    		"id": 1,
+    		"firstName": "John",
+    		"lastName": "Smith",
+    		"email": "john.smith@gmail.com",
+    		"username": "JohnSmith",
+    		"token": ""
+    	}
     }
     ```
 
@@ -202,9 +214,7 @@ user's information.
     {
     	"message": "User already exists",
     	"statusCode": 403,
-    	"errors": {
-    		"email": "User with that email already exists"
-    	}
+    	"errors": ["User with that email already exists"]
     }
     ```
 
@@ -219,11 +229,11 @@ user's information.
     {
     	"message": "Validation error",
     	"statusCode": 400,
-    	"errors": {
-    		"email": "Invalid email",
-    		"firstName": "First Name is required",
-    		"lastName": "Last Name is required"
-    	}
+    	"errors": [
+    		"Invalid email",
+    		"First Name is required",
+    		"Last Name is required"
+    	]
     }
     ```
 
@@ -237,7 +247,7 @@ Returns all the groups.
 - Request
 
   - Method: GET
-  - URL: /api/groups
+  - URL: /groups
   - Body: none
 
 - Successful Response
@@ -276,7 +286,7 @@ Returns all the groups.
 - Request
 
   - Method: GET
-  - URL: /api/groups/current
+  - URL: /users/:userId/groups
   - Body: none
 
 - Successful Response
@@ -315,7 +325,7 @@ Returns the details of a group specified by its id.
 - Request
 
   - Method: GET
-  - URL: /api/groups/:groupId
+  - URL: /groups/:groupId
   - Body: none
 
 - Successful Response
@@ -391,7 +401,7 @@ Creates and returns a new group.
 - Request
 
   - Method: POST
-  - URL: /api/groups
+  - URL: /groups
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -440,14 +450,14 @@ Creates and returns a new group.
     {
     	"message": "Validation Error",
     	"statusCode": 400,
-    	"errors": {
-    		"name": "Name must be 60 characters or less",
-    		"about": "About must be 50 characters or more",
-    		"type": "Type must be 'Online' or 'In person'",
-    		"private": "Private must be a boolean",
-    		"city": "City is required",
-    		"state": "State is required"
-    	}
+    	"errors": [
+    		"Name must be 60 characters or less",
+    		"About must be 50 characters or more",
+    		"Type must be 'Online' or 'In person'",
+    		"Private must be a boolean",
+    		"City is required",
+    		"State is required"
+    	]
     }
     ```
 
@@ -460,7 +470,7 @@ Create and return a new image for a group specified by id.
 - Request
 
   - Method: POST
-  - URL: /api/groups/:groupId/images
+  - URL: /groups/:groupId/images
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -509,8 +519,8 @@ Updates and returns an existing group.
 - Require proper authorization: Group must belong to the current user
 - Request
 
-  - Method: PUT
-  - URL: /api/groups/:groupId
+  - Method: PATCH
+  - URL: /groups/:groupId
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -559,14 +569,14 @@ Updates and returns an existing group.
     {
     	"message": "Validation Error",
     	"statusCode": 400,
-    	"errors": {
-    		"name": "Name must be 60 characters or less",
-    		"about": "About must be 50 characters or more",
-    		"type": "Type must be 'Online' or 'In person'",
-    		"private": "Private must be a boolean",
-    		"city": "City is required",
-    		"state": "State is required"
-    	}
+    	"errors": [
+    		"Name must be 60 characters or less",
+    		"About must be 50 characters or more",
+    		"Type must be 'Online' or 'In person'",
+    		"Private must be a boolean",
+    		"City is required",
+    		"State is required"
+    	]
     }
     ```
 
@@ -593,7 +603,7 @@ Deletes an existing group.
 - Request
 
   - Method: DELETE
-  - URL: /api/groups/:groupId
+  - URL: /groups/:groupId
   - Body: none
 
 - Successful Response
@@ -636,7 +646,7 @@ Returns all venues for a group specified by its id
 - Request
 
   - Method: GET
-  - URL: /api/groups/:groupId/venues
+  - URL: /groups/:groupId/venues
   - Headers:
     - Content-Type: application/json
   - Body: none
@@ -688,7 +698,7 @@ Creates and returns a new venue for a group specified by its id
 - Request
 
   - Method: POST
-  - URL: /api/groups/:groupId/venues
+  - URL: /groups/:groupId/venues
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -747,13 +757,13 @@ Creates and returns a new venue for a group specified by its id
     {
     	"message": "Validation error",
     	"statusCode": 400,
-    	"errors": {
-    		"address": "Street address is required",
-    		"city": "City is required",
-    		"state": "State is required",
-    		"lat": "Latitude is not valid",
-    		"lng": "Longitude is not valid"
-    	}
+    	"errors": [
+    		"Street address is required",
+    		"City is required",
+    		"State is required",
+    		"Latitude is not valid",
+    		"Longitude is not valid"
+    	]
     }
     ```
 
@@ -766,8 +776,8 @@ Edit a new venue specified by its id
   the group with a status of "co-host"
 - Request
 
-  - Method: PUT
-  - URL: /api/venues/:venueId
+  - Method: PATCH
+  - URL: /venues/:venueId
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -826,13 +836,13 @@ Edit a new venue specified by its id
     {
     	"message": "Validation error",
     	"statusCode": 400,
-    	"errors": {
-    		"address": "Street address is required",
-    		"city": "City is required",
-    		"state": "State is required",
-    		"lat": "Latitude is not valid",
-    		"lng": "Longitude is not valid"
-    	}
+    	"errors": [
+    		"Street address is required",
+    		"City is required",
+    		"State is required",
+    		"Latitude is not valid",
+    		"Longitude is not valid"
+    	]
     }
     ```
 
@@ -846,7 +856,7 @@ Returns all the events.
 - Request
 
   - Method: GET
-  - URL: /api/events
+  - URL: /events
   - Body: none
 
 - Successful Response
@@ -911,7 +921,7 @@ Returns all the events of a group specified by its id
 - Request
 
   - Method: GET
-  - URL: /api/groups/:groupId/events
+  - URL: /groups/:groupId/events
   - Body: none
 
 - Successful Response
@@ -990,7 +1000,7 @@ Returns the details of an event specified by its id.
 - Request
 
   - Method: GET
-  - URL: /api/events/:eventId
+  - URL: /events/:eventId
   - Body: none
 
 - Successful Response
@@ -1067,7 +1077,7 @@ Creates and returns a new event for a group specified by its id
 - Request
 
   - Method: POST
-  - URL: /api/groups/:groupId/events
+  - URL: /groups/:groupId/events
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -1118,16 +1128,16 @@ Creates and returns a new event for a group specified by its id
     {
     	"message": "Validation error",
     	"statusCode": 400,
-    	"errors": {
-    		"venueId": "Venue does not exist",
-    		"name": "Name must be at least 5 characters",
-    		"type": "Type must be Online or In person",
-    		"capacity": "Capacity must be an integer",
-    		"price": "Price is invalid",
-    		"description": "Description is required",
-    		"startDate": "Start date must be in the future",
-    		"endDate": "End date is less than start date"
-    	}
+    	"errors": [
+    		"Venue does not exist",
+    		"Name must be at least 5 characters",
+    		"Type must be Online or In person",
+    		"Capacity must be an integer",
+    		"Price is invalid",
+    		"Description is required",
+    		"Start date must be in the future",
+    		"End date is less than start date"
+    	]
     }
     ```
 
@@ -1150,11 +1160,11 @@ Creates and returns a new event for a group specified by its id
 Create and return a new image for an event specified by id.
 
 - Require Authentication: true
-- Require proper authorization: Current User must be an attendee, host, or co-host of the event
+- Require proper authorization: Current User must be an attendee of the event
 - Request
 
   - Method: POST
-  - URL: /api/events/:eventId/images
+  - URL: /events/:eventId/images
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -1204,8 +1214,8 @@ Edit and returns an event specified by its id
   the group with a status of "co-host"
 - Request
 
-  - Method: PUT
-  - URL: /api/events/:eventId
+  - Method: PATCH
+  - URL: /events/:eventId
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -1256,16 +1266,16 @@ Edit and returns an event specified by its id
     {
     	"message": "Validation error",
     	"statusCode": 400,
-    	"errors": {
-    		"venueId": "Venue does not exist",
-    		"name": "Name must be at least 5 characters",
-    		"type": "Type must be Online or In person",
-    		"capacity": "Capacity must be an integer",
-    		"price": "Price is invalid",
-    		"description": "Description is required",
-    		"startDate": "Start date must be in the future",
-    		"endDate": "End date is less than start date"
-    	}
+    	"errors": [
+    		"Venue does not exist",
+    		"Name must be at least 5 characters",
+    		"Type must be Online or In person",
+    		"Capacity must be an integer",
+    		"Price is invalid",
+    		"Description is required",
+    		"Start date must be in the future",
+    		"End date is less than start date"
+    	]
     }
     ```
 
@@ -1307,7 +1317,7 @@ Delete an event specified by its id
 - Request
 
   - Method: DELETE
-  - URL: /api/events/:eventId
+  - URL: /events/:eventId
   - Body: none
 
 - Successful Response
@@ -1347,7 +1357,7 @@ Returns the members of a group specified by its id.
 - Request
 
   - Method: GET
-  - URL: /api/groups/:groupId/members
+  - URL: /groups/:groupId/members
   - Body: none
 
 - Successful Response: If you ARE the organizer or a co-host of the group. Shows
@@ -1442,7 +1452,7 @@ Request a new membership for a group specified by id.
 - Request
 
   - Method: POST
-  - URL: /api/groups/:groupId/membership
+  - URL: /groups/:groupId
   - Headers:
     - Content-Type: application/json
   - Body: none
@@ -1456,6 +1466,7 @@ Request a new membership for a group specified by id.
 
     ```json
     {
+    	"groupId": 1,
     	"memberId": 2,
     	"status": "pending"
     }
@@ -1517,8 +1528,8 @@ Change the status of a membership for a group specified by id.
     - Current User must already be the organizer
 - Request
 
-  - Method: PUT
-  - URL: /api/groups/:groupId/membership
+  - Method: PATCH
+  - URL: /groups/:groupId/members/:memberId
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -1618,7 +1629,7 @@ Delete a membership to a group specified by id.
 - Request
 
   - Method: DELETE
-  - URL: /api/groups/:groupId/membership
+  - URL: /groups/:groupId/members/:memberId
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -1697,7 +1708,7 @@ Returns the attendees of an event specified by its id.
 - Request
 
   - Method: GET
-  - URL: /api/events/:eventId/attendees
+  - URL: /events/:eventId
   - Body: none
 
 - Successful Response: If you ARE the organizer of the group or a member of the
@@ -1795,7 +1806,7 @@ Request attendance for an event specified by id.
 - Request
 
   - Method: POST
-  - URL: /api/events/:eventId/attendance
+  - URL: /events/:eventId
   - Headers:
     - Content-Type: application/json
   - Body: none
@@ -1809,6 +1820,7 @@ Request attendance for an event specified by id.
 
     ```json
     {
+    	"eventId": 1,
     	"userId": 2,
     	"status": "pending"
     }
@@ -1866,8 +1878,8 @@ Change the status of an attendance for an event specified by id.
   have a membership to the group with the status of "co-host"
 - Request
 
-  - Method: PUT
-  - URL: /api/events/:eventId/attendance
+  - Method: PATCH
+  - URL: events/:eventId/attendees/:attendeeId
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -1875,7 +1887,7 @@ Change the status of an attendance for an event specified by id.
     ```json
     {
     	"userId": 2,
-    	"status": "attending"
+    	"status": "member"
     }
     ```
 
@@ -1891,7 +1903,7 @@ Change the status of an attendance for an event specified by id.
     	"id": 1,
     	"eventId": 1,
     	"userId": 2,
-    	"status": "attending"
+    	"status": "member"
     }
     ```
 
@@ -1947,7 +1959,7 @@ Delete an attendance to an event specified by id.
 - Request
 
   - Method: DELETE
-  - URL: /api/events/:eventId/attendance
+  - URL: /events/:eventId/attendees/:attendeeId
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -2025,7 +2037,7 @@ Delete an existing image for a Group.
 - Request
 
   - Method: DELETE
-  - URL: /api/group-images/:imageId
+  - URL: /groups/:groupId/images/:imageId
   - Body: none
 
 - Successful Response
@@ -2066,7 +2078,7 @@ Delete an existing image for an Event.
 - Request
 
   - Method: DELETE
-  - URL: /api/event-images/:imageId
+  - URL: /events/:eventId/images/:imageId
   - Body: none
 
 - Successful Response
@@ -2105,10 +2117,10 @@ Return events filtered by query parameters.
 - Request
 
   - Method: GET
-  - URL: /api/events
+  - URL: /events?page=0,10&size=0,20
   - Query Parameters
-    - page: integer, minimum: 1, maximum: 10, default: 1
-    - size: integer, minimum: 1, maximum: 20, default: 20
+    - page: integer, minimum: 0, maximum: 10, default: 0
+    - size: integer, minimum: 0, maximum: 20, default: 20
     - name: string, optional
     - type: string, optional
     - startDate: string, optional
@@ -2179,12 +2191,12 @@ Return events filtered by query parameters.
     {
     	"message": "Validation Error",
     	"statusCode": 400,
-    	"errors": {
-    		"page": "Page must be greater than or equal to 1",
-    		"size": "Size must be greater than or equal to 1",
-    		"name": "Name must be a string",
-    		"type": "Type must be 'Online' or 'In Person'",
-    		"startDate": "Start date must be a valid datetime"
-    	}
+    	"errors": [
+    		"Page must be greater than or equal to 0",
+    		"Size must be greater than or equal to 0",
+    		"Name must be a string",
+    		"Type must be 'Online' or 'In Person'",
+    		"Start date must be a valid datetime"
+    	]
     }
     ```
