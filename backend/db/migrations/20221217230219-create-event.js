@@ -1,14 +1,12 @@
 "use strict";
-
 let options = {};
 if (process.env.NODE_ENV === "production") {
 	options.schema = process.env.SCHEMA; // define your schema in options object
 }
-
 module.exports = {
 	async up(queryInterface, Sequelize) {
 		await queryInterface.createTable(
-			"Users",
+			"Events",
 			{
 				id: {
 					allowNull: false,
@@ -16,26 +14,46 @@ module.exports = {
 					primaryKey: true,
 					type: Sequelize.INTEGER
 				},
-				firstName: {
+				venueId: {
+					type: Sequelize.INTEGER,
+					allowNull: false,
+					references: {
+						model: "Venues"
+					}
+				},
+				groupId: {
+					type: Sequelize.INTEGER,
+					allowNull: false,
+					references: {
+						model: "Groups"
+					}
+				},
+				name: {
 					type: Sequelize.STRING,
 					allowNull: false
 				},
-				lastName: {
+				description: {
 					type: Sequelize.STRING,
 					allowNull: false
 				},
-				username: {
-					type: Sequelize.STRING(30),
-					allowNull: false,
-					unique: true
+				type: {
+					type: Sequelize.STRING,
+					allowNull: false
 				},
-				email: {
-					type: Sequelize.STRING(256),
-					allowNull: false,
-					unique: true
+				capacity: {
+					type: Sequelize.INTEGER,
+					allowNull: false
 				},
-				hashedPassword: {
-					type: Sequelize.STRING.BINARY,
+				price: {
+					type: Sequelize.INTEGER,
+					allowNull: false
+				},
+				startDate: {
+					type: Sequelize.DATE,
+					allowNull: false
+				},
+				endDate: {
+					type: Sequelize.DATE,
 					allowNull: false
 				},
 				createdAt: {
@@ -53,7 +71,7 @@ module.exports = {
 		);
 	},
 	async down(queryInterface, Sequelize) {
-		options.tableName = "Users";
+		options.tableName = "Events";
 		await queryInterface.dropTable(options);
 	}
 };
