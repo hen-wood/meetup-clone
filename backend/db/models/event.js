@@ -4,12 +4,14 @@ module.exports = (sequelize, DataTypes) => {
 	class Event extends Model {
 		static associate(models) {
 			Event.hasMany(models.EventImage, {
-				foreignKey: "eventId"
+				foreignKey: "eventId",
+				onDelete: "CASCADE"
 			});
 			Event.belongsToMany(models.User, {
 				through: models.Attendance,
 				foreignKey: "eventId",
-				otherKey: "userId"
+				otherKey: "userId",
+				onDelete: "CASCADE"
 			});
 		}
 	}
