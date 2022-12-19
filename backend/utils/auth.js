@@ -51,15 +51,42 @@ const restoreUser = (req, res, next) => {
 	});
 };
 
-// If there is no current user, return an error
-const requireAuth = function (req, _res, next) {
+const requireAuthentication = (req, _res, next) => {
 	if (req.user) return next();
 
 	const err = new Error("Authentication required");
-	err.title = "Authentication required";
-	err.errors = ["Authentication required"];
 	err.status = 401;
 	return next(err);
 };
 
-module.exports = { setTokenCookie, restoreUser, requireAuth };
+const requireAuthorization = () => {
+	const err = new Error("Forbidden");
+	err.status = 403;
+	return err;
+};
+
+const checkIfUserExists = async (req, res, next) => {
+	const { email } = req.body;
+	let existingUser;
+	if (email) {
+		existingUser = await User.findOne({
+			where: {
+				email
+			}
+		});
+	}
+	if (existingUser) {
+		const err = new Error("User with that email already exists");
+		err.status = 403;
+		return next(err);
+	}
+	next();
+};
+
+module.exports = {
+	setTokenCookie,
+	restoreUser,
+	requireAuthentication,
+	requireAuthorization,
+	checkIfUserExists
+};
