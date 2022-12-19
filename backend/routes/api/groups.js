@@ -200,5 +200,20 @@ router.put(
 );
 
 // Delete a group
+router.delete("/:groupId", requireAuthentication, async (req, res, next) => {
+	const { groupId } = req.params;
+	const groupToDelete = await Group.findByPk(groupId);
+	if (!groupToDelete) {
+		return next(notFound("Group couldn't be found"));
+	}
+	if (groupToDelete.organizerId !== req.user.id) {
+		return next(requireAuthorization());
+	}
+	await groupToDelete.destroy();
+	res.json({
+		message: "Successfully deleted",
+		statusCode: 200
+	});
+});
 
 module.exports = router;

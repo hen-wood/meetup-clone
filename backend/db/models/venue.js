@@ -4,12 +4,14 @@ module.exports = (sequelize, DataTypes) => {
 	class Venue extends Model {
 		static associate(models) {
 			Venue.belongsTo(models.Group, {
-				foreignKey: "groupId"
+				foreignKey: "groupId",
+				onDelete: "CASCADE"
 			});
 			Venue.belongsToMany(models.Group, {
 				through: models.Event,
 				foreignKey: "venueId",
-				otherKey: "groupId"
+				otherKey: "groupId",
+				onDelete: "CASCADE"
 			});
 		}
 	}
@@ -20,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
 				references: {
 					model: "Groups"
 				},
+				onDelete: "CASCADE",
 				allowNull: false
 			},
 			address: {
