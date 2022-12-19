@@ -2,7 +2,10 @@
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
 	class Membership extends Model {
-		static associate(models) {}
+		static associate(models) {
+			Membership.belongsTo(models.User);
+			Membership.belongsTo(models.Group);
+		}
 	}
 	Membership.init(
 		{
