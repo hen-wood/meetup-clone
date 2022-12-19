@@ -35,9 +35,9 @@ router.get("/current", restoreUser, async (req, res, next) => {
 		},
 		raw: true
 	});
-	const resBody = userJoinedGroups.concat(userOrganizedGroups);
+	const Groups = userJoinedGroups.concat(userOrganizedGroups);
 
-	for (let group of resBody) {
+	for (let group of Groups) {
 		group.numMembers = await Membership.count({
 			where: {
 				groupId: group.id
@@ -52,15 +52,15 @@ router.get("/current", restoreUser, async (req, res, next) => {
 		group.previewImage = previewImage.url;
 	}
 
-	res.json(resBody);
+	res.json({ Groups });
 });
 
 // Get all groups, include aggregate data for number of members in each group, and the groups preview image url
 router.get("/", async (req, res, next) => {
-	const groups = await Group.findAll({
+	const Groups = await Group.findAll({
 		raw: true
 	});
-	for (let group of groups) {
+	for (let group of Groups) {
 		group.numMembers = await Membership.count({
 			where: {
 				groupId: group.id
@@ -74,7 +74,7 @@ router.get("/", async (req, res, next) => {
 		});
 		group.previewImage = previewImage.url;
 	}
-	res.json({ groups });
+	res.json({ Groups });
 });
 
 module.exports = router;
