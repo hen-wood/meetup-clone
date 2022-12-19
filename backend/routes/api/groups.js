@@ -39,6 +39,22 @@ const validateCreateGroup = [
 	check("state").exists({ checkFalsy: true }).withMessage("State is required"),
 	handleValidationErrors
 ];
+
+const validateEditGroup = [
+	check("name")
+		.isLength({ max: 60 })
+		.withMessage("Name must be 60 characters or less"),
+	check("about")
+		.isLength({ min: 50 })
+		.withMessage("About must be 50 characters or more"),
+	check("type")
+		.isIn(["Online", "In person"])
+		.withMessage("Type must be 'Online' or 'In person'"),
+	check("private")
+		.isBoolean({ loose: false })
+		.withMessage("Private must be a boolean"),
+	handleValidationErrors
+];
 // Get all groups created by or joined by current user
 router.get("/current", restoreUser, async (req, res, next) => {
 	const userId = req.user.id;
@@ -139,6 +155,7 @@ router.get("/", async (req, res, next) => {
 	res.json({ Groups });
 });
 
+// Create a new group
 router.post("/", validateCreateGroup, async (req, res, next) => {
 	if (!req.user) {
 		const err = new Error("Authentication required");
@@ -158,10 +175,52 @@ router.post("/", validateCreateGroup, async (req, res, next) => {
 		res.json(newGroup);
 	}
 });
+/*
+{
+	"name": "Evening Tennis on the Water",
+	"about": "Enjoy rounds of tennis with a tight-nit group of people on the water facing the Brooklyn Bridge. Singles or doubles.",
+	"type": "In person",
+	"private": true,
+	"city": "New York",
+	"state": "NY"
+}
+*/
+// Edit a group
+router.put("/:groupId", validateEditGroup, async (req, res, next) => {
+	const { groupId } = req.params;
+	const { name, about, type, private, city, state } = req.body;
+	if (!req.user) {
+		const err = new Error("Authentication required");
+		err.status = 401;
+		next(err);
+	}
+	const groupToEdit = await Group.findByPk(groupId);
+	if (!groupToEdit) {
+		const err = new Error("Group couldn't be found");
+		err.status = 404;
+		return next(err);
+	} else if (req.user.id !== groupToEdit.organizerId) {
+		const err = new Error("User must be group organizer to edit the group");
+		err.status = 403;
+		next(err);
+	}
+	if (name) groupToEdit.name = name;
+	if (about) groupToEdit.about = about;
+	if (type) groupToEdit.type = type;
+	if (private) groupToEdit.private = private;
+	if (city) groupToEdit.city = city;
+	if (state) groupToEdit.state = state;
+	await groupToEdit.save();
+	res.json(groupToEdit);
+});
 
 // Error handler for when Group cannot be found by id, or authentication is required
 router.use((err, _req, res, next) => {
-	const errors = ["Group couldn't be found", "Authentication required"];
+	const errors = [
+		"Group couldn't be found",
+		"Authentication required",
+		"User must be group organizer to edit the group"
+	];
 	if (errors.includes(err.message)) {
 		res.status(err.status);
 		res.json({
