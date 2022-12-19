@@ -155,6 +155,35 @@ router.get("/", async (req, res, next) => {
 	res.json({ Groups });
 });
 
+// Create an image for a group
+router.post("/:groupId/images", async (req, res, next) => {
+	const { groupId } = req.params;
+	if (!req.user) {
+		const err = new Error("Authentication required");
+		err.status = 401;
+		next(err);
+	}
+	const groupToAddImageTo = await Group.findByPk(groupId);
+	if (!groupToAddImageTo) {
+		const err = new Error("Group couldn't be found");
+		err.status = 404;
+		next(err);
+	} else if (req.user.id !== groupToAddImageTo.organizerId) {
+		const err = new Error("Forbidden");
+		err.status = 403;
+		next(err);
+	}
+	const { url, preview } = req.body;
+	const newGroupImage = await GroupImage.create({
+		groupId,
+		url,
+		preview
+	});
+	const { id } = newGroupImage;
+
+	res.json({ id, url, preview });
+});
+
 // Create a new group
 router.post("/", validateCreateGroup, async (req, res, next) => {
 	if (!req.user) {
@@ -175,16 +204,7 @@ router.post("/", validateCreateGroup, async (req, res, next) => {
 		res.json(newGroup);
 	}
 });
-/*
-{
-	"name": "Evening Tennis on the Water",
-	"about": "Enjoy rounds of tennis with a tight-nit group of people on the water facing the Brooklyn Bridge. Singles or doubles.",
-	"type": "In person",
-	"private": true,
-	"city": "New York",
-	"state": "NY"
-}
-*/
+
 // Edit a group
 router.put("/:groupId", validateEditGroup, async (req, res, next) => {
 	const { groupId } = req.params;
@@ -200,7 +220,7 @@ router.put("/:groupId", validateEditGroup, async (req, res, next) => {
 		err.status = 404;
 		return next(err);
 	} else if (req.user.id !== groupToEdit.organizerId) {
-		const err = new Error("User must be group organizer to edit the group");
+		const err = new Error("Forbidden");
 		err.status = 403;
 		next(err);
 	}
@@ -219,7 +239,7 @@ router.use((err, _req, res, next) => {
 	const errors = [
 		"Group couldn't be found",
 		"Authentication required",
-		"User must be group organizer to edit the group"
+		"Forbidden"
 	];
 	if (errors.includes(err.message)) {
 		res.status(err.status);
