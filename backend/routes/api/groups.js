@@ -1,5 +1,4 @@
 // backend/routes/api/groups.js
-const e = require("express");
 const express = require("express");
 const {
 	Group,
@@ -13,50 +12,20 @@ const {
 } = require("../../db/models");
 const { check } = require("express-validator");
 const { Op } = require("sequelize");
-const { restoreUser, requireAuth } = require("../../utils/auth");
-const { handleValidationErrors } = require("../../utils/validation");
+const {
+	requireAuthentication,
+	requireAuthorization
+} = require("../../utils/auth");
+const {
+	validateCreateGroup,
+	validateEditGroup
+} = require("../../utils/validation-chains");
+const { notFound } = require("../../utils/not-found");
 
 const router = express.Router();
 
-const validateCreateGroup = [
-	check("name")
-		.exists({ checkFalsy: true })
-		.isLength({ max: 60 })
-		.withMessage("Name must be 60 characters or less"),
-	check("about")
-		.exists({ checkFalsy: true })
-		.isLength({ min: 50 })
-		.withMessage("About must be 50 characters or more"),
-	check("type")
-		.exists({ checkFalsy: true })
-		.isIn(["Online", "In person"])
-		.withMessage("Type must be 'Online' or 'In person'"),
-	check("private")
-		.exists({ checkNull: true })
-		.isBoolean({ loose: false })
-		.withMessage("Private must be a boolean"),
-	check("city").exists({ checkFalsy: true }).withMessage("City is required"),
-	check("state").exists({ checkFalsy: true }).withMessage("State is required"),
-	handleValidationErrors
-];
-
-const validateEditGroup = [
-	check("name")
-		.isLength({ max: 60 })
-		.withMessage("Name must be 60 characters or less"),
-	check("about")
-		.isLength({ min: 50 })
-		.withMessage("About must be 50 characters or more"),
-	check("type")
-		.isIn(["Online", "In person"])
-		.withMessage("Type must be 'Online' or 'In person'"),
-	check("private")
-		.isBoolean({ loose: false })
-		.withMessage("Private must be a boolean"),
-	handleValidationErrors
-];
 // Get all groups created by or joined by current user
-router.get("/current", restoreUser, async (req, res, next) => {
+router.get("/current", requireAuthentication, async (req, res, next) => {
 	const userId = req.user.id;
 	const userJoinedGroups = await Group.findAll({
 		include: {
@@ -122,9 +91,7 @@ router.get("/:groupId", async (req, res, next) => {
 		groupDetails.numMembers = numMembers;
 		res.json(groupDetails);
 	} else {
-		const err = new Error("Group couldn't be found");
-		err.status = 404;
-		next(err);
+		next(notFound("Group couldn't be found"));
 	}
 });
 
@@ -146,7 +113,7 @@ router.get("/", async (req, res, next) => {
 			},
 			attributes: ["url"]
 		});
-		if (group.previewImage) {
+		if (group) {
 			group.previewImage = previewImage.url;
 		} else {
 			group.previewImage = null;
@@ -156,41 +123,35 @@ router.get("/", async (req, res, next) => {
 });
 
 // Create an image for a group
-router.post("/:groupId/images", async (req, res, next) => {
-	const { groupId } = req.params;
-	if (!req.user) {
-		const err = new Error("Authentication required");
-		err.status = 401;
-		next(err);
-	}
-	const groupToAddImageTo = await Group.findByPk(groupId);
-	if (!groupToAddImageTo) {
-		const err = new Error("Group couldn't be found");
-		err.status = 404;
-		next(err);
-	} else if (req.user.id !== groupToAddImageTo.organizerId) {
-		const err = new Error("Forbidden");
-		err.status = 403;
-		next(err);
-	}
-	const { url, preview } = req.body;
-	const newGroupImage = await GroupImage.create({
-		groupId,
-		url,
-		preview
-	});
-	const { id } = newGroupImage;
+router.post(
+	"/:groupId/images",
+	requireAuthentication,
+	async (req, res, next) => {
+		const { groupId } = req.params;
+		const groupToAddImageTo = await Group.findByPk(groupId);
+		if (!groupToAddImageTo) {
+			return next(notFound("Group couldn't be found"));
+		} else if (req.user.id !== groupToAddImageTo.organizerId) {
+			return next(requireAuthorization());
+		}
+		const { url, preview } = req.body;
+		const newGroupImage = await GroupImage.create({
+			groupId,
+			url,
+			preview
+		});
+		const { id } = newGroupImage;
 
-	res.json({ id, url, preview });
-});
+		res.json({ id, url, preview });
+	}
+);
 
 // Create a new group
-router.post("/", validateCreateGroup, async (req, res, next) => {
-	if (!req.user) {
-		const err = new Error("Authentication required");
-		err.status = 401;
-		next(err);
-	} else {
+router.post(
+	"/",
+	requireAuthentication,
+	validateCreateGroup,
+	async (req, res, next) => {
 		const { name, about, type, private, city, state } = req.body;
 		const newGroup = await Group.create({
 			organizerId: req.user.id,
@@ -203,53 +164,33 @@ router.post("/", validateCreateGroup, async (req, res, next) => {
 		});
 		res.json(newGroup);
 	}
-});
+);
 
 // Edit a group
-router.put("/:groupId", validateEditGroup, async (req, res, next) => {
-	const { groupId } = req.params;
-	const { name, about, type, private, city, state } = req.body;
-	if (!req.user) {
-		const err = new Error("Authentication required");
-		err.status = 401;
-		next(err);
-	}
-	const groupToEdit = await Group.findByPk(groupId);
-	if (!groupToEdit) {
-		const err = new Error("Group couldn't be found");
-		err.status = 404;
-		return next(err);
-	} else if (req.user.id !== groupToEdit.organizerId) {
-		const err = new Error("Forbidden");
-		err.status = 403;
-		next(err);
-	}
-	if (name) groupToEdit.name = name;
-	if (about) groupToEdit.about = about;
-	if (type) groupToEdit.type = type;
-	if (private) groupToEdit.private = private;
-	if (city) groupToEdit.city = city;
-	if (state) groupToEdit.state = state;
-	await groupToEdit.save();
-	res.json(groupToEdit);
-});
+router.put(
+	"/:groupId",
+	requireAuthentication,
+	validateEditGroup,
+	async (req, res, next) => {
+		const { groupId } = req.params;
+		const { name, about, type, private, city, state } = req.body;
 
-// Error handler for when Group cannot be found by id, or authentication is required
-router.use((err, _req, res, next) => {
-	const errors = [
-		"Group couldn't be found",
-		"Authentication required",
-		"Forbidden"
-	];
-	if (errors.includes(err.message)) {
-		res.status(err.status);
-		res.json({
-			message: err.message,
-			statusCode: err.status
-		});
-	} else {
-		next(err);
+		const groupToEdit = await Group.findByPk(groupId);
+		if (!groupToEdit) {
+			return next(notFound("Group couldn't be found"));
+		} else if (req.user.id !== groupToEdit.organizerId) {
+			return next(requireAuthorization());
+		}
+
+		if (name) groupToEdit.name = name;
+		if (about) groupToEdit.about = about;
+		if (type) groupToEdit.type = type;
+		if (private) groupToEdit.private = private;
+		if (city) groupToEdit.city = city;
+		if (state) groupToEdit.state = state;
+		await groupToEdit.save();
+		res.json(groupToEdit);
 	}
-});
+);
 
 module.exports = router;
