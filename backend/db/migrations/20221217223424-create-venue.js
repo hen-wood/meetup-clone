@@ -1,14 +1,12 @@
 "use strict";
-
 let options = {};
 if (process.env.NODE_ENV === "production") {
 	options.schema = process.env.SCHEMA; // define your schema in options object
 }
-
 module.exports = {
 	async up(queryInterface, Sequelize) {
 		await queryInterface.createTable(
-			"Users",
+			"Venues",
 			{
 				id: {
 					allowNull: false,
@@ -16,26 +14,31 @@ module.exports = {
 					primaryKey: true,
 					type: Sequelize.INTEGER
 				},
-				firstName: {
+				groupId: {
+					type: Sequelize.INTEGER,
+					allowNull: false,
+					references: {
+						model: "Groups"
+					}
+				},
+				address: {
 					type: Sequelize.STRING,
 					allowNull: false
 				},
-				lastName: {
+				city: {
 					type: Sequelize.STRING,
 					allowNull: false
 				},
-				username: {
-					type: Sequelize.STRING(30),
-					allowNull: false,
-					unique: true
+				state: {
+					type: Sequelize.STRING,
+					allowNull: false
 				},
-				email: {
-					type: Sequelize.STRING(256),
-					allowNull: false,
-					unique: true
+				lat: {
+					type: Sequelize.DECIMAL,
+					allowNull: false
 				},
-				hashedPassword: {
-					type: Sequelize.STRING.BINARY,
+				lng: {
+					type: Sequelize.DECIMAL,
 					allowNull: false
 				},
 				createdAt: {
@@ -53,7 +56,7 @@ module.exports = {
 		);
 	},
 	async down(queryInterface, Sequelize) {
-		options.tableName = "Users";
+		options.tableName = "Venues";
 		await queryInterface.dropTable(options);
 	}
 };
