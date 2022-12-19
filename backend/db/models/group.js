@@ -1,6 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
-const membership = require("./membership");
+const Membership = require("./membership");
 module.exports = (sequelize, DataTypes) => {
 	class Group extends Model {
 		static associate(models) {
@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
 				foreignKey: "groupId",
 				otherKey: "userId"
 			});
+			Group.hasMany(models.Membership);
 			Group.hasMany(models.GroupImage, {
 				foreignKey: "groupId"
 			});
