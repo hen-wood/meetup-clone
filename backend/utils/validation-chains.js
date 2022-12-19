@@ -80,6 +80,9 @@ const validateEditGroup = [
 		.optional()
 		.isBoolean({ loose: false })
 		.withMessage("Private must be a boolean"),
+	// Weird to require city and state??
+	check("city").exists().isString().withMessage("City is required"),
+	check("state").exists().isString().withMessage("State is required"),
 	handleValidationErrors
 ];
 

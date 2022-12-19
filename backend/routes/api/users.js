@@ -10,6 +10,7 @@ const {
 } = require("../../utils/auth");
 const { validateSignup } = require("../../utils/validation-chains");
 const { User } = require("../../db/models");
+const { token } = require("morgan");
 
 const router = express.Router();
 
@@ -25,10 +26,14 @@ router.post("/", checkIfUserExists, validateSignup, async (req, res, next) => {
 	});
 
 	await setTokenCookie(res, user);
-
-	return res.json({
-		user: user
-	});
+	const resBody = {
+		id: user.id,
+		firstName: user.firstName,
+		lastName: user.lastName,
+		email: user.email,
+		token: req.cookies.token
+	};
+	return res.json(resBody);
 });
 
 module.exports = router;

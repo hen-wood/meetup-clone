@@ -58,6 +58,8 @@ router.get("/current", requireAuthentication, async (req, res, next) => {
 			attributes: ["url"]
 		});
 		group.previewImage = previewImage.url;
+		if (group.private === 0) group.private = false;
+		if (group.private === 1) group.private = true;
 	}
 
 	res.json({ Groups });
@@ -89,6 +91,8 @@ router.get("/:groupId", async (req, res, next) => {
 			}
 		});
 		groupDetails.numMembers = numMembers;
+		if (groupDetails.private === 0) groupDetails.private = false;
+		if (groupDetails.private === 1) groupDetails.private = true;
 		res.json(groupDetails);
 	} else {
 		next(notFound("Group couldn't be found"));
@@ -118,6 +122,8 @@ router.get("/", async (req, res, next) => {
 		} else {
 			group.previewImage = null;
 		}
+		if (group.private === 0) group.private = false;
+		if (group.private === 1) group.private = true;
 	}
 	res.json({ Groups });
 });
@@ -192,5 +198,7 @@ router.put(
 		res.json(groupToEdit);
 	}
 );
+
+// Delete a group
 
 module.exports = router;
