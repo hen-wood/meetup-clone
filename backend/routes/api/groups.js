@@ -58,7 +58,7 @@ router.get("/current", restoreUser, async (req, res, next) => {
 // Get details of a group based on its ID
 router.get("/:groupId", async (req, res, next) => {
 	const { groupId } = req.params;
-	const groupDetails = await Group.findByPk(groupId, {
+	let groupDetails = await Group.findByPk(groupId, {
 		include: [
 			{
 				model: GroupImage
@@ -74,6 +74,13 @@ router.get("/:groupId", async (req, res, next) => {
 		]
 	});
 	if (groupDetails) {
+		groupDetails = groupDetails.toJSON();
+		const numMembers = await Membership.count({
+			where: {
+				groupId
+			}
+		});
+		groupDetails.numMembers = numMembers;
 		res.json(groupDetails);
 	} else {
 		const err = new Error("Group couldn't be found");
