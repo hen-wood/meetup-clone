@@ -17,6 +17,23 @@ const handleValidationErrors = (req, _res, next) => {
 	next();
 };
 
+const checkForValidStatus = (req, res, next) => {
+	const { memberId, status } = req.body;
+
+	if (!["co-host", "member"].includes(status)) {
+		const err = new ValidationError("Validation error");
+		err.errors = [
+			{
+				params: "status",
+				msg: "Cannot change a membership status to pending"
+			}
+		];
+		err.status = 400;
+		return next(err);
+	}
+};
+
 module.exports = {
-	handleValidationErrors
+	handleValidationErrors,
+	checkForValidStatus
 };

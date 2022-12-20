@@ -10,8 +10,7 @@ const {
 	User,
 	Venue
 } = require("../../db/models");
-const { check } = require("express-validator");
-const { Op, ValidationError } = require("sequelize");
+const { Op } = require("sequelize");
 const {
 	requireAuthentication,
 	requireAuthorization,
@@ -25,6 +24,7 @@ const {
 	validateCreateGroupVenue
 } = require("../../utils/validation-chains");
 const { notFound } = require("../../utils/not-found");
+const { checkForValidStatus } = require("../../utils/validation");
 
 const router = express.Router();
 
@@ -353,21 +353,10 @@ router.put(
 	requireAuthentication,
 	checkIfGroupExists,
 	requireOrganizerOrCoHost,
+	checkForValidStatus,
 	async (req, res, next) => {
 		const { groupId } = req.params;
 		const { memberId, status } = req.body;
-
-		if (!["co-host", "member"].includes(status)) {
-			const err = new ValidationError("Validation error");
-			err.errors = [
-				{
-					params: "status",
-					msg: "Cannot change a membership status to pending"
-				}
-			];
-			err.status = 400;
-			return next(err);
-		}
 
 		const membershipToChange = await Membership.findOne({
 			where: { [Op.and]: [{ userId: memberId }, { groupId }] }
