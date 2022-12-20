@@ -89,7 +89,12 @@ router.get("/current", requireAuthentication, async (req, res, next) => {
 			},
 			attributes: ["url"]
 		});
-		group.previewImage = previewImage.url;
+		console.log("hello");
+		if (previewImage) {
+			group.previewImage = previewImage.url;
+		} else {
+			group.previewImage = null;
+		}
 		if (group.private === 0) group.private = false;
 		if (group.private === 1) group.private = true;
 	}
@@ -149,7 +154,7 @@ router.get("/", async (req, res, next) => {
 			},
 			attributes: ["url"]
 		});
-		if (group) {
+		if (group && previewImage) {
 			group.previewImage = previewImage.url;
 		} else {
 			group.previewImage = null;
