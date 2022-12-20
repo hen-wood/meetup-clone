@@ -89,7 +89,8 @@ router.get("/current", requireAuthentication, async (req, res, next) => {
 			},
 			attributes: ["url"]
 		});
-		if (group && previewImage) {
+		console.log("hello");
+		if (previewImage) {
 			group.previewImage = previewImage.url;
 		} else {
 			group.previewImage = null;
