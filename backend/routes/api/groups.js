@@ -16,7 +16,9 @@ const {
 	requireAuthorization,
 	checkIfMembershipExists,
 	checkIfGroupExists,
-	requireOrganizerOrCoHost
+	requireOrganizerOrCoHost,
+	requireOrganizerOrCoHostOrIsUser,
+	checkIfMembershipDoesNotExist
 } = require("../../utils/auth");
 const {
 	validateCreateGroup,
@@ -24,7 +26,10 @@ const {
 	validateCreateGroupVenue
 } = require("../../utils/validation-chains");
 const { notFound } = require("../../utils/not-found");
-const { checkForValidStatus } = require("../../utils/validation");
+const {
+	checkForValidStatus,
+	checkIfUserDoesNotExist
+} = require("../../utils/validation");
 
 const router = express.Router();
 
@@ -384,10 +389,34 @@ router.delete("/:groupId", requireAuthentication, async (req, res, next) => {
 		return next(requireAuthorization());
 	}
 	await groupToDelete.destroy();
-	res.json({
+	return res.json({
 		message: "Successfully deleted",
 		statusCode: 200
 	});
 });
+
+// Delete a member
+router.delete(
+	"/:groupId/membership",
+	requireAuthentication,
+	requireOrganizerOrCoHostOrIsUser,
+	checkIfUserDoesNotExist,
+	checkIfGroupExists,
+	checkIfMembershipDoesNotExist,
+	async (req, res, next) => {
+		const { memberId } = req.body;
+		const { groupId } = req.params;
+
+		const memberToDelete = await Membership.findOne({
+			where: { [Op.and]: [{ userId: memberId }, { groupId }] }
+		});
+
+		await memberToDelete.destroy();
+
+		return res.json({
+			message: "Successfully deleted membership from group"
+		});
+	}
+);
 
 module.exports = router;

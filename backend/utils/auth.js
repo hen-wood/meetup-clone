@@ -90,6 +90,32 @@ const requireOrganizerOrCoHost = async (req, res, next) => {
 	return next(err);
 };
 
+const requireOrganizerOrCoHostOrIsUser = async (req, res, next) => {
+	const { groupId } = req.params;
+	const { memberId } = req.body;
+	const currentUserId = req.user.id;
+
+	const isCohost = await Membership.findOne({
+		where: {
+			[Op.and]: [{ groupId }, { userId: currentUserId }, { status: "co-host" }]
+		}
+	});
+
+	const isOrganizer = await Group.findOne({
+		where: { [Op.and]: [{ organizerId: currentUserId }, { id: groupId }] }
+	});
+
+	const isUser = currentUserId === memberId;
+
+	if (isCohost || isOrganizer || isUser) {
+		return next();
+	}
+
+	const err = new Error("Forbidden");
+	err.status = 403;
+	return next(err);
+};
+
 const checkIfMembershipExists = async (req, res, next) => {
 	const { groupId } = req.params;
 	const userId = req.user.id;
@@ -111,6 +137,22 @@ const checkIfMembershipExists = async (req, res, next) => {
 	} else {
 		return next();
 	}
+};
+
+const checkIfMembershipDoesNotExist = async (req, res, next) => {
+	const { groupId } = req.params;
+	const { memberId } = req.body;
+	const existingMembership = await Membership.findOne({
+		where: { [Op.and]: [{ userId: memberId }, { groupId }] }
+	});
+
+	if (!existingMembership) {
+		const err = new Error();
+		err.status = 404;
+		err.message = "Membership does not exist for this user";
+		return next(err);
+	}
+	return next();
 };
 
 const checkIfUserExists = async (req, res, next) => {
@@ -150,5 +192,7 @@ module.exports = {
 	checkIfUserExists,
 	checkIfMembershipExists,
 	checkIfGroupExists,
-	requireOrganizerOrCoHost
+	requireOrganizerOrCoHost,
+	requireOrganizerOrCoHostOrIsUser,
+	checkIfMembershipDoesNotExist
 };
