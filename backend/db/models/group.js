@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
 				through: models.Membership,
 				foreignKey: "groupId",
 				otherKey: "userId",
+				as: "Members",
 				onDelete: "CASCADE"
 			});
 			Group.hasMany(models.Membership, {

@@ -26,6 +26,54 @@ const { notFound } = require("../../utils/not-found");
 
 const router = express.Router();
 
+// Get all members of a group by group id
+router.get("/:groupId/members", async (req, res, next) => {
+	const { groupId } = req.params;
+	const isOrganizer = await Group.findOne({
+		attributes: ["organizerId"],
+		where: {
+			[Op.and]: [{ organizerId: req.user.id }, { id: groupId }]
+		}
+	});
+	console.log(isOrganizer, req.user.id);
+	let where = {};
+	if (!isOrganizer) {
+		where = {
+			status: {
+				[Op.ne]: "pending"
+			}
+		};
+	}
+	const group = await Group.findByPk(groupId, {
+		attributes: [],
+		include: {
+			model: User,
+			as: "Members",
+			through: {
+				attributes: {
+					exclude: ["userId", "groupId", "createdAt", "updatedAt"]
+				},
+				where
+			},
+			attributes: {
+				exclude: [
+					"username",
+					"email",
+					"hashedPassword",
+					"createdAt",
+					"updatedAt"
+				]
+			}
+		}
+	});
+
+	if (!group) {
+		return next(notFound("Group couldn't be found"));
+	}
+
+	res.json(group);
+});
+
 // Get all venues for a Group specified by its id
 router.get(
 	"/:groupId/venues",
