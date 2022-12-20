@@ -90,7 +90,7 @@ router.get("/current", requireAuthentication, async (req, res, next) => {
 			attributes: ["url"]
 		});
 		console.log("hello");
-		if (previewImage) {
+		if (group && previewImage) {
 			group.previewImage = previewImage.url;
 		} else {
 			group.previewImage = null;
