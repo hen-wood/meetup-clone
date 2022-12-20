@@ -65,6 +65,31 @@ const requireAuthorization = () => {
 	return err;
 };
 
+const requireOrganizerOrCoHost = async (req, res, next) => {
+	const { groupId } = req.params;
+	const { status } = req.body;
+	const userId = req.user.id;
+	const group = await Group.findByPk(groupId);
+
+	const userMembership = await Membership.findOne({
+		where: {
+			[Op.and]: [{ groupId }, { userId }]
+		}
+	});
+
+	if (
+		group.organizerId === userId ||
+		(userMembership &&
+			userMembership.status === "co-host" &&
+			status === "member")
+	) {
+		return next();
+	}
+	const err = new Error("Forbidden");
+	err.status = 403;
+	return next(err);
+};
+
 const checkIfMembershipExists = async (req, res, next) => {
 	const { groupId } = req.params;
 	const userId = req.user.id;
@@ -124,5 +149,6 @@ module.exports = {
 	requireAuthorization,
 	checkIfUserExists,
 	checkIfMembershipExists,
-	checkIfGroupExists
+	checkIfGroupExists,
+	requireOrganizerOrCoHost
 };
