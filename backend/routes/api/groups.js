@@ -224,21 +224,18 @@ router.post(
 		const userId = req.user.id;
 		const { groupId } = req.params;
 
-		await Membership.create({
+		const newMember = await Membership.create({
 			userId,
 			groupId,
 			status: "pending"
 		});
 
-		const newMemberRecord = await Membership.findOne({
-			where: {
-				userId,
-				groupId
-			},
-			attributes: [["id", "memberId"], "status"]
-		});
+		const resBody = {
+			memberId: userId,
+			status: newMember.status
+		};
 
-		return res.json(newMemberRecord);
+		return res.json(resBody);
 	}
 );
 
