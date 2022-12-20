@@ -399,10 +399,10 @@ router.delete("/:groupId", requireAuthentication, async (req, res, next) => {
 router.delete(
 	"/:groupId/membership",
 	requireAuthentication,
-	requireOrganizerOrCoHostOrIsUser,
-	checkIfUserDoesNotExist,
 	checkIfGroupExists,
+	checkIfUserDoesNotExist,
 	checkIfMembershipDoesNotExist,
+	requireOrganizerOrCoHostOrIsUser,
 	async (req, res, next) => {
 		const { memberId } = req.body;
 		const { groupId } = req.params;
