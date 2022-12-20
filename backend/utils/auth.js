@@ -1,8 +1,8 @@
 // backend/utils/auth.js
 const jwt = require("jsonwebtoken");
 const { jwtConfig } = require("../config");
-const { User } = require("../db/models");
-
+const { User, Group, Membership } = require("../db/models");
+const { Op } = require("sequelize");
 const { secret, expiresIn } = jwtConfig;
 
 // Sends a JWT Cookie
@@ -65,6 +65,29 @@ const requireAuthorization = () => {
 	return err;
 };
 
+const checkIfMembershipExists = async (req, res, next) => {
+	const { groupId } = req.params;
+	const userId = req.user.id;
+	const existingMembership = await Membership.findOne({
+		where: {
+			[Op.and]: [{ groupId }, { userId }]
+		}
+	});
+
+	if (existingMembership) {
+		const err = new Error();
+		err.status = 400;
+		if (existingMembership.status === "pending") {
+			err.message = "Membership has already been requested";
+		} else {
+			err.message = "User is already a member of the group";
+		}
+		return next(err);
+	} else {
+		return next();
+	}
+};
+
 const checkIfUserExists = async (req, res, next) => {
 	const { email } = req.body;
 	let existingUser;
@@ -83,10 +106,23 @@ const checkIfUserExists = async (req, res, next) => {
 	next();
 };
 
+const checkIfGroupExists = async (req, res, next) => {
+	const { groupId } = req.params;
+	const groupExists = await Group.findByPk(groupId);
+	if (!groupExists) {
+		const err = new Error("Group couldn't be found");
+		err.status = 404;
+		return next(err);
+	}
+	next();
+};
+
 module.exports = {
 	setTokenCookie,
 	restoreUser,
 	requireAuthentication,
 	requireAuthorization,
-	checkIfUserExists
+	checkIfUserExists,
+	checkIfMembershipExists,
+	checkIfGroupExists
 };
