@@ -51,7 +51,7 @@ const restoreUser = (req, res, next) => {
 	});
 };
 
-const requireAuthentication = (req, _res, next) => {
+const requireAuthentication = async (req, _res, next) => {
 	if (req.user) return next();
 
 	const err = new Error("Authentication required");
