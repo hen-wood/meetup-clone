@@ -14,7 +14,8 @@
     "undomigrate": "npx dotenv sequelize db:migrate:undo",
     "seed": "npx dotenv sequelize db:seed:all",
     "undoseed": "npx dotenv sequelize db:seed:undo:all",
-    "dbreset": "npx dotenv sequelize db:seed:undo:all && npx dotenv sequelize db:migrate:undo:all && npx dotenv sequelize db:migrate && npx dotenv sequelize db:seed:all"
+    "dbreset": "npx dotenv sequelize db:seed:undo:all && npx dotenv sequelize db:migrate:undo:all && npx dotenv sequelize db:migrate && npx dotenv sequelize db:seed:all",
+    "killport":"sudo kill -9 `sudo lsof -t -i:8000`"
   },
   "keywords": [],
   "author": "",

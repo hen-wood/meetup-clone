@@ -3,8 +3,12 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
 	class Membership extends Model {
 		static associate(models) {
-			Membership.belongsTo(models.User);
-			Membership.belongsTo(models.Group);
+			Membership.belongsTo(models.User, {
+				onDelete: "CASCADE"
+			});
+			Membership.belongsTo(models.Group, {
+				onDelete: "CASCADE"
+			});
 		}
 	}
 	Membership.init(
@@ -14,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
 				references: {
 					model: "Users"
 				},
+				onDelete: "CASCADE",
 				allowNull: false
 			},
 			groupId: {
@@ -21,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
 				references: {
 					model: "Groups"
 				},
+				onDelete: "CASCADE",
 				allowNull: false
 			},
 			status: {
