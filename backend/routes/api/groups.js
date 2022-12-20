@@ -15,7 +15,8 @@ const { Op } = require("sequelize");
 const {
 	requireAuthentication,
 	requireAuthorization,
-	restoreUser
+	checkIfMembershipExists,
+	checkIfGroupExists
 } = require("../../utils/auth");
 const {
 	validateCreateGroup,
@@ -210,8 +211,36 @@ router.get("/", async (req, res, next) => {
 		if (group.private === 0) group.private = false;
 		if (group.private === 1) group.private = true;
 	}
-	res.json({ Groups });
+	return res.json({ Groups });
 });
+
+// Request membership for a group by group id
+router.post(
+	"/:groupId/membership",
+	requireAuthentication,
+	checkIfMembershipExists,
+	checkIfGroupExists,
+	async (req, res, next) => {
+		const userId = req.user.id;
+		const { groupId } = req.params;
+
+		await Membership.create({
+			userId,
+			groupId,
+			status: "pending"
+		});
+
+		const newMemberRecord = await Membership.findOne({
+			where: {
+				userId,
+				groupId
+			},
+			attributes: [["id", "memberId"], "status"]
+		});
+
+		return res.json(newMemberRecord);
+	}
+);
 
 // Create an image for a group
 router.post(
