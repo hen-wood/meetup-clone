@@ -11,12 +11,13 @@ const {
 	Venue
 } = require("../../db/models");
 const { check } = require("express-validator");
-const { Op } = require("sequelize");
+const { Op, ValidationError } = require("sequelize");
 const {
 	requireAuthentication,
 	requireAuthorization,
 	checkIfMembershipExists,
-	checkIfGroupExists
+	checkIfGroupExists,
+	requireOrganizerOrCoHost
 } = require("../../utils/auth");
 const {
 	validateCreateGroup,
@@ -343,6 +344,43 @@ router.put(
 		if (state) groupToEdit.state = state;
 		await groupToEdit.save();
 		res.json(groupToEdit);
+	}
+);
+
+// Change membership status by group id (memberId located in req.body)
+router.put(
+	"/:groupId/membership",
+	requireAuthentication,
+	checkIfGroupExists,
+	requireOrganizerOrCoHost,
+	async (req, res, next) => {
+		const { groupId } = req.params;
+		const { memberId, status } = req.body;
+
+		if (!["co-host", "member"].includes(status)) {
+			const err = new ValidationError("Validation error");
+			err.errors = [
+				{
+					params: "status",
+					msg: "Cannot change a membership status to pending"
+				}
+			];
+			err.status = 400;
+			return next(err);
+		}
+
+		const membershipToChange = await Membership.findOne({
+			where: { [Op.and]: [{ userId: memberId }, { groupId }] }
+		});
+
+		membershipToChange.status = status;
+		await membershipToChange.save();
+		return res.json({
+			id: membershipToChange.id,
+			groupId: +groupId,
+			memberId,
+			status
+		});
 	}
 );
 

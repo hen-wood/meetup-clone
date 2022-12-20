@@ -15,6 +15,12 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	Membership.init(
 		{
+			id: {
+				allowNull: false,
+				autoIncrement: true,
+				primaryKey: true,
+				type: DataTypes.INTEGER
+			},
 			userId: {
 				type: DataTypes.INTEGER,
 				references: {
