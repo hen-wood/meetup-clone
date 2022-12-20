@@ -80,6 +80,23 @@ const validateCreateGroupVenue = [
 		.withMessage("Longitude is not valid"),
 	handleValidationErrors
 ];
+const validateEditGroupVenue = [
+	check("address")
+		.optional()
+		.isString()
+		.withMessage("Street address is required"),
+	check("city").optional().isString().withMessage("City is required"),
+	check("state").optional().isString().withMessage("State is required"),
+	check("lat")
+		.optional()
+		.isDecimal({ force_decimal: true })
+		.withMessage("Latitude is not valid"),
+	check("lng")
+		.optional()
+		.isDecimal({ force_decimal: true })
+		.withMessage("Longitude is not valid"),
+	handleValidationErrors
+];
 
 const validateEditGroup = [
 	check("name")
@@ -112,5 +129,6 @@ module.exports = {
 	validateLogin,
 	validateCreateGroup,
 	validateCreateGroupVenue,
+	validateEditGroupVenue,
 	validateEditGroup
 };
