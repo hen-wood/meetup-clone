@@ -14,15 +14,47 @@ const { check } = require("express-validator");
 const { Op } = require("sequelize");
 const {
 	requireAuthentication,
-	requireAuthorization
+	requireAuthorization,
+	restoreUser
 } = require("../../utils/auth");
 const {
 	validateCreateGroup,
-	validateEditGroup
+	validateEditGroup,
+	validateCreateGroupVenue
 } = require("../../utils/validation-chains");
 const { notFound } = require("../../utils/not-found");
 
 const router = express.Router();
+
+// Get all venues for a Group specified by its id
+router.get(
+	"/:groupId/venues",
+	requireAuthentication,
+	async (req, res, next) => {
+		const { groupId } = req.params;
+		const group = await Group.findByPk(groupId);
+		if (!group) {
+			return next(notFound("Group couldn't be found"));
+		}
+		const userMembership = await Membership.findOne({
+			where: {
+				[Op.and]: [{ userId: req.user.id }, { groupId }]
+			}
+		});
+		if (
+			(userMembership && userMembership.status === "co-host") ||
+			group.organizerId === req.user.id
+		) {
+			const Venues = await Venue.findAll({
+				where: {
+					groupId
+				}
+			});
+			res.json({ Venues });
+		}
+		return next(requireAuthorization());
+	}
+);
 
 // Get all groups created by or joined by current user
 router.get("/current", requireAuthentication, async (req, res, next) => {
@@ -169,6 +201,42 @@ router.post(
 			state
 		});
 		res.json(newGroup);
+	}
+);
+
+// Create a new venue for a group
+router.post(
+	"/:groupId/venues",
+	requireAuthentication,
+	validateCreateGroupVenue,
+	async (req, res, next) => {
+		const { groupId } = req.params;
+		const group = await Group.findByPk(groupId);
+		if (!group) {
+			return next(notFound("Group couldn't be found"));
+		}
+		const userMembership = await Membership.findOne({
+			where: {
+				[Op.and]: [{ userId: req.user.id }, { groupId }]
+			}
+		});
+		if (
+			(userMembership && userMembership.status === "co-host") ||
+			group.organizerId === req.user.id
+		) {
+			const { address, city, state, lat, lng } = req.body;
+			const newVenue = await Venue.create({
+				groupId,
+				address,
+				city,
+				state,
+				lat,
+				lng
+			});
+			const { id } = newVenue;
+			return res.json({ id, groupId, address, city, state, lat, lng });
+		}
+		return next(requireAuthorization());
 	}
 );
 

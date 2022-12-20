@@ -59,6 +59,27 @@ const validateCreateGroup = [
 	check("state").exists().isString().withMessage("State is required"),
 	handleValidationErrors
 ];
+const validateCreateGroupVenue = [
+	check("address")
+		.exists({ checkFalsy: true })
+		.isString()
+		.withMessage("Street address is required"),
+	check("city")
+		.exists({ checkFalsy: true })
+		.isString()
+		.withMessage("City is required"),
+	check("state")
+		.exists({ checkFalsy: true })
+		.isString()
+		.withMessage("State is required"),
+	check("lat")
+		.isDecimal({ force_decimal: true })
+		.withMessage("Latitude is not valid"),
+	check("lng")
+		.isDecimal({ force_decimal: true })
+		.withMessage("Longitude is not valid"),
+	handleValidationErrors
+];
 
 const validateEditGroup = [
 	check("name")
@@ -90,5 +111,6 @@ module.exports = {
 	validateSignup,
 	validateLogin,
 	validateCreateGroup,
+	validateCreateGroupVenue,
 	validateEditGroup
 };
