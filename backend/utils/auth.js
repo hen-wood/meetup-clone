@@ -214,6 +214,24 @@ const checkIfEventDoesNotExist = async (req, res, next) => {
 	return next();
 };
 
+const checkIfUserIsNotMemberOfEventGroup = async (req, res, next) => {
+	const userId = req.user.id;
+	const { eventId } = req.params;
+	const isMember = await Event.findByPk(eventId, {
+		include: {
+			model: Group,
+			include: {
+				model: User,
+				include: {
+					model: Membership,
+					where: { userId }
+				}
+			}
+		}
+	});
+	console.log(isMember.Group.User.Membership.length);
+	return next();
+};
 module.exports = {
 	setTokenCookie,
 	restoreUser,
@@ -226,5 +244,6 @@ module.exports = {
 	requireOrganizerOrCoHostOrIsUser,
 	requireOrganizerOrCoHostForEvent,
 	checkIfMembershipDoesNotExist,
-	checkIfEventDoesNotExist
+	checkIfEventDoesNotExist,
+	checkIfUserIsNotMemberOfEventGroup
 };
