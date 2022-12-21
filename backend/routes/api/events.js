@@ -22,7 +22,8 @@ const {
 	checkIfEventDoesNotExist,
 	requireOrganizerOrCoHostForEvent,
 	checkIfUserIsNotMemberOfEventGroup,
-	checkIfAttendanceRequestAlreadyExists
+	checkIfAttendanceRequestAlreadyExists,
+	checkIfAttendanceDoesNotExist
 } = require("../../utils/auth");
 const {
 	validateCreateGroup,
@@ -197,6 +198,34 @@ router.post(
 			userId: newAttendance.userId,
 			status: newAttendance.status
 		});
+	}
+);
+
+// Change status of an attendance by event id
+router.put(
+	"/:eventId/attendance",
+	requireAuthentication,
+	checkIfEventDoesNotExist,
+	checkIfAttendanceDoesNotExist,
+	requireOrganizerOrCoHostForEvent,
+	async (req, res, next) => {
+		const { eventId } = req.params;
+		const { userId, status } = req.body;
+		if (status === "pending") {
+			const err = new Error("Cannot change an attendance status to pending");
+			err.status = 400;
+			return next(err);
+		}
+		let attendanceToUpdate = await Attendance.findOne({
+			where: {
+				eventId,
+				userId
+			}
+		});
+		attendanceToUpdate.status = status;
+		await attendanceToUpdate.save();
+		const { id } = attendanceToUpdate;
+		return res.json({ id, userId, eventId, status });
 	}
 );
 

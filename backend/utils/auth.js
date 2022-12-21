@@ -175,6 +175,29 @@ const checkIfMembershipDoesNotExist = async (req, res, next) => {
 	return next();
 };
 
+const checkIfAttendanceDoesNotExist = async (req, res, next) => {
+	const { eventId } = req.params;
+	const { userId } = req.body;
+	const event = await Event.findByPk(eventId, {
+		include: {
+			model: User,
+			as: "Attendees",
+			through: {
+				where: {
+					userId
+				}
+			}
+		}
+	});
+	if (!event.Attendees.length) {
+		const err = new Error();
+		err.status = 404;
+		err.message = "Attendance between the user and the event does not exist";
+		return next(err);
+	}
+	return next();
+};
+
 const checkIfUserExists = async (req, res, next) => {
 	const { email } = req.body;
 	let existingUser;
@@ -283,5 +306,6 @@ module.exports = {
 	checkIfMembershipDoesNotExist,
 	checkIfEventDoesNotExist,
 	checkIfUserIsNotMemberOfEventGroup,
-	checkIfAttendanceRequestAlreadyExists
+	checkIfAttendanceRequestAlreadyExists,
+	checkIfAttendanceDoesNotExist
 };
