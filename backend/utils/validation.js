@@ -32,6 +32,7 @@ const checkForValidStatus = (req, res, next) => {
 		err.status = 400;
 		return next(err);
 	}
+	return next();
 };
 
 const checkIfUserDoesNotExist = async (req, res, next) => {
