@@ -19,12 +19,14 @@ const {
 	requireOrganizerOrCoHost,
 	requireOrganizerOrCoHostOrIsUser,
 	checkIfMembershipDoesNotExist,
-	checkIfEventDoesNotExist
+	checkIfEventDoesNotExist,
+	requireOrganizerOrCoHostForEvent
 } = require("../../utils/auth");
 const {
 	validateCreateGroup,
 	validateEditGroup,
-	validateCreateGroupVenue
+	validateCreateGroupVenue,
+	validateCreateGroupEvent
 } = require("../../utils/validation-chains");
 const { notFound } = require("../../utils/not-found");
 const {
@@ -103,5 +105,55 @@ router.get("/", async (req, res, next) => {
 
 	return res.json({ Events });
 });
+
+router.put(
+	"/:eventId",
+	requireAuthentication,
+	checkIfEventDoesNotExist,
+	requireOrganizerOrCoHostForEvent,
+	validateCreateGroupEvent,
+	async (req, res, next) => {
+		const { eventId } = req.params;
+		const {
+			venueId,
+			name,
+			type,
+			capacity,
+			price,
+			description,
+			startDate,
+			endDate
+		} = req.body;
+
+		const eventToEdit = await Event.findByPk(eventId);
+		if (venueId) eventToEdit.venueId = venueId;
+		if (name) eventToEdit.name = name;
+		if (type) eventToEdit.type = type;
+		if (capacity) eventToEdit.capacity = capacity;
+		if (price) eventToEdit.price = price;
+		if (description) eventToEdit.description = description;
+		if (startDate) eventToEdit.startDate = startDate;
+		if (endDate) eventToEdit.endDate = endDate;
+		const resBody = eventToEdit.toJSON();
+		await eventToEdit.save();
+
+		return res.json(resBody);
+	}
+);
+
+router.delete(
+	"/:eventId",
+	requireAuthentication,
+	checkIfEventDoesNotExist,
+	requireOrganizerOrCoHostForEvent,
+	async (req, res, next) => {
+		const { eventId } = req.params;
+		const eventToDelete = await Event.findByPk(eventId);
+		eventToDelete.destroy();
+		return res.json({
+			message: "Successfully deleted"
+		});
+	}
+);
 
 module.exports = router;

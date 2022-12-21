@@ -91,25 +91,23 @@ const requireOrganizerOrCoHost = async (req, res, next) => {
 };
 
 const requireOrganizerOrCoHostForEvent = async (req, res, next) => {
-	const { groupId } = req.params;
+	const { eventId } = req.params;
 	const userId = req.user.id;
-	const group = await Group.findByPk(groupId);
-
-	const userMembership = await Membership.findOne({
-		where: {
-			[Op.and]: [{ groupId }, { userId }]
-		}
+	const userOrganizer = await Group.findOne({
+		where: { organizerId: userId },
+		include: { model: Event, where: { id: eventId }, attributes: [] },
+		attributes: ["id"]
 	});
 
-	if (
-		group.organizerId === userId ||
-		(userMembership && userMembership.status === "co-host")
-	) {
-		return next();
+	const userCohost = await Membership.findOne({
+		where: { [Op.and]: [{ userId }, { status: "co-host" }] }
+	});
+	if (!(userOrganizer && userCohost)) {
+		const err = new Error("Forbidden");
+		err.status = 403;
+		return next(err);
 	}
-	const err = new Error("Forbidden");
-	err.status = 403;
-	return next(err);
+	return next();
 };
 
 const requireOrganizerOrCoHostOrIsUser = async (req, res, next) => {
@@ -226,6 +224,7 @@ module.exports = {
 	checkIfGroupDoesNotExist,
 	requireOrganizerOrCoHost,
 	requireOrganizerOrCoHostOrIsUser,
+	requireOrganizerOrCoHostForEvent,
 	checkIfMembershipDoesNotExist,
 	checkIfEventDoesNotExist
 };
