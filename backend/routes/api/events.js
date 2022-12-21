@@ -41,11 +41,15 @@ router.get("/:eventId", checkIfEventDoesNotExist, async (req, res, next) => {
 		include: [
 			{
 				model: Group,
-				attributes: ["id", "name", "city", "state"]
+				attributes: ["id", "name", "private", "city", "state"]
 			},
 			{
 				model: Venue,
-				attributes: ["id", "city", "state"]
+				attributes: ["id", "city", "state", "lat", "lng"]
+			},
+			{
+				model: EventImage,
+				attributes: ["id", "url", "preview"]
 			}
 		]
 	});
@@ -58,12 +62,6 @@ router.get("/:eventId", checkIfEventDoesNotExist, async (req, res, next) => {
 		},
 		attributes: ["url"]
 	});
-	if (previewImage) {
-		previewImage = previewImage.url;
-		event.previewImage = previewImage;
-	} else {
-		event.previewImage = null;
-	}
 
 	event.numAttending = await Attendance.count({
 		where: {
