@@ -36,6 +36,75 @@ const {
 
 const router = express.Router();
 
+// Get all attendees of an event by event id
+router.get(
+	"/:eventId/attendees",
+	checkIfEventDoesNotExist,
+	async (req, res, next) => {
+		const userId = req.user.id;
+		const { eventId } = req.params;
+		const isGroupOrganizer = await Event.findByPk(eventId, {
+			include: {
+				model: Group,
+				where: {
+					organizerId: userId
+				}
+			}
+		});
+
+		const isCoHost = await Event.findByPk(eventId, {
+			attributes: [],
+			include: {
+				model: Group,
+
+				include: {
+					model: User,
+					as: "Members",
+					through: {
+						where: {
+							[Op.and]: [{ status: "co-host" }, { userId }]
+						}
+					}
+				}
+			}
+		});
+		if (isCoHost.Group.Members.length || isGroupOrganizer) {
+			const eventAttendees = await Event.findByPk(eventId, {
+				attributes: [],
+				include: {
+					model: User,
+					as: "Attendees",
+					attributes: ["id", "firstName", "lastName"],
+					through: {
+						attributes: ["status"]
+					}
+				}
+			});
+			console.log("organizer or co-host");
+			return res.json(eventAttendees);
+		} else {
+			const eventAttendees = await Event.findByPk(eventId, {
+				attributes: [],
+				include: {
+					model: User,
+					as: "Attendees",
+					attributes: ["id", "firstName", "lastName"],
+					through: {
+						attributes: ["status"],
+						where: {
+							[Op.not]: {
+								status: "pending"
+							}
+						}
+					}
+				}
+			});
+			console.log("regular user");
+			return res.json(eventAttendees);
+		}
+	}
+);
+
 // Get event by eventId
 router.get("/:eventId", checkIfEventDoesNotExist, async (req, res, next) => {
 	const { eventId } = req.params;
