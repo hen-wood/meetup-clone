@@ -24,7 +24,8 @@ const {
 	checkIfUserIsNotMemberOfEventGroup,
 	checkIfAttendanceRequestAlreadyExists,
 	checkIfAttendanceDoesNotExist,
-	requireOrganizerOrCohostOrIsUserToDeleteAttendance
+	requireOrganizerOrCohostOrIsUserToDeleteAttendance,
+	requireOrganizerOrCoHostOrAttendeeForEvent
 } = require("../../utils/auth");
 const {
 	validateCreateGroup,
@@ -199,6 +200,24 @@ router.post(
 			userId: newAttendance.userId,
 			status: newAttendance.status
 		});
+	}
+);
+
+// Add an image to an event by event id
+router.post(
+	"/:eventId/images",
+	requireAuthentication,
+	checkIfEventDoesNotExist,
+	requireOrganizerOrCoHostOrAttendeeForEvent,
+	async (req, res, next) => {
+		const { eventId } = req.params;
+		const { url, preview } = req.body;
+		const newEventImage = await EventImage.create({
+			eventId,
+			url,
+			preview
+		});
+		return res.json({ id: newEventImage.id, url, preview });
 	}
 );
 
