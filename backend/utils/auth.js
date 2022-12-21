@@ -109,6 +109,36 @@ const requireOrganizerOrCoHostForEvent = async (req, res, next) => {
 	}
 	return next();
 };
+const requireOrganizerOrCohostOrIsUserToDeleteAttendance = async (
+	req,
+	res,
+	next
+) => {
+	const { eventId } = req.params;
+	const userId = req.user.id;
+	const userOrganizer = await Group.findOne({
+		where: { organizerId: userId },
+		include: { model: Event, where: { id: eventId }, attributes: [] },
+		attributes: ["id"]
+	});
+
+	const userCohost = await Membership.findOne({
+		where: { [Op.and]: [{ userId }, { status: "co-host" }] }
+	});
+
+	const isUser = await Attendance.findOne({
+		where: { eventId, userId }
+	});
+
+	if (!(userOrganizer && userCohost && isUser)) {
+		const err = new Error(
+			"Only the User or organizer/co-host may delete an Attendance"
+		);
+		err.status = 403;
+		return next(err);
+	}
+	return next();
+};
 
 const requireOrganizerOrCoHostOrIsUser = async (req, res, next) => {
 	const { groupId } = req.params;
@@ -307,5 +337,6 @@ module.exports = {
 	checkIfEventDoesNotExist,
 	checkIfUserIsNotMemberOfEventGroup,
 	checkIfAttendanceRequestAlreadyExists,
-	checkIfAttendanceDoesNotExist
+	checkIfAttendanceDoesNotExist,
+	requireOrganizerOrCohostOrIsUserToDeleteAttendance
 };
