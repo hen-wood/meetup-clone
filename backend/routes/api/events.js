@@ -23,7 +23,8 @@ const {
 	requireOrganizerOrCoHostForEvent,
 	checkIfUserIsNotMemberOfEventGroup,
 	checkIfAttendanceRequestAlreadyExists,
-	checkIfAttendanceDoesNotExist
+	checkIfAttendanceDoesNotExist,
+	requireOrganizerOrCohostOrIsUserToDeleteAttendance
 } = require("../../utils/auth");
 const {
 	validateCreateGroup,
@@ -265,6 +266,27 @@ router.put(
 	}
 );
 
+// Delete attendance by event id (userId in req.body)
+router.delete(
+	"/:eventId/attendance",
+	requireAuthentication,
+	checkIfEventDoesNotExist,
+	checkIfAttendanceDoesNotExist,
+	requireOrganizerOrCohostOrIsUserToDeleteAttendance,
+	async (req, res, next) => {
+		const { eventId } = req.params;
+		const { userId } = req.body;
+		const attendanceToDelete = await Attendance.findOne({
+			where: { userId, eventId }
+		});
+		attendanceToDelete.destroy();
+		res.json({
+			message: "Successfully deleted attendance from event"
+		});
+	}
+);
+
+// Delete event by event id
 router.delete(
 	"/:eventId",
 	requireAuthentication,
