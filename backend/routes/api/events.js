@@ -20,7 +20,9 @@ const {
 	requireOrganizerOrCoHostOrIsUser,
 	checkIfMembershipDoesNotExist,
 	checkIfEventDoesNotExist,
-	requireOrganizerOrCoHostForEvent
+	requireOrganizerOrCoHostForEvent,
+	checkIfUserIsNotMemberOfEventGroup,
+	checkIfAttendanceRequestAlreadyExists
 } = require("../../utils/auth");
 const {
 	validateCreateGroup,
@@ -135,6 +137,7 @@ router.get("/:eventId", checkIfEventDoesNotExist, async (req, res, next) => {
 
 	return res.json(event);
 });
+
 // Get all events
 router.get("/", async (req, res, next) => {
 	const allEvents = await Event.findAll({
@@ -175,6 +178,29 @@ router.get("/", async (req, res, next) => {
 	return res.json({ Events });
 });
 
+// Request to attend event
+router.post(
+	"/:eventId/attendance",
+	requireAuthentication,
+	checkIfEventDoesNotExist,
+	checkIfUserIsNotMemberOfEventGroup,
+	checkIfAttendanceRequestAlreadyExists,
+	async (req, res, next) => {
+		const { eventId } = req.params;
+		const userId = req.user.id;
+		const newAttendance = await Attendance.create({
+			eventId,
+			userId,
+			status: "pending"
+		});
+		res.json({
+			userId: newAttendance.userId,
+			status: newAttendance.status
+		});
+	}
+);
+
+// Edit event by event id
 router.put(
 	"/:eventId",
 	requireAuthentication,

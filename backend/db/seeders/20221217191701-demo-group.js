@@ -40,6 +40,16 @@ module.exports = {
 					private: false,
 					city: "Los Angeles",
 					state: "CA"
+				},
+				{
+					organizerId: 1,
+					name: "A rag tag group of misfits and bandits",
+					about:
+						"This is just a test group, nothing more, nothing less. It's nothing but a test group",
+					type: "In person",
+					private: true,
+					city: "New Orleans",
+					state: "LA"
 				}
 			],
 			{}
