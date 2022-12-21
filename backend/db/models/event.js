@@ -17,8 +17,7 @@ module.exports = (sequelize, DataTypes) => {
 				foreignKey: "venueId"
 			});
 			Event.hasMany(models.EventImage, {
-				foreignKey: "eventId",
-				as: "previewImage"
+				foreignKey: "eventId"
 			});
 		}
 	}
