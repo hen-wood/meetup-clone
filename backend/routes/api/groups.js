@@ -23,7 +23,8 @@ const {
 const {
 	validateCreateGroup,
 	validateEditGroup,
-	validateCreateGroupVenue
+	validateCreateGroupVenue,
+	validateCreateGroupEvent
 } = require("../../utils/validation-chains");
 const { notFound } = require("../../utils/not-found");
 const {
@@ -367,6 +368,54 @@ router.post(
 			return res.json({ id, groupId, address, city, state, lat, lng });
 		}
 		return next(requireAuthorization());
+	}
+);
+
+// Create a new event for a group
+router.post(
+	"/:groupId/events",
+	requireAuthentication,
+	checkIfGroupDoesNotExist,
+	requireOrganizerOrCoHostOrIsUser,
+	validateCreateGroupEvent,
+	async (req, res, next) => {
+		const { groupId } = req.params;
+		let {
+			venueId,
+			name,
+			type,
+			capacity,
+			price,
+			description,
+			startDate,
+			endDate
+		} = req.body;
+
+		if (!venueId) venueId = null;
+		const newEvent = await Event.create({
+			venueId,
+			groupId,
+			name,
+			type,
+			capacity,
+			price,
+			description,
+			startDate,
+			endDate
+		});
+
+		res.json({
+			id: newEvent.id,
+			venueId: newEvent.venueId,
+			groupId: newEvent.groupId,
+			name: newEvent.name,
+			type: newEvent.type,
+			capacity: newEvent.capacity,
+			price: newEvent.price,
+			description: newEvent.description,
+			startDate: newEvent.startDate,
+			endDate: newEvent.endDate
+		});
 	}
 );
 

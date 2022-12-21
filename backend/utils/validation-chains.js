@@ -1,5 +1,7 @@
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("./validation");
+const { Venue } = require("../db/models");
+const { ValidationError } = require("sequelize");
 
 const validateSignup = [
 	check("email")
@@ -59,6 +61,50 @@ const validateCreateGroup = [
 	check("state").exists().isString().withMessage("State is required"),
 	handleValidationErrors
 ];
+const validateCreateGroupEvent = [
+	check("venueId")
+		.optional()
+		.custom(async (value, { req }) => {
+			const { venueId } = req.body;
+			// if (venueId === undefined || venueId === null) return true;
+			const venue = await Venue.findByPk(venueId);
+			if (!venue) {
+				throw new ValidationError("Venue does not exist");
+			}
+			return true;
+		}),
+	check("name")
+		.isLength({ min: 5 })
+		.withMessage("Name must be at least 5 characters"),
+	check("type")
+		.isIn(["Online", "In person"])
+		.withMessage("Type must be Online or In person"),
+	check("capacity").isInt().withMessage("Capacity must be an integer"),
+	check("price")
+		.isDecimal({ decimal_digits: "1,2" })
+		.withMessage("Price is invalid"),
+	check("description")
+		.exists({ checkFalsy: true })
+		.withMessage("Description is required"),
+	check("startDate").custom((value, { req }) => {
+		const start = new Date(req.body.startDate);
+		if (start < Date.now()) {
+			throw new ValidationError("Start date must be in the future");
+		}
+		return true;
+	}),
+	check("endDate").custom((value, { req }) => {
+		const { startDate, endDate } = req.body;
+		const start = new Date(startDate);
+		const end = new Date(endDate);
+		if (end < start) {
+			throw new ValidationError("End date is less than start date");
+		}
+		return true;
+	}),
+	handleValidationErrors
+];
+
 const validateCreateGroupVenue = [
 	check("address")
 		.exists({ checkFalsy: true })
@@ -130,5 +176,6 @@ module.exports = {
 	validateCreateGroup,
 	validateCreateGroupVenue,
 	validateEditGroupVenue,
-	validateEditGroup
+	validateEditGroup,
+	validateCreateGroupEvent
 };

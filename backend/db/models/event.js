@@ -14,7 +14,8 @@ module.exports = (sequelize, DataTypes) => {
 				onDelete: "CASCADE"
 			});
 			Event.belongsTo(models.Venue, {
-				foreignKey: "venueId"
+				foreignKey: "venueId",
+				onDelete: 'SET NULL'
 			});
 			Event.hasMany(models.EventImage, {
 				foreignKey: "eventId"
@@ -59,7 +60,7 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false
 			},
 			price: {
-				type: DataTypes.INTEGER,
+				type: DataTypes.DECIMAL,
 				allowNull: false
 			},
 			startDate: {

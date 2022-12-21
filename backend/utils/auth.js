@@ -90,6 +90,28 @@ const requireOrganizerOrCoHost = async (req, res, next) => {
 	return next(err);
 };
 
+const requireOrganizerOrCoHostForEvent = async (req, res, next) => {
+	const { groupId } = req.params;
+	const userId = req.user.id;
+	const group = await Group.findByPk(groupId);
+
+	const userMembership = await Membership.findOne({
+		where: {
+			[Op.and]: [{ groupId }, { userId }]
+		}
+	});
+
+	if (
+		group.organizerId === userId ||
+		(userMembership && userMembership.status === "co-host")
+	) {
+		return next();
+	}
+	const err = new Error("Forbidden");
+	err.status = 403;
+	return next(err);
+};
+
 const requireOrganizerOrCoHostOrIsUser = async (req, res, next) => {
 	const { groupId } = req.params;
 	const { memberId } = req.body;
