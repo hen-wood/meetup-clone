@@ -64,7 +64,6 @@ router.get(
 				},
 				attributes: ["url"]
 			});
-
 			previewImage = previewImage.url;
 			event.previewImage = previewImage;
 
