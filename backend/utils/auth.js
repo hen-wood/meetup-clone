@@ -1,7 +1,7 @@
 // backend/utils/auth.js
 const jwt = require("jsonwebtoken");
 const { jwtConfig } = require("../config");
-const { User, Group, Membership, Event } = require("../db/models");
+const { User, Group, Membership, Event, Attendance } = require("../db/models");
 const { Op } = require("sequelize");
 const { secret, expiresIn } = jwtConfig;
 
@@ -222,16 +222,53 @@ const checkIfUserIsNotMemberOfEventGroup = async (req, res, next) => {
 			model: Group,
 			include: {
 				model: User,
-				include: {
-					model: Membership,
-					where: { userId }
+				as: "Members",
+				through: {
+					where: {
+						[Op.and]: [
+							{
+								status: {
+									[Op.in]: ["member", "co-host"]
+								}
+							},
+							{ userId }
+						]
+					}
 				}
 			}
 		}
 	});
-	console.log(isMember.Group.User.Membership.length);
+	if (isMember.Group.Members.length) {
+		return next();
+	}
+	const err = new Error("Forbidden");
+	err.status = 403;
+	return next(err);
+};
+
+const checkIfAttendanceRequestAlreadyExists = async (req, res, next) => {
+	const { eventId } = req.params;
+	const userId = req.user.id;
+	const attendanceRequest = await Attendance.findOne({
+		where: {
+			eventId,
+			userId
+		}
+	});
+
+	if (attendanceRequest) {
+		const err = new Error();
+		err.status = 400;
+		if (attendanceRequest.status === "pending") {
+			err.message = "Attendance has already been requested";
+		} else {
+			err.message = "User is already an attendee of the event";
+		}
+		return next(err);
+	}
 	return next();
 };
+
 module.exports = {
 	setTokenCookie,
 	restoreUser,
@@ -245,5 +282,6 @@ module.exports = {
 	requireOrganizerOrCoHostForEvent,
 	checkIfMembershipDoesNotExist,
 	checkIfEventDoesNotExist,
-	checkIfUserIsNotMemberOfEventGroup
+	checkIfUserIsNotMemberOfEventGroup,
+	checkIfAttendanceRequestAlreadyExists
 };

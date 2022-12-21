@@ -331,7 +331,12 @@ router.post(
 			city,
 			state
 		});
-		res.json(newGroup);
+		await Membership.create({
+			userId: req.user.id,
+			groupId: newGroup.id,
+			status: "co-host"
+		});
+		return res.json(newGroup);
 	}
 );
 
@@ -394,7 +399,7 @@ router.post(
 		if (!venueId) venueId = null;
 		const newEvent = await Event.create({
 			venueId,
-			groupId,
+			groupId: +groupId,
 			name,
 			type,
 			capacity,
@@ -402,6 +407,12 @@ router.post(
 			description,
 			startDate,
 			endDate
+		});
+
+		await Attendance.create({
+			eventId: newEvent.id,
+			userId: req.user.id,
+			status: "Attending"
 		});
 
 		res.json({

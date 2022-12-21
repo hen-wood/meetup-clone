@@ -21,7 +21,8 @@ const {
 	checkIfMembershipDoesNotExist,
 	checkIfEventDoesNotExist,
 	requireOrganizerOrCoHostForEvent,
-	checkIfUserIsNotMemberOfEventGroup
+	checkIfUserIsNotMemberOfEventGroup,
+	checkIfAttendanceRequestAlreadyExists
 } = require("../../utils/auth");
 const {
 	validateCreateGroup,
@@ -181,9 +182,21 @@ router.get("/", async (req, res, next) => {
 router.post(
 	"/:eventId/attendance",
 	requireAuthentication,
+	checkIfEventDoesNotExist,
 	checkIfUserIsNotMemberOfEventGroup,
+	checkIfAttendanceRequestAlreadyExists,
 	async (req, res, next) => {
-		res.json("hello");
+		const { eventId } = req.params;
+		const userId = req.user.id;
+		const newAttendance = await Attendance.create({
+			eventId,
+			userId,
+			status: "pending"
+		});
+		res.json({
+			userId: newAttendance.userId,
+			status: newAttendance.status
+		});
 	}
 );
 
