@@ -18,7 +18,8 @@ const {
 	checkIfGroupDoesNotExist,
 	requireOrganizerOrCoHost,
 	requireOrganizerOrCoHostOrIsUser,
-	checkIfMembershipDoesNotExist
+	checkIfMembershipDoesNotExist,
+	checkIfEventDoesNotExist
 } = require("../../utils/auth");
 const {
 	validateCreateGroup,
@@ -33,6 +34,45 @@ const {
 
 const router = express.Router();
 
+// Get event by eventId
+router.get("/:eventId", checkIfEventDoesNotExist, async (req, res, next) => {
+	const { eventId } = req.params;
+	let event = await Event.findByPk(eventId, {
+		include: [
+			{
+				model: Group,
+				attributes: ["id", "name", "city", "state"]
+			},
+			{
+				model: Venue,
+				attributes: ["id", "city", "state"]
+			}
+		]
+	});
+
+	event = event.toJSON();
+
+	let previewImage = await EventImage.findOne({
+		where: {
+			[Op.and]: [{ eventId: event.id }, { preview: true }]
+		},
+		attributes: ["url"]
+	});
+	if (previewImage) {
+		previewImage = previewImage.url;
+		event.previewImage = previewImage;
+	} else {
+		event.previewImage = null;
+	}
+
+	event.numAttending = await Attendance.count({
+		where: {
+			eventId: event.id
+		}
+	});
+
+	return res.json(event);
+});
 // Get all events
 router.get("/", async (req, res, next) => {
 	const allEvents = await Event.findAll({
