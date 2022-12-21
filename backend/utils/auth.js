@@ -1,7 +1,14 @@
 // backend/utils/auth.js
 const jwt = require("jsonwebtoken");
 const { jwtConfig } = require("../config");
-const { User, Group, Membership, Event, Attendance } = require("../db/models");
+const {
+	User,
+	Group,
+	Membership,
+	Event,
+	Attendance,
+	EventImage
+} = require("../db/models");
 const { Op } = require("sequelize");
 const { secret, expiresIn } = jwtConfig;
 
@@ -119,6 +126,45 @@ const requireOrganizerOrCoHostForEvent = async (req, res, next) => {
 	}
 	return next();
 };
+const requireOrganizerOrCoHostForEventImage = async (req, res, next) => {
+	const { imageId } = req.params;
+	const userId = req.user.id;
+	const event = await EventImage.findOne({
+		where: {
+			id: imageId
+		},
+		include: {
+			model: Event,
+			include: {
+				model: Group,
+				include: { model: Membership, where: { userId, status: "co-host" } }
+			}
+		}
+	});
+	const isOrganizer =
+		event.Event.Group && event.Event.Group.organizerId === userId;
+	const isCoHost =
+		event.Event.Group && event.Event.Group.Memberships.length === 1;
+
+	if (!(isOrganizer || isCoHost)) {
+		const err = new Error("Forbidden");
+		err.status = 403;
+		return next(err);
+	}
+	return next();
+};
+
+const checkIfEventImageDoesNotExist = async (req, res, next) => {
+	const { imageId } = req.params;
+	const imageToDelete = await EventImage.findByPk(imageId);
+	if (!imageToDelete) {
+		const err = new Error("Event Image couldn't be found");
+		err.status = 404;
+		return next(err);
+	}
+	return next();
+};
+
 const requireOrganizerOrCoHostOrAttendeeForEvent = async (req, res, next) => {
 	const { eventId } = req.params;
 	const userId = req.user.id;
@@ -394,5 +440,7 @@ module.exports = {
 	checkIfUserIsNotMemberOfEventGroup,
 	checkIfAttendanceRequestAlreadyExists,
 	checkIfAttendanceDoesNotExist,
-	requireOrganizerOrCohostOrIsUserToDeleteAttendance
+	requireOrganizerOrCohostOrIsUserToDeleteAttendance,
+	requireOrganizerOrCoHostForEventImage,
+	checkIfEventImageDoesNotExist
 };
