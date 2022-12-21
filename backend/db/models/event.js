@@ -19,7 +19,8 @@ module.exports = (sequelize, DataTypes) => {
 				onDelete: "SET NULL"
 			});
 			Event.hasMany(models.EventImage, {
-				foreignKey: "eventId"
+				foreignKey: "eventId",
+				onDelete: "CASCADE"
 			});
 		}
 	}
