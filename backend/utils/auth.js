@@ -161,6 +161,7 @@ const requireOrganizerOrCohostOrIsUserToDeleteAttendance = async (
 ) => {
 	const { eventId } = req.params;
 	const userId = req.user.id;
+	const { userToDeleteId } = req.body;
 	const userOrganizer = await Group.findOne({
 		where: { organizerId: userId },
 		include: { model: Event, where: { id: eventId }, attributes: [] },
@@ -176,15 +177,15 @@ const requireOrganizerOrCohostOrIsUserToDeleteAttendance = async (
 
 	const userCohost = await Membership.findOne({
 		where: {
-			[Op.and]: [{ userId }, { status: "co-host" }, { groupId: group.id }]
+			userId,
+			status: "co-host",
+			groupId: group.id
 		}
 	});
 
-	const isUser = await Attendance.findOne({
-		where: { eventId, userId }
-	});
+	const isUser = userId === userToDeleteId;
 
-	if (!(userOrganizer && userCohost && isUser)) {
+	if (!(userOrganizer || userCohost || isUser)) {
 		const err = new Error(
 			"Only the User or organizer/co-host may delete an Attendance"
 		);
