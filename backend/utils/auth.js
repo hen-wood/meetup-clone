@@ -99,9 +99,19 @@ const requireOrganizerOrCoHostForEvent = async (req, res, next) => {
 		attributes: ["id"]
 	});
 
-	const userCohost = await Membership.findOne({
-		where: { [Op.and]: [{ userId }, { status: "co-host" }] }
+	const group = await Group.findOne({
+		include: {
+			model: Event,
+			where: { id: eventId }
+		}
 	});
+
+	const userCohost = await Membership.findOne({
+		where: {
+			[Op.and]: [{ userId }, { status: "co-host" }, { groupId: group.id }]
+		}
+	});
+
 	if (!(userOrganizer && userCohost)) {
 		const err = new Error("Forbidden");
 		err.status = 403;
@@ -109,6 +119,40 @@ const requireOrganizerOrCoHostForEvent = async (req, res, next) => {
 	}
 	return next();
 };
+const requireOrganizerOrCoHostOrAttendeeForEvent = async (req, res, next) => {
+	const { eventId } = req.params;
+	const userId = req.user.id;
+	const userOrganizer = await Group.findOne({
+		where: { organizerId: userId },
+		include: { model: Event, where: { id: eventId }, attributes: [] },
+		attributes: ["id"]
+	});
+
+	const group = await Group.findOne({
+		include: {
+			model: Event,
+			where: { id: eventId }
+		}
+	});
+
+	const userCohost = await Membership.findOne({
+		where: {
+			[Op.and]: [{ userId }, { status: "co-host" }, { groupId: group.id }]
+		}
+	});
+
+	const isAttendee = await Attendance.findOne({
+		where: { eventId, userId, [Op.not]: { status: pending } }
+	});
+
+	if (!(userOrganizer && userCohost && isAttendee)) {
+		const err = new Error("Forbidden");
+		err.status = 403;
+		return next(err);
+	}
+	return next();
+};
+
 const requireOrganizerOrCohostOrIsUserToDeleteAttendance = async (
 	req,
 	res,
@@ -122,8 +166,17 @@ const requireOrganizerOrCohostOrIsUserToDeleteAttendance = async (
 		attributes: ["id"]
 	});
 
+	const group = await Group.findOne({
+		include: {
+			model: Event,
+			where: { id: eventId }
+		}
+	});
+
 	const userCohost = await Membership.findOne({
-		where: { [Op.and]: [{ userId }, { status: "co-host" }] }
+		where: {
+			[Op.and]: [{ userId }, { status: "co-host" }, { groupId: group.id }]
+		}
 	});
 
 	const isUser = await Attendance.findOne({
@@ -333,6 +386,7 @@ module.exports = {
 	requireOrganizerOrCoHost,
 	requireOrganizerOrCoHostOrIsUser,
 	requireOrganizerOrCoHostForEvent,
+	requireOrganizerOrCoHostOrAttendeeForEvent,
 	checkIfMembershipDoesNotExist,
 	checkIfEventDoesNotExist,
 	checkIfUserIsNotMemberOfEventGroup,
