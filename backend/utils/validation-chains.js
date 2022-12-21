@@ -1,5 +1,8 @@
 const { check } = require("express-validator");
-const { handleValidationErrors } = require("./validation");
+const {
+	handleValidationErrors,
+	checkForValidEventBody
+} = require("./validation");
 
 const validateSignup = [
 	check("email")
@@ -80,6 +83,26 @@ const validateCreateGroupVenue = [
 		.withMessage("Longitude is not valid"),
 	handleValidationErrors
 ];
+
+const validateCreateGroupEvent = [
+	check("name")
+		.isString()
+		.isLength({ min: 5 })
+		.withMessage("Name must be at least 5 characters"),
+	check("type")
+		.isIn(["Online", "In person"])
+		.withMessage("Type must be Online or In person"),
+	check("price")
+		.isDecimal({ decimal_digits: "1,2" })
+		.matches(/^\d+(\.\d{1,2})?$/)
+		.withMessage("Price is invalid"),
+	check("description")
+		.exists({ checkFalsy: true })
+		.isString()
+		.withMessage("Description is required"),
+	checkForValidEventBody
+];
+
 const validateEditGroupVenue = [
 	check("address")
 		.optional()
@@ -130,5 +153,6 @@ module.exports = {
 	validateCreateGroup,
 	validateCreateGroupVenue,
 	validateEditGroupVenue,
-	validateEditGroup
+	validateEditGroup,
+	validateCreateGroupEvent
 };

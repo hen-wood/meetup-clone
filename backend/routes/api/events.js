@@ -56,13 +56,6 @@ router.get("/:eventId", checkIfEventDoesNotExist, async (req, res, next) => {
 
 	event = event.toJSON();
 
-	let previewImage = await EventImage.findOne({
-		where: {
-			[Op.and]: [{ eventId: event.id }, { preview: true }]
-		},
-		attributes: ["url"]
-	});
-
 	event.numAttending = await Attendance.count({
 		where: {
 			eventId: event.id

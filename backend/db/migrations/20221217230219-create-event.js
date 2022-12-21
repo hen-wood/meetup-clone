@@ -18,7 +18,8 @@ module.exports = {
 					type: Sequelize.INTEGER,
 					references: {
 						model: "Venues"
-					}
+					},
+					defaultValue: null
 				},
 				groupId: {
 					type: Sequelize.INTEGER,
@@ -45,7 +46,7 @@ module.exports = {
 					allowNull: false
 				},
 				price: {
-					type: Sequelize.INTEGER,
+					type: Sequelize.DECIMAL,
 					allowNull: false
 				},
 				startDate: {

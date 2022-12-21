@@ -1,7 +1,7 @@
 // backend/utils/auth.js
 const jwt = require("jsonwebtoken");
 const { jwtConfig } = require("../config");
-const { User, Group, Membership, Event } = require("../db/models");
+const { User, Group, Membership, Event, Venue } = require("../db/models");
 const { Op } = require("sequelize");
 const { secret, expiresIn } = jwtConfig;
 
