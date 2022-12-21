@@ -142,8 +142,9 @@ const requireOrganizerOrCoHostOrAttendeeForEvent = async (req, res, next) => {
 	});
 
 	const isAttendee = await Attendance.findOne({
-		where: { eventId, userId, [Op.not]: { status: pending } }
+		where: { eventId, userId, [Op.not]: { status: "pending" } }
 	});
+	console.log(!!isAttendee);
 
 	if (!(userOrganizer && userCohost && isAttendee)) {
 		const err = new Error("Forbidden");
