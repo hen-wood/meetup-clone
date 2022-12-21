@@ -1,7 +1,7 @@
 // backend/utils/auth.js
 const jwt = require("jsonwebtoken");
 const { jwtConfig } = require("../config");
-const { User, Group, Membership } = require("../db/models");
+const { User, Group, Membership, Event } = require("../db/models");
 const { Op } = require("sequelize");
 const { secret, expiresIn } = jwtConfig;
 
@@ -181,7 +181,17 @@ const checkIfGroupDoesNotExist = async (req, res, next) => {
 		err.status = 404;
 		return next(err);
 	}
-	next();
+	return next();
+};
+const checkIfEventDoesNotExist = async (req, res, next) => {
+	const { eventId } = req.params;
+	const eventExists = await Event.findByPk(eventId);
+	if (!eventExists) {
+		const err = new Error("Event couldn't be found");
+		err.status = 404;
+		return next(err);
+	}
+	return next();
 };
 
 module.exports = {
@@ -194,5 +204,6 @@ module.exports = {
 	checkIfGroupDoesNotExist,
 	requireOrganizerOrCoHost,
 	requireOrganizerOrCoHostOrIsUser,
-	checkIfMembershipDoesNotExist
+	checkIfMembershipDoesNotExist,
+	checkIfEventDoesNotExist
 };
