@@ -173,7 +173,7 @@ const checkIfUserExists = async (req, res, next) => {
 	next();
 };
 
-const checkIfGroupExists = async (req, res, next) => {
+const checkIfGroupDoesNotExist = async (req, res, next) => {
 	const { groupId } = req.params;
 	const groupExists = await Group.findByPk(groupId);
 	if (!groupExists) {
@@ -191,7 +191,7 @@ module.exports = {
 	requireAuthorization,
 	checkIfUserExists,
 	checkIfMembershipExists,
-	checkIfGroupExists,
+	checkIfGroupDoesNotExist,
 	requireOrganizerOrCoHost,
 	requireOrganizerOrCoHostOrIsUser,
 	checkIfMembershipDoesNotExist

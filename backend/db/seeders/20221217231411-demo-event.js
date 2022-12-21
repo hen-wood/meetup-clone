@@ -24,6 +24,17 @@ module.exports = {
 					endDate: "2021-11-19 22:00:00"
 				},
 				{
+					venueId: 1,
+					groupId: 1,
+					name: "Tennis Group meet 2: Electric Boogaloo",
+					type: "Online",
+					capacity: 10,
+					price: 18.5,
+					description: "The second meet and greet for our group!!",
+					startDate: "2021-12-19 20:00:00",
+					endDate: "2021-12-19 22:00:00"
+				},
+				{
 					venueId: 2,
 					groupId: 2,
 					name: "soccer Group First Meet and Greet",

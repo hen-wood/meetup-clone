@@ -3,23 +3,35 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
 	class Event extends Model {
 		static associate(models) {
-			Event.hasMany(models.EventImage, {
-				foreignKey: "eventId",
-				onDelete: "CASCADE"
-			});
 			Event.belongsToMany(models.User, {
 				through: models.Attendance,
 				foreignKey: "eventId",
 				otherKey: "userId",
 				onDelete: "CASCADE"
 			});
+			Event.belongsTo(models.Group, {
+				foreignKey: "groupId",
+				onDelete: "CASCADE"
+			});
+			Event.belongsTo(models.Venue, {
+				foreignKey: "venueId"
+			});
+			Event.hasMany(models.EventImage, {
+				foreignKey: "eventId",
+				as: "previewImage"
+			});
 		}
 	}
 	Event.init(
 		{
+			id: {
+				allowNull: false,
+				autoIncrement: true,
+				primaryKey: true,
+				type: DataTypes.INTEGER
+			},
 			venueId: {
 				type: DataTypes.INTEGER,
-				allowNull: false,
 				references: {
 					model: "Venues"
 				}
@@ -62,7 +74,12 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		{
 			sequelize,
-			modelName: "Event"
+			modelName: "Event",
+			defaultScope: {
+				attributes: {
+					exclude: ["createdAt", "updatedAt"]
+				}
+			}
 		}
 	);
 	return Event;
