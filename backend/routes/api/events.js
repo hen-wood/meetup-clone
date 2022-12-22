@@ -165,6 +165,7 @@ router.get("/", validateAllEventsQueryParams, async (req, res, next) => {
 	console.log(startDate);
 
 	const allEvents = await Event.findAll({
+		attributes: { exclude: ["description", "capacity", "price"] },
 		include: [
 			{
 				model: Group,

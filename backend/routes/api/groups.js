@@ -35,12 +35,14 @@ const {
 const router = express.Router();
 
 // Get all events of a group by group id
+// remove description, capacity, price
 router.get(
 	"/:groupId/events",
 	checkIfGroupDoesNotExist,
 	async (req, res, next) => {
 		const { groupId } = req.params;
 		const groupEvents = await Event.findAll({
+			attributes: { exclude: ["description", "capacity", "price"] },
 			where: {
 				groupId
 			},

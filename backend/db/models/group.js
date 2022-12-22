@@ -108,3 +108,4 @@ module.exports = (sequelize, DataTypes) => {
 	);
 	return Group;
 };
+// memberships and all events and all events
