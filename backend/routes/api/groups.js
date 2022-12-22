@@ -160,23 +160,18 @@ router.get(
 // Get all groups created by or joined by current user
 router.get("/current", requireAuthentication, async (req, res, next) => {
 	const userId = req.user.id;
-	const userJoinedGroups = await Group.findAll({
+
+	const Groups = await Group.findAll({
 		include: {
 			model: Membership,
 			where: {
-				userId
+				userId,
+				status: { [Op.in]: ["co-host", "member"] }
 			},
 			attributes: []
 		},
 		raw: true
 	});
-	const userOrganizedGroups = await Group.findAll({
-		where: {
-			organizerId: userId
-		},
-		raw: true
-	});
-	const Groups = userJoinedGroups.concat(userOrganizedGroups);
 
 	for (let group of Groups) {
 		group.numMembers = await Membership.count({
