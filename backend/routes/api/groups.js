@@ -165,7 +165,8 @@ router.get("/current", requireAuthentication, async (req, res, next) => {
 		include: {
 			model: Membership,
 			where: {
-				userId
+				userId,
+				status: { [Op.in]: ["co-host", "member"] }
 			},
 			attributes: []
 		},
