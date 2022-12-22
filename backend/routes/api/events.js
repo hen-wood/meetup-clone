@@ -122,7 +122,7 @@ router.get("/:eventId", checkIfEventDoesNotExist, async (req, res, next) => {
 			},
 			{
 				model: Venue,
-				attributes: ["id", "city", "state", "lat", "lng"]
+				attributes: ["id", "address", "city", "state", "lat", "lng"]
 			},
 			{
 				model: EventImage,
