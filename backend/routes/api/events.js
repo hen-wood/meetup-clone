@@ -10,7 +10,7 @@ const {
 	User,
 	Venue
 } = require("../../db/models");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const {
 	requireAuthentication,
 	requireAuthorization,
@@ -31,7 +31,8 @@ const {
 	validateCreateGroup,
 	validateEditGroup,
 	validateCreateGroupVenue,
-	validateCreateGroupEvent
+	validateCreateGroupEvent,
+	validateAllEventsQueryParams
 } = require("../../utils/validation-chains");
 const { notFound } = require("../../utils/not-found");
 const {
@@ -142,7 +143,27 @@ router.get("/:eventId", checkIfEventDoesNotExist, async (req, res, next) => {
 });
 
 // Get all events
-router.get("/", async (req, res, next) => {
+router.get("/", validateAllEventsQueryParams, async (req, res, next) => {
+	let { page, size, name, type, startDate } = req.query;
+
+	page = +page;
+	size = +size;
+
+	if (Number.isNaN(page) || page < 1) page = 1;
+	if (Number.isNaN(size) || size > 20) size = 20;
+
+	if (page > 10) page = 10;
+	if (size < 1) size = 1;
+
+	let where = {};
+
+	if (name) where.name = name;
+	if (type) where.type = type;
+	if (startDate) {
+		where.startDate = startDate;
+	}
+	console.log(startDate);
+
 	const allEvents = await Event.findAll({
 		include: [
 			{
@@ -153,7 +174,10 @@ router.get("/", async (req, res, next) => {
 				model: Venue,
 				attributes: ["id", "city", "state"]
 			}
-		]
+		],
+		where,
+		limit: size,
+		offset: size * (page - 1)
 	});
 
 	const Events = JSON.parse(JSON.stringify(allEvents));
