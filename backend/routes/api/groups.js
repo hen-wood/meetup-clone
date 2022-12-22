@@ -106,7 +106,7 @@ router.get("/:groupId/members", async (req, res, next) => {
 			as: "Members",
 			through: {
 				attributes: {
-					exclude: ["userId", "groupId", "createdAt", "updatedAt"]
+					exclude: ["id", "userId", "groupId", "createdAt", "updatedAt"]
 				},
 				where
 			},
