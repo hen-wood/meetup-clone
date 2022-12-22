@@ -7,7 +7,8 @@ const {
 	Membership,
 	Event,
 	Attendance,
-	EventImage
+	EventImage,
+	Venue
 } = require("../db/models");
 const { Op } = require("sequelize");
 const { secret, expiresIn } = jwtConfig;
@@ -154,6 +155,17 @@ const requireOrganizerOrCoHostForEventImage = async (req, res, next) => {
 	return next();
 };
 
+const checkIfVenueDoesNotExist = async (req, res, next) => {
+	const venueExists = await Venue.findByPk(req.params.venueId);
+	if (!venueExists) {
+		const err = new Error("Venue couldn't be found");
+		err.status = 404;
+		return next(err);
+	} else {
+		return next();
+	}
+};
+
 const checkIfEventImageDoesNotExist = async (req, res, next) => {
 	const { imageId } = req.params;
 	const imageToDelete = await EventImage.findByPk(imageId);
@@ -239,6 +251,38 @@ const requireOrganizerOrCohostOrIsUserToDeleteAttendance = async (
 		return next(err);
 	}
 	return next();
+};
+
+const requireOrganizerOrCoHostToEditVenue = async (req, res, next) => {
+	const userId = req.user.id;
+	const { venueId } = req.params;
+	const venue = await Venue.findOne({
+		where: { id: venueId },
+		include: {
+			model: Group,
+			include: {
+				model: User,
+				as: "Members",
+				where: { id: userId },
+				through: {
+					where: {
+						status: "co-host"
+					}
+				}
+			}
+		}
+	});
+
+	const isAuthorized =
+		venue.Group.organizerId == userId || venue.Group.Members.length > 0;
+
+	if (isAuthorized) {
+		return next();
+	} else {
+		const err = new Error("Forbidden");
+		err.status = 403;
+		return next(err);
+	}
 };
 
 const requireOrganizerOrCoHostOrIsUser = async (req, res, next) => {
@@ -432,6 +476,7 @@ module.exports = {
 	checkIfMembershipExists,
 	checkIfGroupDoesNotExist,
 	requireOrganizerOrCoHost,
+	requireOrganizerOrCoHostToEditVenue,
 	requireOrganizerOrCoHostOrIsUser,
 	requireOrganizerOrCoHostForEvent,
 	requireOrganizerOrCoHostOrAttendeeForEvent,
@@ -442,5 +487,6 @@ module.exports = {
 	checkIfAttendanceDoesNotExist,
 	requireOrganizerOrCohostOrIsUserToDeleteAttendance,
 	requireOrganizerOrCoHostForEventImage,
-	checkIfEventImageDoesNotExist
+	checkIfEventImageDoesNotExist,
+	checkIfVenueDoesNotExist
 };
