@@ -164,9 +164,55 @@ const validateEditGroup = [
 		.optional()
 		.isBoolean({ loose: false })
 		.withMessage("Private must be a boolean"),
-	// Weird to require city and state??
 	check("city").exists().isString().withMessage("City is required"),
 	check("state").exists().isString().withMessage("State is required"),
+	handleValidationErrors
+];
+
+const validateAllEventsQueryParams = [
+	check("page")
+		.optional()
+		.custom((value, { req }) => {
+			const { page } = req.query;
+			if (page < 1) {
+				throw new ValidationError("Page must be greater than or equal to 1");
+			}
+			return true;
+		}),
+	check("size")
+		.optional()
+		.custom((value, { req }) => {
+			const { size } = req.query;
+			if (size < 1) {
+				throw new ValidationError("Size must be greater than or equal to 1");
+			}
+			return true;
+		}),
+	check("name")
+		.optional()
+		.custom((value, { req }) => {
+			const valid =
+				req.query.name.toUpperCase() !== req.query.name.toLowerCase();
+			if (!valid) {
+				throw new ValidationError("Name must be a string");
+			}
+			return true;
+		}),
+	check("type")
+		.optional()
+		.isString()
+		.isIn(["Online", "In person"])
+		.withMessage("Type must be 'Online' or 'In person'"),
+	check("startDate")
+		.optional()
+		.custom((value, { req }) => {
+			const start = new Date(req.query.startDate);
+			console.log(start);
+			if (start == "Invalid Date") {
+				throw new ValidationError("Start date must be a valid datetime");
+			}
+			return true;
+		}),
 	handleValidationErrors
 ];
 
@@ -177,5 +223,6 @@ module.exports = {
 	validateCreateGroupVenue,
 	validateEditGroupVenue,
 	validateEditGroup,
-	validateCreateGroupEvent
+	validateCreateGroupEvent,
+	validateAllEventsQueryParams
 };
