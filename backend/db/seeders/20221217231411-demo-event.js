@@ -15,7 +15,7 @@ module.exports = {
 					venueId: 1,
 					groupId: 1,
 					name: "Tennis Group First Meet and Greet",
-					type: "Online",
+					type: "In person",
 					capacity: 10,
 					price: 18.5,
 					description:
@@ -27,7 +27,7 @@ module.exports = {
 					venueId: 1,
 					groupId: 1,
 					name: "Tennis Group meet 2: Electric Boogaloo",
-					type: "Online",
+					type: "In person",
 					capacity: 10,
 					price: 18.5,
 					description: "The second meet and greet for our group!!",
