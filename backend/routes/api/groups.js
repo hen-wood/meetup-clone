@@ -412,7 +412,7 @@ router.post(
 		await Attendance.create({
 			eventId: newEvent.id,
 			userId: req.user.id,
-			status: "Attending"
+			status: "attending"
 		});
 
 		res.json({
