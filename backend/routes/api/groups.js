@@ -168,6 +168,15 @@ router.get("/test", async (req, res, next) => {
 		},
 		attributes: [
 			"id",
+			"organizerId",
+			"name",
+			"about",
+			"type",
+			"private",
+			"city",
+			"state",
+			"createdAt",
+			"updatedAt",
 			[Sequelize.fn("COUNT", Sequelize.col("userId")), "numMembers"]
 		],
 		group: ["Group.id"]
