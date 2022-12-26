@@ -10,7 +10,7 @@ const {
 	User,
 	Venue
 } = require("../../db/models");
-const { Op } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
 const {
 	requireAuthentication,
 	requireAuthorization,
@@ -158,7 +158,22 @@ router.get(
 		return next(requireAuthorization());
 	}
 );
-
+// Refactor get all groups test route
+router.get("/test", async (req, res, next) => {
+	const Groups = await Group.findAll({
+		include: {
+			model: User,
+			as: "Members",
+			attributes: []
+		},
+		attributes: [
+			"id",
+			[Sequelize.fn("COUNT", Sequelize.col("userId")), "numMembers"]
+		],
+		group: ["Group.id"]
+	});
+	res.json({ Groups });
+});
 // Get all groups created by or joined by current user
 router.get("/current", requireAuthentication, async (req, res, next) => {
 	const userId = req.user.id;
