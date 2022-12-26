@@ -19,7 +19,7 @@ const {
 	requireOrganizerOrCoHost,
 	requireOrganizerOrCoHostOrIsUser,
 	checkIfMembershipDoesNotExist
-} = require("../../utils/auth");
+} = require("../../utils/authentication.js");
 const {
 	validateCreateGroup,
 	validateEditGroup,

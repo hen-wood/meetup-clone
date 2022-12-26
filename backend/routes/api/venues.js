@@ -1,23 +1,11 @@
 const express = require("express");
+const { Venue } = require("../../db/models");
+const { requireAuthentication } = require("../../utils/authentication.js");
+const { checkIfVenueDoesNotExist } = require("../../utils/not-found");
 const {
-	Group,
-	Membership,
-	GroupImage,
-	Event,
-	Attendance,
-	EventImage,
-	User,
-	Venue
-} = require("../../db/models");
-const { Op } = require("sequelize");
-const {
-	requireAuthentication,
-	requireAuthorization,
-	requireOrganizerOrCoHostToEditVenue,
-	checkIfVenueDoesNotExist
-} = require("../../utils/auth");
+	requireOrganizerOrCoHostToEditVenue
+} = require("../../utils/authorization.js");
 const { validateEditGroupVenue } = require("../../utils/validation-chains");
-const { notFound } = require("../../utils/not-found");
 
 const router = express.Router();
 
