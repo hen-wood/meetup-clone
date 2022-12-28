@@ -1,10 +1,10 @@
 const express = require("express");
 const { Venue } = require("../../db/models");
-const { requireAuthentication } = require("../../utils/authentication.js");
-const { checkIfVenueDoesNotExist } = require("../../utils/not-found");
 const {
+	requireAuthentication,
 	requireOrganizerOrCoHostToEditVenue
-} = require("../../utils/authorization.js");
+} = require("../../utils/authentication.js");
+const { checkIfVenueDoesNotExist } = require("../../utils/not-found");
 const { validateEditGroupVenue } = require("../../utils/validation-chains");
 
 const router = express.Router();

@@ -1,4 +1,4 @@
-// backend/utils/authorization.js
+// backend/utils/authenticationorization.js
 const {
 	User,
 	Group,

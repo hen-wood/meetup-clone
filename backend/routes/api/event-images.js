@@ -28,7 +28,7 @@ const {
 	requireOrganizerOrCoHostOrAttendeeForEvent,
 	requireOrganizerOrCoHostForEventImage,
 	checkIfEventImageDoesNotExist
-} = require("../../utils/auth");
+} = require("../../utils/authentication");
 const {
 	validateCreateGroup,
 	validateEditGroup,

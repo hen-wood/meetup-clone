@@ -7,7 +7,7 @@ const {
 	setTokenCookie,
 	requireAuthentication,
 	checkIfUserAlreadyExists
-} = require("../../utils/auth");
+} = require("../../utils/authentication");
 const { validateSignup } = require("../../utils/validation-chains");
 const { User } = require("../../db/models");
 const { token } = require("morgan");

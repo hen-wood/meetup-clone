@@ -1,4 +1,4 @@
-// backend/utils/authentication.js
+// backend/utils/authenticationentication.js
 const jwt = require("jsonwebtoken");
 const { jwtConfig } = require("../config");
 const {
