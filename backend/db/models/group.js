@@ -24,12 +24,7 @@ module.exports = (sequelize, DataTypes) => {
 				foreignKey: "groupId",
 				onDelete: "CASCADE"
 			});
-			// Group.belongsToMany(models.Venue, {
-			// 	through: models.Event,
-			// 	foreignKey: "groupId",
-			// 	otherKey: "venueId",
-			// 	onDelete: "CASCADE"
-			// });
+
 			Group.hasMany(models.Venue, {
 				foreignKey: "groupId",
 				onDelete: "CASCADE"
@@ -103,7 +98,38 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		{
 			sequelize,
-			modelName: "Group"
+			modelName: "Group",
+			scopes: {
+				withPreviewAndNumMembers() {
+					const { Membership, GroupImage } = require("../models");
+					return {
+						attributes: {
+							include: [
+								[
+									sequelize.fn("COUNT", sequelize.col("Memberships.id")),
+									"numMembers"
+								],
+								[sequelize.col("GroupImages.url"), "previewImage"]
+							]
+						},
+						include: [
+							{
+								model: Membership,
+								attributes: []
+							},
+							{
+								model: GroupImage,
+								attributes: [],
+								where: {
+									preview: true
+								},
+								required: false
+							}
+						],
+						group: ["Group.id"]
+					};
+				}
+			}
 		}
 	);
 	return Group;
