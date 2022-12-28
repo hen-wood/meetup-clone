@@ -26,7 +26,7 @@ const {
 	checkIfAttendanceDoesNotExist,
 	requireOrganizerOrCohostOrIsUserToDeleteAttendance,
 	requireOrganizerOrCoHostOrAttendeeForEvent
-} = require("../../utils/auth");
+} = require("../../utils/authentication");
 const {
 	validateCreateGroup,
 	validateEditGroup,

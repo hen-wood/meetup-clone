@@ -8,7 +8,7 @@ const groupImagesRouter = require("./group-images.js");
 const eventsRouter = require("./events.js");
 const eventImagesRouter = require("./event-images.js");
 // GET /api/set-token-cookie
-const { restoreUser } = require("../../utils/auth.js");
+const { restoreUser } = require("../../utils/authentication.js");
 
 router.use(restoreUser);
 

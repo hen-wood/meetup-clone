@@ -14,7 +14,7 @@ const { Op } = require("sequelize");
 const {
 	requireAuthentication,
 	requireAuthorization
-} = require("../../utils/auth");
+} = require("../../utils/authentication");
 const {
 	validateCreateGroup,
 	validateEditGroup,
