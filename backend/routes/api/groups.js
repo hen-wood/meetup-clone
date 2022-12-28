@@ -161,26 +161,36 @@ router.get(
 // Refactor get all groups test route
 router.get("/test", async (req, res, next) => {
 	const Groups = await Group.findAll({
-		include: {
-			model: User,
-			as: "Members",
-			attributes: []
-		},
 		attributes: [
 			"id",
-			"organizerId",
 			"name",
-			"about",
 			"type",
 			"private",
 			"city",
 			"state",
 			"createdAt",
 			"updatedAt",
-			[Sequelize.fn("COUNT", Sequelize.col("userId")), "numMembers"]
+			[Sequelize.fn("COUNT", Sequelize.col("Memberships.id")), "numMembers"]
 		],
-		group: ["Group.id"]
+		include: [
+			{
+				model: Membership,
+				attributes: [],
+				as: "Memberships"
+			},
+			{
+				model: GroupImage,
+				attributes: [[Sequelize.col("url"), "previewImage"]],
+				where: {
+					preview: true
+				},
+				required: false
+			}
+		],
+		group: ["Group.id"],
+		raw: true
 	});
+
 	res.json({ Groups });
 });
 // Get all groups created by or joined by current user
