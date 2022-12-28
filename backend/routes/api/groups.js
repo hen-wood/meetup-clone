@@ -160,7 +160,7 @@ router.get(
 );
 // Refactor get all groups test route
 router.get("/test", async (req, res, next) => {
-	const Groups = await Group.scope("withPreviewImage").findAll({});
+	const Groups = await Group.scope("withPreviewAndNumMembers").findAll();
 
 	res.json({ Groups });
 });
