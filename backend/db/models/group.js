@@ -98,7 +98,45 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		{
 			sequelize,
-			modelName: "Group"
+			modelName: "Group",
+			scopes: {
+				withPreviewImage() {
+					const { Membership, GroupImage } = require("../models");
+					return {
+						attributes: [
+							"id",
+							"name",
+							"type",
+							"private",
+							"city",
+							"state",
+							"createdAt",
+							"updatedAt",
+							[
+								sequelize.fn("COUNT", sequelize.col("Memberships.id")),
+								"numMembers"
+							],
+							[sequelize.col("GroupImages.url"), "previewImage"]
+						],
+						include: [
+							{
+								model: Membership,
+								attributes: []
+							},
+							{
+								model: GroupImage,
+								attributes: [],
+								where: {
+									preview: true
+								},
+								required: false
+							}
+						],
+						group: ["Group.id"],
+						raw: true
+					};
+				}
+			}
 		}
 	);
 	return Group;
