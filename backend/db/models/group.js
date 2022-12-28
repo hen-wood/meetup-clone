@@ -18,7 +18,8 @@ module.exports = (sequelize, DataTypes) => {
 			});
 			Group.hasMany(models.Membership, {
 				onDelete: "CASCADE",
-				foreignKey: "groupId"
+				foreignKey: "groupId",
+				as: "Memberships"
 			});
 			Group.hasMany(models.GroupImage, {
 				foreignKey: "groupId",
@@ -100,8 +101,28 @@ module.exports = (sequelize, DataTypes) => {
 			sequelize,
 			modelName: "Group",
 			scopes: {
-				withPreviewAndNumMembers() {
-					const { Membership, GroupImage } = require("../models");
+				withPreviewAndNumMembers(userId) {
+					const { Membership, GroupImage, User } = require("../models");
+					const { Op } = require("sequelize");
+					let userFilter;
+					if (userId) {
+						userFilter = {
+							model: User,
+							as: "Members",
+							through: {
+								where: {
+									[Op.and]: [
+										{ userId: userId },
+										{ status: { [Op.in]: ["member", "co-host"] } }
+									]
+								}
+							},
+							required: true,
+							attributes: []
+						};
+					} else {
+						userFilter = {};
+					}
 					return {
 						attributes: {
 							include: [
@@ -115,8 +136,10 @@ module.exports = (sequelize, DataTypes) => {
 						include: [
 							{
 								model: Membership,
-								attributes: []
+								attributes: [],
+								as: "Memberships"
 							},
+							{ ...userFilter },
 							{
 								model: GroupImage,
 								attributes: [],
