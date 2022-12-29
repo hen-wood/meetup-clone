@@ -90,14 +90,9 @@ module.exports = (sequelize, DataTypes) => {
 				}
 			},
 			scopes: {
-				withPreviewImage(groupId) {
+				allEvents() {
 					const { EventImage, Attendance, Group, Venue } = require("../models");
-					let groupFilter;
-					if (groupId) {
-						groupFilter = { groupId };
-					} else {
-						groupFilter = {};
-					}
+
 					return {
 						attributes: {
 							include: [
@@ -157,7 +152,72 @@ module.exports = (sequelize, DataTypes) => {
 								}
 							}
 						],
-						where: { ...groupFilter },
+						group: ["Event.id"]
+					};
+				},
+				allEventsByGroup(groupId) {
+					const { EventImage, Attendance, Group, Venue } = require("../models");
+
+					return {
+						attributes: {
+							include: [
+								[
+									sequelize.fn("COUNT", sequelize.col("Attendances.id")),
+									"numAttending"
+								],
+								[sequelize.col("EventImages.url"), "previewImage"]
+							],
+							exclude: [
+								"description",
+								"capacity",
+								"price",
+								"createdAt",
+								"updatedAt"
+							]
+						},
+						include: [
+							{
+								model: Attendance,
+								attributes: [],
+								as: "Attendances",
+								where: { status: "attending" }
+							},
+							{
+								model: EventImage,
+								attributes: [],
+								where: {
+									preview: true
+								},
+								required: false
+							},
+							{
+								model: Group,
+								attributes: {
+									exclude: [
+										"organizerId",
+										"about",
+										"type",
+										"private",
+										"createdAt",
+										"updatedAt"
+									]
+								}
+							},
+							{
+								model: Venue,
+								attributes: {
+									exclude: [
+										"groupId",
+										"address",
+										"lat",
+										"lng",
+										"createdAt",
+										"updatedAt"
+									]
+								}
+							}
+						],
+						where: { groupId },
 						group: ["Event.id"]
 					};
 				}

@@ -101,28 +101,9 @@ module.exports = (sequelize, DataTypes) => {
 			sequelize,
 			modelName: "Group",
 			scopes: {
-				withPreviewAndNumMembers(userId) {
-					const { Membership, GroupImage, User } = require("../models");
+				allGroups() {
+					const { Membership, GroupImage } = require("../models");
 					const { Op } = require("sequelize");
-					let userFilter;
-					if (userId) {
-						userFilter = {
-							model: User,
-							as: "Members",
-							through: {
-								where: {
-									[Op.and]: [
-										{ userId: userId },
-										{ status: { [Op.in]: ["member", "co-host"] } }
-									]
-								}
-							},
-							required: true,
-							attributes: []
-						};
-					} else {
-						userFilter = {};
-					}
 					return {
 						attributes: {
 							include: [
@@ -140,7 +121,52 @@ module.exports = (sequelize, DataTypes) => {
 								as: "Memberships",
 								where: { status: { [Op.in]: ["member", "co-host"] } }
 							},
-							{ ...userFilter },
+							{
+								model: GroupImage,
+								attributes: [],
+								where: {
+									preview: true
+								},
+								required: false
+							}
+						],
+						group: ["Group.id"]
+					};
+				},
+				currentUserGroups(userId) {
+					const { Membership, GroupImage, User } = require("../models");
+					const { Op } = require("sequelize");
+					return {
+						attributes: {
+							include: [
+								[
+									sequelize.fn("COUNT", sequelize.col("Memberships.id")),
+									"numMembers"
+								],
+								[sequelize.col("GroupImages.url"), "previewImage"]
+							]
+						},
+						include: [
+							{
+								model: Membership,
+								attributes: [],
+								as: "Memberships",
+								where: { status: { [Op.in]: ["member", "co-host"] } }
+							},
+							{
+								model: User,
+								as: "Members",
+								through: {
+									where: {
+										[Op.and]: [
+											{ userId: userId },
+											{ status: { [Op.in]: ["member", "co-host"] } }
+										]
+									}
+								},
+								required: true,
+								attributes: []
+							},
 							{
 								model: GroupImage,
 								attributes: [],

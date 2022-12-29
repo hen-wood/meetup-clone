@@ -111,7 +111,7 @@ router.get(
 	}
 );
 router.get("/alleventstest", async (req, res, next) => {
-	const Events = await Event.scope({ method: ["withPreviewImage"] }).findAll();
+	const Events = await Event.scope({ method: ["allEvents"] }).findAll();
 	res.json({ Events });
 });
 // Get event by eventId
