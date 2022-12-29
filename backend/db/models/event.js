@@ -10,6 +10,11 @@ module.exports = (sequelize, DataTypes) => {
 				as: "Attendees",
 				onDelete: "CASCADE"
 			});
+			Event.hasMany(models.Attendance, {
+				onDelete: "CASCADE",
+				foreignKey: "eventId",
+				as: "Attendances"
+			});
 			Event.belongsTo(models.Group, {
 				foreignKey: "groupId",
 				onDelete: "CASCADE"
@@ -82,6 +87,79 @@ module.exports = (sequelize, DataTypes) => {
 			defaultScope: {
 				attributes: {
 					exclude: ["createdAt", "updatedAt"]
+				}
+			},
+			scopes: {
+				withPreviewImage(groupId) {
+					const { EventImage, Attendance, Group, Venue } = require("../models");
+					let groupFilter;
+					if (groupId) {
+						groupFilter = { groupId };
+					} else {
+						groupFilter = {};
+					}
+					return {
+						attributes: {
+							include: [
+								[
+									sequelize.fn("COUNT", sequelize.col("Attendances.id")),
+									"numAttending"
+								],
+								[sequelize.col("EventImages.url"), "previewImage"]
+							],
+							exclude: [
+								"description",
+								"capacity",
+								"price",
+								"createdAt",
+								"updatedAt"
+							]
+						},
+						include: [
+							{
+								model: Attendance,
+								attributes: [],
+								as: "Attendances",
+								where: { status: "attending" }
+							},
+							{
+								model: EventImage,
+								attributes: [],
+								where: {
+									preview: true
+								},
+								required: false
+							},
+							{
+								model: Group,
+								attributes: {
+									exclude: [
+										"organizerId",
+										"about",
+										"type",
+										"private",
+										"createdAt",
+										"updatedAt"
+									]
+								}
+							},
+							{
+								model: Venue,
+								attributes: {
+									exclude: [
+										"groupId",
+										"address",
+										"lat",
+										"lng",
+										"createdAt",
+										"updatedAt"
+									]
+								}
+							}
+						],
+						where: { ...groupFilter },
+						group: ["Event.id"]
+					};
 				}
 			}
 		}

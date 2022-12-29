@@ -137,7 +137,8 @@ module.exports = (sequelize, DataTypes) => {
 							{
 								model: Membership,
 								attributes: [],
-								as: "Memberships"
+								as: "Memberships",
+								where: { status: { [Op.in]: ["member", "co-host"] } }
 							},
 							{ ...userFilter },
 							{
