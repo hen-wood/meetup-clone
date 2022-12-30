@@ -146,65 +146,10 @@ router.get("/:eventId", checkIfEventDoesNotExist, async (req, res, next) => {
 });
 
 // Get all events
-router.get("/", validateAllEventsQueryParams, async (req, res, next) => {
-	let { page, size, name, type, startDate } = req.query;
-
-	page = +page;
-	size = +size;
-
-	if (Number.isNaN(page) || page < 1) page = 1;
-	if (Number.isNaN(size) || size > 20) size = 20;
-
-	if (page > 10) page = 10;
-	if (size < 1) size = 1;
-
-	let where = {};
-
-	if (name) where.name = name;
-	if (type) where.type = type;
-	if (startDate) {
-		where.startDate = startDate;
-	}
-	console.log(startDate);
-
-	const allEvents = await Event.findAll({
-		attributes: { exclude: ["description", "capacity", "price"] },
-		include: [
-			{
-				model: Group,
-				attributes: ["id", "name", "city", "state"]
-			},
-			{
-				model: Venue,
-				attributes: ["id", "city", "state"]
-			}
-		],
-		where,
-		limit: size,
-		offset: size * (page - 1)
-	});
-
-	const Events = JSON.parse(JSON.stringify(allEvents));
-	for (let event of Events) {
-		let previewImage = await EventImage.findOne({
-			where: {
-				[Op.and]: [{ eventId: event.id }, { preview: true }]
-			},
-			attributes: ["url"]
-		});
-		if (previewImage) {
-			previewImage = previewImage.url;
-			event.previewImage = previewImage;
-		} else {
-			event.previewImage = null;
-		}
-
-		event.numAttending = await Attendance.count({
-			where: {
-				eventId: event.id
-			}
-		});
-	}
+router.get("/", async (req, res, next) => {
+	const Events = await Event.scope({
+		method: ["allEvents", req.query]
+	}).findAll();
 
 	return res.json({ Events });
 });

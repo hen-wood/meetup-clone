@@ -90,9 +90,26 @@ module.exports = (sequelize, DataTypes) => {
 				}
 			},
 			scopes: {
-				allEvents() {
+				allEvents(queryParams) {
 					const { EventImage, Attendance, Group, Venue } = require("../models");
+					let { page, size, name, type, startDate } = queryParams;
 
+					page = +page;
+					size = +size;
+
+					if (Number.isNaN(page) || page < 1) page = 1;
+					if (Number.isNaN(size) || size > 20) size = 20;
+
+					if (page > 10) page = 10;
+					if (size < 1) size = 1;
+
+					let where = {};
+
+					if (name) where.name = name;
+					if (type) where.type = type;
+					if (startDate) {
+						where.startDate = startDate;
+					}
 					return {
 						attributes: {
 							include: [
@@ -115,7 +132,8 @@ module.exports = (sequelize, DataTypes) => {
 								model: Attendance,
 								attributes: [],
 								as: "Attendances",
-								where: { status: "attending" }
+								where: { status: "attending" },
+								required: false
 							},
 							{
 								model: EventImage,
@@ -152,6 +170,9 @@ module.exports = (sequelize, DataTypes) => {
 								}
 							}
 						],
+						subQuery: false,
+						limit: size,
+						offset: size * (page - 1),
 						group: ["Event.id"]
 					};
 				},
