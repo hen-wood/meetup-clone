@@ -6,11 +6,10 @@ const {
 	GroupImage,
 	Event,
 	Attendance,
-	EventImage,
 	User,
 	Venue
 } = require("../../db/models");
-const { Op, Sequelize } = require("sequelize");
+const { Op } = require("sequelize");
 const {
 	requireAuthentication,
 	requireAuthorization,
@@ -35,49 +34,17 @@ const {
 const router = express.Router();
 
 // Get all events of a group by group id
-// remove description, capacity, price
 router.get(
 	"/:groupId/events",
 	checkIfGroupDoesNotExist,
 	async (req, res, next) => {
 		const { groupId } = req.params;
-		const groupEvents = await Event.findAll({
-			attributes: { exclude: ["description", "capacity", "price"] },
-			where: {
-				groupId
-			},
-			include: [
-				{
-					model: Group,
-					attributes: ["id", "name", "city", "state"]
-				},
-				{
-					model: Venue,
-					attributes: ["id", "city", "state"]
-				}
-			]
-		});
 
-		const Events = JSON.parse(JSON.stringify(groupEvents));
+		const Events = await Event.scope({
+			method: ["allEventsByGroup", groupId]
+		}).findAll();
 
-		for (let event of Events) {
-			let previewImage = await EventImage.findOne({
-				where: {
-					[Op.and]: [{ eventId: event.id }, { preview: true }]
-				},
-				attributes: ["url"]
-			});
-			previewImage = previewImage.url;
-			event.previewImage = previewImage;
-
-			event.numAttending = await Attendance.count({
-				where: {
-					eventId: event.id
-				}
-			});
-		}
-
-		return res.json({ Events });
+		res.json({ Events });
 	}
 );
 
@@ -158,49 +125,13 @@ router.get(
 		return next(requireAuthorization());
 	}
 );
-// Refactor get all groups test route
-router.get("/test", async (req, res, next) => {
-	const Groups = await Group.scope("withPreviewAndNumMembers").findAll();
 
-	res.json({ Groups });
-});
 // Get all groups created by or joined by current user
 router.get("/current", requireAuthentication, async (req, res, next) => {
-	const userId = req.user.id;
-
-	const Groups = await Group.findAll({
-		include: {
-			model: Membership,
-			where: {
-				userId,
-				status: { [Op.in]: ["co-host", "member"] }
-			},
-			attributes: []
-		},
-		raw: true
-	});
-
-	for (let group of Groups) {
-		group.numMembers = await Membership.count({
-			where: {
-				groupId: group.id
-			}
-		});
-		const previewImage = await GroupImage.findOne({
-			where: {
-				[Op.and]: [{ preview: true }, { groupId: group.id }]
-			},
-			attributes: ["url"]
-		});
-		console.log("hello");
-		if (group && previewImage) {
-			group.previewImage = previewImage.url;
-		} else {
-			group.previewImage = null;
-		}
-		if (group.private === 0) group.private = false;
-		if (group.private === 1) group.private = true;
-	}
+	const currUserId = req.user.id;
+	const Groups = await Group.scope({
+		method: ["currentUserGroups", currUserId]
+	}).findAll();
 
 	res.json({ Groups });
 });
@@ -241,31 +172,11 @@ router.get("/:groupId", async (req, res, next) => {
 
 // Get all groups, include aggregate data for number of members in each group, and the groups preview image url
 router.get("/", async (req, res, next) => {
-	const Groups = await Group.findAll({
-		raw: true
-	});
-	for (let group of Groups) {
-		group.numMembers = await Membership.count({
-			where: {
-				groupId: group.id
-			}
-		});
-		if (!group.numMembers) group.numMembers = 0;
-		const previewImage = await GroupImage.findOne({
-			where: {
-				[Op.and]: [{ preview: true }, { groupId: group.id }]
-			},
-			attributes: ["url"]
-		});
-		if (group && previewImage) {
-			group.previewImage = previewImage.url;
-		} else {
-			group.previewImage = null;
-		}
-		if (group.private === 0) group.private = false;
-		if (group.private === 1) group.private = true;
-	}
-	return res.json({ Groups });
+	const Groups = await Group.scope({
+		method: ["allGroups"]
+	}).findAll();
+
+	res.json({ Groups });
 });
 
 // Request membership for a group by group id

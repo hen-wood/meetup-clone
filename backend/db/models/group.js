@@ -18,7 +18,8 @@ module.exports = (sequelize, DataTypes) => {
 			});
 			Group.hasMany(models.Membership, {
 				onDelete: "CASCADE",
-				foreignKey: "groupId"
+				foreignKey: "groupId",
+				as: "Memberships"
 			});
 			Group.hasMany(models.GroupImage, {
 				foreignKey: "groupId",
@@ -100,8 +101,9 @@ module.exports = (sequelize, DataTypes) => {
 			sequelize,
 			modelName: "Group",
 			scopes: {
-				withPreviewAndNumMembers() {
+				allGroups() {
 					const { Membership, GroupImage } = require("../models");
+					const { Op } = require("sequelize");
 					return {
 						attributes: {
 							include: [
@@ -115,6 +117,54 @@ module.exports = (sequelize, DataTypes) => {
 						include: [
 							{
 								model: Membership,
+								attributes: [],
+								as: "Memberships",
+								where: { status: { [Op.in]: ["member", "co-host"] } }
+							},
+							{
+								model: GroupImage,
+								attributes: [],
+								where: {
+									preview: true
+								},
+								required: false
+							}
+						],
+						group: ["Group.id"]
+					};
+				},
+				currentUserGroups(userId) {
+					const { Membership, GroupImage, User } = require("../models");
+					const { Op } = require("sequelize");
+					return {
+						attributes: {
+							include: [
+								[
+									sequelize.fn("COUNT", sequelize.col("Memberships.id")),
+									"numMembers"
+								],
+								[sequelize.col("GroupImages.url"), "previewImage"]
+							]
+						},
+						include: [
+							{
+								model: Membership,
+								attributes: [],
+								as: "Memberships",
+								where: { status: { [Op.in]: ["member", "co-host"] } }
+							},
+							{
+								model: User,
+								as: "Members",
+								through: {
+									where: {
+										[Op.and]: [
+											{ userId: userId },
+											{ status: { [Op.in]: ["member", "co-host"] } }
+										]
+									}
+								},
+								required: true,
 								attributes: []
 							},
 							{
