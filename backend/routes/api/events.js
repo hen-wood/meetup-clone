@@ -2,23 +2,15 @@
 const express = require("express");
 const {
 	Group,
-	Membership,
-	GroupImage,
 	Event,
 	Attendance,
 	EventImage,
 	User,
 	Venue
 } = require("../../db/models");
-const { Op, where } = require("sequelize");
+const { Op } = require("sequelize");
 const {
 	requireAuthentication,
-	requireAuthorization,
-	checkIfMembershipExists,
-	checkIfGroupDoesNotExist,
-	requireOrganizerOrCoHost,
-	requireOrganizerOrCoHostOrIsUser,
-	checkIfMembershipDoesNotExist,
 	checkIfEventDoesNotExist,
 	requireOrganizerOrCoHostForEvent,
 	checkIfUserIsNotMemberOfEventGroup,
@@ -27,18 +19,7 @@ const {
 	requireOrganizerOrCohostOrIsUserToDeleteAttendance,
 	requireOrganizerOrCoHostOrAttendeeForEvent
 } = require("../../utils/authentication");
-const {
-	validateCreateGroup,
-	validateEditGroup,
-	validateCreateGroupVenue,
-	validateCreateGroupEvent,
-	validateAllEventsQueryParams
-} = require("../../utils/validation-chains");
-const { notFound } = require("../../utils/not-found");
-const {
-	checkForValidStatus,
-	checkIfUserDoesNotExist
-} = require("../../utils/validation");
+const { validateCreateGroupEvent } = require("../../utils/validation-chains");
 
 const router = express.Router();
 

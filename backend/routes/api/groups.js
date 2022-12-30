@@ -6,7 +6,6 @@ const {
 	GroupImage,
 	Event,
 	Attendance,
-	EventImage,
 	User,
 	Venue
 } = require("../../db/models");
@@ -34,60 +33,18 @@ const {
 
 const router = express.Router();
 
-// events by group id refactor
-router.get("/:groupId/eventstest", async (req, res, next) => {
-	const { groupId } = req.params;
-
-	const Events = await Event.scope({
-		method: ["allEventsByGroup", groupId]
-	}).findAll();
-
-	res.json({ Events });
-});
 // Get all events of a group by group id
-// remove description, capacity, price
 router.get(
 	"/:groupId/events",
 	checkIfGroupDoesNotExist,
 	async (req, res, next) => {
 		const { groupId } = req.params;
-		const groupEvents = await Event.findAll({
-			attributes: { exclude: ["description", "capacity", "price"] },
-			where: {
-				groupId
-			},
-			include: [
-				{
-					model: Group,
-					attributes: ["id", "name", "city", "state"]
-				},
-				{
-					model: Venue,
-					attributes: ["id", "city", "state"]
-				}
-			]
-		});
 
-		const Events = JSON.parse(JSON.stringify(groupEvents));
+		const Events = await Event.scope({
+			method: ["allEventsByGroup", groupId]
+		}).findAll();
 
-		for (let event of Events) {
-			let previewImage = await EventImage.findOne({
-				where: {
-					[Op.and]: [{ eventId: event.id }, { preview: true }]
-				},
-				attributes: ["url"]
-			});
-			previewImage = previewImage.url;
-			event.previewImage = previewImage;
-
-			event.numAttending = await Attendance.count({
-				where: {
-					eventId: event.id
-				}
-			});
-		}
-
-		return res.json({ Events });
+		res.json({ Events });
 	}
 );
 
@@ -168,23 +125,7 @@ router.get(
 		return next(requireAuthorization());
 	}
 );
-// Refactor get all groups test route
-router.get("/test", async (req, res, next) => {
-	const Groups = await Group.scope({
-		method: ["allGroups"]
-	}).findAll();
 
-	res.json({ Groups });
-});
-// Refactor get all groups for current user test route
-router.get("/testcurrent", async (req, res, next) => {
-	const currUserId = req.user.id;
-	const Groups = await Group.scope({
-		method: ["currentUserGroups", currUserId]
-	}).findAll();
-
-	res.json({ Groups });
-});
 // Get all groups created by or joined by current user
 router.get("/current", requireAuthentication, async (req, res, next) => {
 	const currUserId = req.user.id;
