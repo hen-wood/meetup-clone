@@ -110,10 +110,7 @@ router.get(
 		}
 	}
 );
-router.get("/alleventstest", async (req, res, next) => {
-	const Events = await Event.scope({ method: ["allEvents"] }).findAll();
-	res.json({ Events });
-});
+
 // Get event by eventId
 router.get("/:eventId", checkIfEventDoesNotExist, async (req, res, next) => {
 	const { eventId } = req.params;
