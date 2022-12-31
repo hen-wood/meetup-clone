@@ -30,6 +30,9 @@ const {
 	checkForValidStatus,
 	checkIfUserDoesNotExist
 } = require("../../utils/validation");
+const {
+	requireOrganizerOrCoHostToGetGroupVenues
+} = require("../../utils/authorization");
 
 const router = express.Router();
 
@@ -100,29 +103,18 @@ router.get("/:groupId/members", async (req, res, next) => {
 router.get(
 	"/:groupId/venues",
 	requireAuthentication,
+	checkIfGroupDoesNotExist,
+	requireOrganizerOrCoHostToGetGroupVenues,
 	async (req, res, next) => {
 		const { groupId } = req.params;
-		const group = await Group.findByPk(groupId);
-		if (!group) {
-			return next(notFound("Group couldn't be found"));
-		}
-		const userMembership = await Membership.findOne({
-			where: {
-				[Op.and]: [{ userId: req.user.id }, { groupId }]
+		const venues = await Group.findByPk(groupId, {
+			attributes: [],
+			include: {
+				model: Venue,
+				attributes: { exclude: ["createdAt", "updatedAt"] }
 			}
 		});
-		if (
-			(userMembership && userMembership.status === "co-host") ||
-			group.organizerId === req.user.id
-		) {
-			const Venues = await Venue.findAll({
-				where: {
-					groupId
-				}
-			});
-			res.json({ Venues });
-		}
-		return next(requireAuthorization());
+		return res.json(venues);
 	}
 );
 
@@ -137,37 +129,12 @@ router.get("/current", requireAuthentication, async (req, res, next) => {
 });
 
 // Get details of a group based on its ID
-router.get("/:groupId", async (req, res, next) => {
+router.get("/:groupId", checkIfGroupDoesNotExist, async (req, res, next) => {
 	const { groupId } = req.params;
-	let groupDetails = await Group.findByPk(groupId, {
-		include: [
-			{
-				model: GroupImage
-			},
-			{
-				model: User,
-				as: "Organizer",
-				attributes: ["id", "firstName", "lastName"]
-			},
-			{
-				model: Venue
-			}
-		]
-	});
-	if (groupDetails) {
-		groupDetails = groupDetails.toJSON();
-		const numMembers = await Membership.count({
-			where: {
-				groupId
-			}
-		});
-		groupDetails.numMembers = numMembers;
-		if (groupDetails.private === 0) groupDetails.private = false;
-		if (groupDetails.private === 1) groupDetails.private = true;
-		res.json(groupDetails);
-	} else {
-		next(notFound("Group couldn't be found"));
-	}
+	const singleGroup = await Group.scope({ method: ["singleGroup"] }).findByPk(
+		groupId
+	);
+	res.json(singleGroup);
 });
 
 // Get all groups, include aggregate data for number of members in each group, and the groups preview image url

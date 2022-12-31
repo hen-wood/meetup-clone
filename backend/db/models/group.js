@@ -178,6 +178,59 @@ module.exports = (sequelize, DataTypes) => {
 						],
 						group: ["Group.id"]
 					};
+				},
+				singleGroup() {
+					const { Membership, GroupImage, User, Venue } = require("../models");
+					const { Op } = require("sequelize");
+					return {
+						attributes: {
+							include: [
+								[
+									sequelize.fn("COUNT", sequelize.col("Memberships.id")),
+									"numMembers"
+								]
+							]
+						},
+						include: [
+							{
+								model: Membership,
+								attributes: [],
+								as: "Memberships",
+								where: { status: { [Op.in]: ["member", "co-host"] } }
+							},
+							{
+								model: GroupImage,
+								attributes: ["id", "url", "preview"],
+								required: false
+							},
+							{
+								model: User,
+								as: "Organizer",
+								attributes: ["id", "firstName", "lastName"]
+							},
+							{
+								model: Venue,
+								attributes: {
+									exclude: ["createdAt", "updatedAt"]
+								}
+							}
+						],
+						group: ["Group.id", "Venues.id"]
+					};
+				},
+				singleGroupWithMemberships(currentUserId) {
+					const { Membership } = require("../models");
+					const { Op } = require("sequelize");
+					return {
+						include: {
+							model: Membership,
+							as: "Memberships",
+							where: {
+								[Op.and]: [{ userId: currentUserId }, { status: "co-host" }]
+							},
+							required: false
+						}
+					};
 				}
 			}
 		}
