@@ -57,11 +57,9 @@ router.get(
 	async (req, res, next) => {
 		const { groupId } = req.params;
 		const currentUserId = req.user.id;
-
 		const group = await Group.findByPk(groupId, {
-			attributes: [],
+			attributes: ["organizerId"],
 			include: [
-				{ model: User, as: "Organizer", required: false },
 				{
 					model: Membership,
 					as: "Memberships",
@@ -74,7 +72,7 @@ router.get(
 		});
 
 		const isOrganizerOrCoHost =
-			group.Organizer.id == currentUserId || group.Memberships.length > 0;
+			group.organizerId == currentUserId || group.Memberships.length > 0;
 
 		let where = {};
 		if (!isOrganizerOrCoHost) {
@@ -117,16 +115,9 @@ router.get(
 	requireAuthentication,
 	checkIfGroupDoesNotExist,
 	requireOrganizerOrCoHostForGroup,
-	async (req, res, next) => {
-		const { groupId } = req.params;
-		const venues = await Group.findByPk(groupId, {
-			attributes: [],
-			include: {
-				model: Venue,
-				attributes: { exclude: ["createdAt", "updatedAt"] }
-			}
-		});
-		return res.json(venues);
+	(req, res, next) => {
+		const Venues = req.group.Venues;
+		return res.json({ Venues });
 	}
 );
 
@@ -141,12 +132,8 @@ router.get("/current", requireAuthentication, async (req, res, next) => {
 });
 
 // Get details of a group based on its ID
-router.get("/:groupId", checkIfGroupDoesNotExist, async (req, res, next) => {
-	const { groupId } = req.params;
-	const singleGroup = await Group.scope({ method: ["singleGroup"] }).findByPk(
-		groupId
-	);
-	res.json(singleGroup);
+router.get("/:groupId", checkIfGroupDoesNotExist, (req, res, next) => {
+	res.json(req.group);
 });
 
 // Get all groups, include aggregate data for number of members in each group, and the groups preview image url
