@@ -15,8 +15,7 @@ const {
 	requireAuthorization,
 	checkIfMembershipAlreadyExists,
 	requireOrganizerOrCoHost,
-	requireOrganizerOrCoHostOrIsUser,
-	checkIfMembershipDoesNotExist
+	requireOrganizerOrCoHostOrIsUser
 } = require("../../utils/authentication.js");
 const {
 	validateCreateGroup,
@@ -24,14 +23,18 @@ const {
 	validateCreateGroupVenue,
 	validateCreateGroupEvent
 } = require("../../utils/validation-chains");
-const { notFound, checkIfGroupDoesNotExist } = require("../../utils/not-found");
+const {
+	notFound,
+	checkIfGroupDoesNotExist,
+	checkIfMembershipDoesNotExist
+} = require("../../utils/not-found");
 const {
 	checkForValidStatus,
 	checkIfUserDoesNotExist
 } = require("../../utils/validation");
 const {
-	requireOrganizerOrCoHostToGetGroupVenues,
-	requireOrganizerToAddImageToGroup
+	requireOrganizerToAddImageToGroup,
+	requireOrganizerOrCoHostForVenues
 } = require("../../utils/authorization");
 
 const router = express.Router();
@@ -52,59 +55,72 @@ router.get(
 );
 
 // Get all members of a group by group id
-router.get("/:groupId/members", async (req, res, next) => {
-	const { groupId } = req.params;
-	const isOrganizer = await Group.findOne({
-		attributes: ["organizerId"],
-		where: {
-			[Op.and]: [{ organizerId: req.user.id }, { id: groupId }]
-		}
-	});
+router.get(
+	"/:groupId/members",
+	checkIfGroupDoesNotExist,
+	async (req, res, next) => {
+		const { groupId } = req.params;
+		const currentUserId = req.user.id;
 
-	let where = {};
-	if (!isOrganizer) {
-		where = {
-			status: {
-				[Op.ne]: "pending"
-			}
-		};
-	}
-	const group = await Group.findByPk(groupId, {
-		attributes: [],
-		include: {
-			model: User,
-			as: "Members",
-			through: {
-				attributes: {
-					exclude: ["id", "userId", "groupId", "createdAt", "updatedAt"]
+		const group = await Group.findByPk(groupId, {
+			attributes: [],
+			include: [
+				{ model: User, as: "Organizer", required: false },
+				{
+					model: Membership,
+					as: "Memberships",
+					where: {
+						[Op.and]: [{ status: "co-host" }, { userId: currentUserId }]
+					},
+					required: false
+				}
+			]
+		});
+
+		const isOrganizerOrCoHost =
+			group.Organizer.id == currentUserId || group.Memberships.length > 0;
+
+		let where = {};
+		if (!isOrganizerOrCoHost) {
+			where = {
+				status: {
+					[Op.ne]: "pending"
+				}
+			};
+		}
+		const groupMembers = await Group.findByPk(groupId, {
+			attributes: [],
+			include: {
+				model: User,
+				as: "Members",
+				through: {
+					attributes: {
+						exclude: ["id", "userId", "groupId", "createdAt", "updatedAt"]
+					},
+					where
 				},
-				where
-			},
-			attributes: {
-				exclude: [
-					"username",
-					"email",
-					"hashedPassword",
-					"createdAt",
-					"updatedAt"
-				]
+				attributes: {
+					exclude: [
+						"username",
+						"email",
+						"hashedPassword",
+						"createdAt",
+						"updatedAt"
+					]
+				}
 			}
-		}
-	});
+		});
 
-	if (!group) {
-		return next(notFound("Group couldn't be found"));
+		return res.json(groupMembers);
 	}
-
-	res.json(group);
-});
+);
 
 // Get all venues for a Group specified by its id
 router.get(
 	"/:groupId/venues",
 	requireAuthentication,
 	checkIfGroupDoesNotExist,
-	requireOrganizerOrCoHostToGetGroupVenues,
+	requireOrganizerOrCoHostForVenues,
 	async (req, res, next) => {
 		const { groupId } = req.params;
 		const venues = await Group.findByPk(groupId, {
@@ -221,35 +237,22 @@ router.post(
 router.post(
 	"/:groupId/venues",
 	requireAuthentication,
+	checkIfGroupDoesNotExist,
+	requireOrganizerOrCoHostForVenues,
 	validateCreateGroupVenue,
 	async (req, res, next) => {
 		const { groupId } = req.params;
-		const group = await Group.findByPk(groupId);
-		if (!group) {
-			return next(notFound("Group couldn't be found"));
-		}
-		const userMembership = await Membership.findOne({
-			where: {
-				[Op.and]: [{ userId: req.user.id }, { groupId }]
-			}
+		const { address, city, state, lat, lng } = req.body;
+		const newVenue = await Venue.create({
+			groupId,
+			address,
+			city,
+			state,
+			lat,
+			lng
 		});
-		if (
-			(userMembership && userMembership.status === "co-host") ||
-			group.organizerId === req.user.id
-		) {
-			const { address, city, state, lat, lng } = req.body;
-			const newVenue = await Venue.create({
-				groupId,
-				address,
-				city,
-				state,
-				lat,
-				lng
-			});
-			const { id } = newVenue;
-			return res.json({ id, groupId, address, city, state, lat, lng });
-		}
-		return next(requireAuthorization());
+		const { id } = newVenue;
+		return res.json({ id, groupId, address, city, state, lat, lng });
 	}
 );
 

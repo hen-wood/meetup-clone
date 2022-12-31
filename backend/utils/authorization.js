@@ -54,7 +54,7 @@ const requireOrganizerOrCoHost = async (req, res, next) => {
 	return next(err);
 };
 
-const requireOrganizerOrCoHostToGetGroupVenues = async (req, res, next) => {
+const requireOrganizerOrCoHostForVenues = async (req, res, next) => {
 	const { groupId } = req.params;
 	const currentUserId = req.user.id;
 
@@ -322,7 +322,7 @@ module.exports = {
 	checkIfUserIsNotMemberOfEventGroup,
 	requireOrganizerToAddImageToGroup,
 	requireOrganizerOrCoHost,
-	requireOrganizerOrCoHostToGetGroupVenues,
+	requireOrganizerOrCoHostForVenues,
 	requireOrganizerOrCoHostToEditVenue,
 	requireOrganizerOrCoHostOrIsUser,
 	requireOrganizerOrCoHostForEvent,
