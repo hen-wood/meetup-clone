@@ -1,9 +1,9 @@
 const express = require("express");
 const { Venue } = require("../../db/models");
+const { requireAuthentication } = require("../../utils/authentication.js");
 const {
-	requireAuthentication,
 	requireOrganizerOrCoHostToEditVenue
-} = require("../../utils/authentication.js");
+} = require("../../utils/authorization");
 const { checkIfVenueDoesNotExist } = require("../../utils/not-found");
 const { validateEditGroupVenue } = require("../../utils/validation-chains");
 

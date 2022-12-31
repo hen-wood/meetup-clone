@@ -1,16 +1,10 @@
 // backend/routes/api/users.js
 const express = require("express");
 
-const { check } = require("express-validator");
-const { handleValidationErrors } = require("../../utils/validation");
-const {
-	setTokenCookie,
-	requireAuthentication,
-	checkIfUserAlreadyExists
-} = require("../../utils/authentication");
+const { setTokenCookie } = require("../../utils/authentication");
+const { checkIfUserAlreadyExists } = require("../../utils/authorization");
 const { validateSignup } = require("../../utils/validation-chains");
 const { User } = require("../../db/models");
-const { token } = require("morgan");
 
 const router = express.Router();
 
