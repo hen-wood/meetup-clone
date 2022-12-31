@@ -41,6 +41,27 @@ const requireOrganizerOrCoHost = async (req, res, next) => {
 	return next(err);
 };
 
+const requireOrganizerOrCoHostToGetGroupVenues = async (req, res, next) => {
+	const { groupId } = req.params;
+	const currentUserId = req.user.id;
+
+	const group = await Group.scope({
+		method: ["singleGroupWithMemberships", currentUserId]
+	}).findByPk(groupId);
+	console.log(group.toJSON());
+	const authorized =
+		group.organizerId == currentUserId || group.Memberships.length > 0;
+	if (authorized) {
+		return next();
+	} else {
+		const err = new Error(
+			"Forbidden, must be group organizer or member with a status of 'co-host'"
+		);
+		err.status = 403;
+		return next(err);
+	}
+};
+
 const requireOrganizerOrCoHostForEvent = async (req, res, next) => {
 	const { eventId } = req.params;
 	const userId = req.user.id;
@@ -287,6 +308,7 @@ module.exports = {
 	checkIfUserAlreadyExists,
 	checkIfUserIsNotMemberOfEventGroup,
 	requireOrganizerOrCoHost,
+	requireOrganizerOrCoHostToGetGroupVenues,
 	requireOrganizerOrCoHostToEditVenue,
 	requireOrganizerOrCoHostOrIsUser,
 	requireOrganizerOrCoHostForEvent,
