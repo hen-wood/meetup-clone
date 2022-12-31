@@ -100,5 +100,7 @@ const checkIfAttendanceRequestAlreadyExists = async (req, res, next) => {
 module.exports = {
 	handleValidationErrors,
 	checkForValidStatus,
-	checkIfUserDoesNotExist
+	checkIfUserDoesNotExist,
+	checkIfAttendanceRequestAlreadyExists,
+	checkIfMembershipAlreadyExists
 };

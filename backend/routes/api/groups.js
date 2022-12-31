@@ -10,10 +10,7 @@ const {
 	Venue
 } = require("../../db/models");
 const { Op } = require("sequelize");
-const {
-	requireAuthentication,
-	checkIfMembershipAlreadyExists
-} = require("../../utils/authentication.js");
+const { requireAuthentication } = require("../../utils/authentication.js");
 const {
 	validateCreateGroup,
 	validateEditGroup,
@@ -26,7 +23,8 @@ const {
 } = require("../../utils/not-found");
 const {
 	checkForValidStatus,
-	checkIfUserDoesNotExist
+	checkIfUserDoesNotExist,
+	checkIfMembershipAlreadyExists
 } = require("../../utils/validation");
 const {
 	requireOrganizerForGroup,

@@ -2,6 +2,7 @@
 const {
 	User,
 	Group,
+	GroupImage,
 	Membership,
 	Event,
 	Attendance,
@@ -167,6 +168,33 @@ const requireOrganizerOrCoHostForEvent = async (req, res, next) => {
 
 	if (!(userOrganizer && userCohost)) {
 		const err = new Error("Forbidden");
+		err.status = 403;
+		return next(err);
+	}
+	return next();
+};
+
+const requireOrganizerOrCoHostForGroupImage = async (req, res, next) => {
+	const { imageId } = req.params;
+	const currentUserId = req.user.id;
+	const group = await GroupImage.findByPk(imageId, {
+		include: {
+			model: Group,
+			include: {
+				model: Membership,
+				as: "Memberships",
+				where: { [Op.and]: [{ userId: currentUserId }, { status: "co-host" }] },
+				required: false
+			}
+		}
+	});
+
+	const authorized =
+		group.Group.organizerId == currentUserId ||
+		group.Group.Memberships.length > 0;
+
+	if (!authorized) {
+		const err = new Error("Forbidden, must be group organizer or co-host");
 		err.status = 403;
 		return next(err);
 	}
@@ -352,7 +380,7 @@ const checkIfUserAlreadyExists = async (req, res, next) => {
 	next();
 };
 
-const checkIfUserIsNotMemberOfEventGroup = async (req, res, next) => {
+const requireMemberOfEventGroup = async (req, res, next) => {
 	const userId = req.user.id;
 	const { eventId } = req.params;
 	const isMember = await Event.findByPk(eventId, {
@@ -387,7 +415,7 @@ const checkIfUserIsNotMemberOfEventGroup = async (req, res, next) => {
 module.exports = {
 	requireAuthorization,
 	checkIfUserAlreadyExists,
-	checkIfUserIsNotMemberOfEventGroup,
+	requireMemberOfEventGroup,
 	requireOrganizerForGroup,
 	requireOrganizerOrCoHost,
 	requireOrganizerOrCoHostForGroup,
@@ -398,5 +426,6 @@ module.exports = {
 	requireOrganizerOrCoHostForEvent,
 	requireOrganizerOrCoHostOrAttendeeForEvent,
 	requireOrganizerOrCohostOrIsUserToDeleteAttendance,
+	requireOrganizerOrCoHostForGroupImage,
 	requireOrganizerOrCoHostForEventImage
 };

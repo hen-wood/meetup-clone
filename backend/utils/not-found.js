@@ -1,6 +1,7 @@
 const {
 	User,
 	Group,
+	GroupImage,
 	Membership,
 	Event,
 	EventImage,
@@ -68,6 +69,18 @@ const checkIfGroupDoesNotExist = async (req, res, next) => {
 	}
 	return next();
 };
+
+const checkIfGroupImageDoesNotExist = async (req, res, next) => {
+	const { imageId } = req.params;
+	const imageToDelete = await GroupImage.findByPk(imageId);
+	if (!imageToDelete) {
+		const err = new Error("Group Image couldn't be found");
+		err.status = 404;
+		return next(err);
+	}
+	return next();
+};
+
 const checkIfVenueDoesNotExist = async (req, res, next) => {
 	const venueExists = await Venue.findByPk(req.params.venueId);
 	if (!venueExists) {
@@ -92,6 +105,7 @@ module.exports = {
 	checkIfMembershipDoesNotExist,
 	checkIfEventDoesNotExist,
 	checkIfGroupDoesNotExist,
+	checkIfGroupImageDoesNotExist,
 	checkIfAttendanceDoesNotExist,
 	checkIfVenueDoesNotExist,
 	checkIfEventImageDoesNotExist
