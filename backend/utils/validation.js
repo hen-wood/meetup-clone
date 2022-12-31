@@ -1,7 +1,7 @@
 // backend/utils/validation.js
 const { validationResult } = require("express-validator");
-const { ValidationError } = require("sequelize");
-const { User } = require("../db/models");
+const { Op, ValidationError } = require("sequelize");
+const { User, Membership, Attendance } = require("../db/models");
 
 // middleware for formatting errors from express-validator middleware
 const handleValidationErrors = (req, _res, next) => {

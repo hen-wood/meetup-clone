@@ -211,7 +211,11 @@ const requireOrganizerOrCoHostForEventImage = async (req, res, next) => {
 			model: Event,
 			include: {
 				model: Group,
-				include: { model: Membership, where: { userId, status: "co-host" } }
+				include: {
+					model: Membership,
+					as: "Memberships",
+					where: { userId, status: "co-host" }
+				}
 			}
 		}
 	});
