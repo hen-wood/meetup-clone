@@ -9,16 +9,20 @@ const {
 	Venue
 } = require("../../db/models");
 const { Op } = require("sequelize");
+const { requireAuthentication } = require("../../utils/authentication");
 const {
-	requireAuthentication,
 	checkIfEventDoesNotExist,
+	checkIfAttendanceDoesNotExist
+} = require("../../utils/not-found");
+const {
+	requireMemberOfEventGroup,
 	requireOrganizerOrCoHostForEvent,
-	checkIfUserIsNotMemberOfEventGroup,
-	checkIfAttendanceRequestAlreadyExists,
-	checkIfAttendanceDoesNotExist,
 	requireOrganizerOrCohostOrIsUserToDeleteAttendance,
 	requireOrganizerOrCoHostOrAttendeeForEvent
-} = require("../../utils/authentication");
+} = require("../../utils/authorization");
+const {
+	checkIfAttendanceRequestAlreadyExists
+} = require("../../utils/validation");
 const { validateCreateGroupEvent } = require("../../utils/validation-chains");
 
 const router = express.Router();
@@ -137,7 +141,7 @@ router.post(
 	"/:eventId/attendance",
 	requireAuthentication,
 	checkIfEventDoesNotExist,
-	checkIfUserIsNotMemberOfEventGroup,
+	requireMemberOfEventGroup,
 	checkIfAttendanceRequestAlreadyExists,
 	async (req, res, next) => {
 		const { eventId } = req.params;
@@ -196,7 +200,7 @@ router.put(
 		attendanceToUpdate.status = status;
 		await attendanceToUpdate.save();
 		const { id } = attendanceToUpdate;
-		return res.json({ id, userId, eventId, status });
+		return res.json({ id, userId, eventId: +eventId, status });
 	}
 );
 

@@ -2,6 +2,7 @@
 const {
 	User,
 	Group,
+	GroupImage,
 	Membership,
 	Event,
 	Attendance,
@@ -14,6 +15,19 @@ const requireAuthorization = () => {
 	const err = new Error("Forbidden");
 	err.status = 403;
 	return err;
+};
+
+const requireOrganizerForGroup = async (req, res, next) => {
+	const { groupId } = req.params;
+	const group = await Group.findByPk(groupId, { attributes: ["organizerId"] });
+	const isOrganizer = group.organizerId == req.user.id;
+	if (isOrganizer) {
+		return next();
+	} else {
+		const err = new Error("Forbidden, must be group organizer");
+		err.status = 403;
+		return next(err);
+	}
 };
 
 const requireOrganizerOrCoHost = async (req, res, next) => {
@@ -41,14 +55,14 @@ const requireOrganizerOrCoHost = async (req, res, next) => {
 	return next(err);
 };
 
-const requireOrganizerOrCoHostToGetGroupVenues = async (req, res, next) => {
+const requireOrganizerOrCoHostForGroup = async (req, res, next) => {
 	const { groupId } = req.params;
 	const currentUserId = req.user.id;
 
 	const group = await Group.scope({
 		method: ["singleGroupWithMemberships", currentUserId]
 	}).findByPk(groupId);
-	console.log(group.toJSON());
+
 	const authorized =
 		group.organizerId == currentUserId || group.Memberships.length > 0;
 	if (authorized) {
@@ -60,6 +74,74 @@ const requireOrganizerOrCoHostToGetGroupVenues = async (req, res, next) => {
 		err.status = 403;
 		return next(err);
 	}
+};
+
+const requireCorrectUserPermissionsToEditMembership = async (
+	req,
+	res,
+	next
+) => {
+	const { groupId } = req.params;
+	const currentUserId = req.user.id;
+	const { status } = req.body;
+
+	const group = await Group.findByPk(groupId, {
+		include: {
+			model: Membership,
+			as: "Memberships",
+			where: { [Op.and]: [{ userId: currentUserId }, { status: "co-host" }] },
+			required: false
+		}
+	});
+
+	if (group.organizerId == currentUserId) return next();
+
+	const err = new Error();
+	err.status = 403;
+
+	if (group.Memberships.length > 0) {
+		if (status == "member") {
+			return next();
+		} else {
+			err.message = "Must be group organizer to change status to 'co-host'";
+			return next(err);
+		}
+	}
+	err.message = "Must be group organizer or co-host to change member status";
+	return next(err);
+};
+
+const requireOrganizerOrCoHostOrIsUserToDeleteMember = async (
+	req,
+	res,
+	next
+) => {
+	const { groupId } = req.params;
+	const { memberId } = req.body;
+	const currentUserId = req.user.id;
+
+	const group = await Group.findByPk(groupId, {
+		include: {
+			model: Membership,
+			as: "Memberships",
+			where: { [Op.and]: [{ userId: currentUserId }, { status: "co-host" }] },
+			required: false
+		}
+	});
+
+	const isOrganizer = group.organizerId == currentUserId;
+	const isCohost = group.Memberships.length > 0;
+	const isUser = currentUserId === memberId;
+
+	if (isCohost || isOrganizer || isUser) {
+		return next();
+	}
+
+	const err = new Error(
+		"Forbidden, must be group organizer, co-host, or user being deleted"
+	);
+	err.status = 403;
+	return next(err);
 };
 
 const requireOrganizerOrCoHostForEvent = async (req, res, next) => {
@@ -91,6 +173,33 @@ const requireOrganizerOrCoHostForEvent = async (req, res, next) => {
 	}
 	return next();
 };
+
+const requireOrganizerOrCoHostForGroupImage = async (req, res, next) => {
+	const { imageId } = req.params;
+	const currentUserId = req.user.id;
+	const group = await GroupImage.findByPk(imageId, {
+		include: {
+			model: Group,
+			include: {
+				model: Membership,
+				as: "Memberships",
+				where: { [Op.and]: [{ userId: currentUserId }, { status: "co-host" }] },
+				required: false
+			}
+		}
+	});
+
+	const authorized =
+		group.Group.organizerId == currentUserId ||
+		group.Group.Memberships.length > 0;
+
+	if (!authorized) {
+		const err = new Error("Forbidden, must be group organizer or co-host");
+		err.status = 403;
+		return next(err);
+	}
+	return next();
+};
 const requireOrganizerOrCoHostForEventImage = async (req, res, next) => {
 	const { imageId } = req.params;
 	const userId = req.user.id;
@@ -102,7 +211,11 @@ const requireOrganizerOrCoHostForEventImage = async (req, res, next) => {
 			model: Event,
 			include: {
 				model: Group,
-				include: { model: Membership, where: { userId, status: "co-host" } }
+				include: {
+					model: Membership,
+					as: "Memberships",
+					where: { userId, status: "co-host" }
+				}
 			}
 		}
 	});
@@ -271,7 +384,7 @@ const checkIfUserAlreadyExists = async (req, res, next) => {
 	next();
 };
 
-const checkIfUserIsNotMemberOfEventGroup = async (req, res, next) => {
+const requireMemberOfEventGroup = async (req, res, next) => {
 	const userId = req.user.id;
 	const { eventId } = req.params;
 	const isMember = await Event.findByPk(eventId, {
@@ -306,13 +419,17 @@ const checkIfUserIsNotMemberOfEventGroup = async (req, res, next) => {
 module.exports = {
 	requireAuthorization,
 	checkIfUserAlreadyExists,
-	checkIfUserIsNotMemberOfEventGroup,
+	requireMemberOfEventGroup,
+	requireOrganizerForGroup,
 	requireOrganizerOrCoHost,
-	requireOrganizerOrCoHostToGetGroupVenues,
+	requireOrganizerOrCoHostForGroup,
 	requireOrganizerOrCoHostToEditVenue,
+	requireCorrectUserPermissionsToEditMembership,
+	requireOrganizerOrCoHostOrIsUserToDeleteMember,
 	requireOrganizerOrCoHostOrIsUser,
 	requireOrganizerOrCoHostForEvent,
 	requireOrganizerOrCoHostOrAttendeeForEvent,
 	requireOrganizerOrCohostOrIsUserToDeleteAttendance,
+	requireOrganizerOrCoHostForGroupImage,
 	requireOrganizerOrCoHostForEventImage
 };

@@ -10,28 +10,27 @@ const {
 	Venue
 } = require("../../db/models");
 const { Op } = require("sequelize");
-const {
-	requireAuthentication,
-	requireAuthorization,
-	checkIfMembershipExists,
-	checkIfGroupDoesNotExist,
-	requireOrganizerOrCoHost,
-	requireOrganizerOrCoHostOrIsUser,
-	checkIfMembershipDoesNotExist
-} = require("../../utils/authentication.js");
+const { requireAuthentication } = require("../../utils/authentication.js");
 const {
 	validateCreateGroup,
 	validateEditGroup,
 	validateCreateGroupVenue,
 	validateCreateGroupEvent
 } = require("../../utils/validation-chains");
-const { notFound } = require("../../utils/not-found");
+const {
+	checkIfGroupDoesNotExist,
+	checkIfMembershipDoesNotExist
+} = require("../../utils/not-found");
 const {
 	checkForValidStatus,
-	checkIfUserDoesNotExist
+	checkIfUserDoesNotExist,
+	checkIfMembershipAlreadyExists
 } = require("../../utils/validation");
 const {
-	requireOrganizerOrCoHostToGetGroupVenues
+	requireOrganizerForGroup,
+	requireOrganizerOrCoHostForGroup,
+	requireCorrectUserPermissionsToEditMembership,
+	requireOrganizerOrCoHostOrIsUserToDeleteMember
 } = require("../../utils/authorization");
 
 const router = express.Router();
@@ -52,59 +51,72 @@ router.get(
 );
 
 // Get all members of a group by group id
-router.get("/:groupId/members", async (req, res, next) => {
-	const { groupId } = req.params;
-	const isOrganizer = await Group.findOne({
-		attributes: ["organizerId"],
-		where: {
-			[Op.and]: [{ organizerId: req.user.id }, { id: groupId }]
-		}
-	});
+router.get(
+	"/:groupId/members",
+	checkIfGroupDoesNotExist,
+	async (req, res, next) => {
+		const { groupId } = req.params;
+		const currentUserId = req.user.id;
 
-	let where = {};
-	if (!isOrganizer) {
-		where = {
-			status: {
-				[Op.ne]: "pending"
-			}
-		};
-	}
-	const group = await Group.findByPk(groupId, {
-		attributes: [],
-		include: {
-			model: User,
-			as: "Members",
-			through: {
-				attributes: {
-					exclude: ["id", "userId", "groupId", "createdAt", "updatedAt"]
+		const group = await Group.findByPk(groupId, {
+			attributes: [],
+			include: [
+				{ model: User, as: "Organizer", required: false },
+				{
+					model: Membership,
+					as: "Memberships",
+					where: {
+						[Op.and]: [{ status: "co-host" }, { userId: currentUserId }]
+					},
+					required: false
+				}
+			]
+		});
+
+		const isOrganizerOrCoHost =
+			group.Organizer.id == currentUserId || group.Memberships.length > 0;
+
+		let where = {};
+		if (!isOrganizerOrCoHost) {
+			where = {
+				status: {
+					[Op.ne]: "pending"
+				}
+			};
+		}
+		const groupMembers = await Group.findByPk(groupId, {
+			attributes: [],
+			include: {
+				model: User,
+				as: "Members",
+				through: {
+					attributes: {
+						exclude: ["id", "userId", "groupId", "createdAt", "updatedAt"]
+					},
+					where
 				},
-				where
-			},
-			attributes: {
-				exclude: [
-					"username",
-					"email",
-					"hashedPassword",
-					"createdAt",
-					"updatedAt"
-				]
+				attributes: {
+					exclude: [
+						"username",
+						"email",
+						"hashedPassword",
+						"createdAt",
+						"updatedAt"
+					]
+				}
 			}
-		}
-	});
+		});
 
-	if (!group) {
-		return next(notFound("Group couldn't be found"));
+		return res.json(groupMembers);
 	}
-
-	res.json(group);
-});
+);
 
 // Get all venues for a Group specified by its id
 router.get(
 	"/:groupId/venues",
 	requireAuthentication,
 	checkIfGroupDoesNotExist,
-	requireOrganizerOrCoHostToGetGroupVenues,
+	requireOrganizerOrCoHostForGroup,
 	async (req, res, next) => {
 		const { groupId } = req.params;
 		const venues = await Group.findByPk(groupId, {
@@ -150,8 +162,8 @@ router.get("/", async (req, res, next) => {
 router.post(
 	"/:groupId/membership",
 	requireAuthentication,
-	checkIfMembershipExists,
 	checkIfGroupDoesNotExist,
+	checkIfMembershipAlreadyExists,
 	async (req, res, next) => {
 		const userId = req.user.id;
 		const { groupId } = req.params;
@@ -175,14 +187,11 @@ router.post(
 router.post(
 	"/:groupId/images",
 	requireAuthentication,
+	checkIfGroupDoesNotExist,
+	requireOrganizerForGroup,
 	async (req, res, next) => {
 		const { groupId } = req.params;
-		const groupToAddImageTo = await Group.findByPk(groupId);
-		if (!groupToAddImageTo) {
-			return next(notFound("Group couldn't be found"));
-		} else if (req.user.id !== groupToAddImageTo.organizerId) {
-			return next(requireAuthorization());
-		}
+
 		const { url, preview } = req.body;
 		const newGroupImage = await GroupImage.create({
 			groupId,
@@ -224,35 +233,22 @@ router.post(
 router.post(
 	"/:groupId/venues",
 	requireAuthentication,
+	checkIfGroupDoesNotExist,
+	requireOrganizerOrCoHostForGroup,
 	validateCreateGroupVenue,
 	async (req, res, next) => {
 		const { groupId } = req.params;
-		const group = await Group.findByPk(groupId);
-		if (!group) {
-			return next(notFound("Group couldn't be found"));
-		}
-		const userMembership = await Membership.findOne({
-			where: {
-				[Op.and]: [{ userId: req.user.id }, { groupId }]
-			}
+		const { address, city, state, lat, lng } = req.body;
+		const newVenue = await Venue.create({
+			groupId,
+			address,
+			city,
+			state,
+			lat,
+			lng
 		});
-		if (
-			(userMembership && userMembership.status === "co-host") ||
-			group.organizerId === req.user.id
-		) {
-			const { address, city, state, lat, lng } = req.body;
-			const newVenue = await Venue.create({
-				groupId,
-				address,
-				city,
-				state,
-				lat,
-				lng
-			});
-			const { id } = newVenue;
-			return res.json({ id, groupId, address, city, state, lat, lng });
-		}
-		return next(requireAuthorization());
+		const { id } = newVenue;
+		return res.json({ id, groupId, address, city, state, lat, lng });
 	}
 );
 
@@ -261,7 +257,7 @@ router.post(
 	"/:groupId/events",
 	requireAuthentication,
 	checkIfGroupDoesNotExist,
-	requireOrganizerOrCoHostOrIsUser,
+	requireOrganizerOrCoHostForGroup,
 	validateCreateGroupEvent,
 	async (req, res, next) => {
 		const { groupId } = req.params;
@@ -314,17 +310,14 @@ router.post(
 router.put(
 	"/:groupId",
 	requireAuthentication,
+	checkIfGroupDoesNotExist,
+	requireOrganizerForGroup,
 	validateEditGroup,
 	async (req, res, next) => {
 		const { groupId } = req.params;
 		const { name, about, type, private, city, state } = req.body;
 
 		const groupToEdit = await Group.findByPk(groupId);
-		if (!groupToEdit) {
-			return next(notFound("Group couldn't be found"));
-		} else if (req.user.id !== groupToEdit.organizerId) {
-			return next(requireAuthorization());
-		}
 
 		if (name) groupToEdit.name = name;
 		if (about) groupToEdit.about = about;
@@ -342,8 +335,10 @@ router.put(
 	"/:groupId/membership",
 	requireAuthentication,
 	checkIfGroupDoesNotExist,
-	requireOrganizerOrCoHost,
+	checkIfUserDoesNotExist,
+	checkIfMembershipDoesNotExist,
 	checkForValidStatus,
+	requireCorrectUserPermissionsToEditMembership,
 	async (req, res, next) => {
 		const { groupId } = req.params;
 		const { memberId, status } = req.body;
@@ -370,7 +365,7 @@ router.delete(
 	checkIfGroupDoesNotExist,
 	checkIfUserDoesNotExist,
 	checkIfMembershipDoesNotExist,
-	requireOrganizerOrCoHostOrIsUser,
+	requireOrganizerOrCoHostOrIsUserToDeleteMember,
 	async (req, res, next) => {
 		const { memberId } = req.body;
 		const { groupId } = req.params;
@@ -388,20 +383,20 @@ router.delete(
 );
 
 // Delete a group
-router.delete("/:groupId", requireAuthentication, async (req, res, next) => {
-	const { groupId } = req.params;
-	const groupToDelete = await Group.findByPk(groupId);
-	if (!groupToDelete) {
-		return next(notFound("Group couldn't be found"));
+router.delete(
+	"/:groupId",
+	requireAuthentication,
+	checkIfGroupDoesNotExist,
+	requireOrganizerForGroup,
+	async (req, res, next) => {
+		const { groupId } = req.params;
+		const groupToDelete = await Group.findByPk(groupId);
+		await groupToDelete.destroy();
+		return res.json({
+			message: "Successfully deleted",
+			statusCode: 200
+		});
 	}
-	if (groupToDelete.organizerId !== req.user.id) {
-		return next(requireAuthorization());
-	}
-	await groupToDelete.destroy();
-	return res.json({
-		message: "Successfully deleted",
-		statusCode: 200
-	});
-});
+);
 
 module.exports = router;

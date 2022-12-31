@@ -1,7 +1,7 @@
 // backend/utils/validation.js
 const { validationResult } = require("express-validator");
-const { ValidationError } = require("sequelize");
-const { User } = require("../db/models");
+const { Op, ValidationError } = require("sequelize");
+const { User, Membership, Attendance } = require("../db/models");
 
 // middleware for formatting errors from express-validator middleware
 const handleValidationErrors = (req, _res, next) => {
@@ -50,7 +50,8 @@ const checkIfUserDoesNotExist = async (req, res, next) => {
 	}
 	return next();
 };
-const checkIfMembershipExists = async (req, res, next) => {
+
+const checkIfMembershipAlreadyExists = async (req, res, next) => {
 	const { groupId } = req.params;
 	const userId = req.user.id;
 	const existingMembership = await Membership.findOne({
@@ -99,5 +100,7 @@ const checkIfAttendanceRequestAlreadyExists = async (req, res, next) => {
 module.exports = {
 	handleValidationErrors,
 	checkForValidStatus,
-	checkIfUserDoesNotExist
+	checkIfUserDoesNotExist,
+	checkIfAttendanceRequestAlreadyExists,
+	checkIfMembershipAlreadyExists
 };

@@ -1,19 +1,13 @@
 const {
 	User,
 	Group,
+	GroupImage,
 	Membership,
 	Event,
-	Attendance,
 	EventImage,
 	Venue
 } = require("../db/models");
 const { Op } = require("sequelize");
-
-const notFound = msg => {
-	const err = new Error(msg);
-	err.status = 404;
-	return err;
-};
 
 const checkIfMembershipDoesNotExist = async (req, res, next) => {
 	const { groupId } = req.params;
@@ -75,6 +69,18 @@ const checkIfGroupDoesNotExist = async (req, res, next) => {
 	}
 	return next();
 };
+
+const checkIfGroupImageDoesNotExist = async (req, res, next) => {
+	const { imageId } = req.params;
+	const imageToDelete = await GroupImage.findByPk(imageId);
+	if (!imageToDelete) {
+		const err = new Error("Group Image couldn't be found");
+		err.status = 404;
+		return next(err);
+	}
+	return next();
+};
+
 const checkIfVenueDoesNotExist = async (req, res, next) => {
 	const venueExists = await Venue.findByPk(req.params.venueId);
 	if (!venueExists) {
@@ -96,10 +102,10 @@ const checkIfEventImageDoesNotExist = async (req, res, next) => {
 	return next();
 };
 module.exports = {
-	notFound,
 	checkIfMembershipDoesNotExist,
 	checkIfEventDoesNotExist,
 	checkIfGroupDoesNotExist,
+	checkIfGroupImageDoesNotExist,
 	checkIfAttendanceDoesNotExist,
 	checkIfVenueDoesNotExist,
 	checkIfEventImageDoesNotExist
