@@ -1,4 +1,4 @@
-// backend/utils/authenticationorization.js
+// backend/utils/authorization.js
 const {
 	User,
 	Group,
@@ -10,12 +10,6 @@ const {
 	Venue
 } = require("../db/models");
 const { Op } = require("sequelize");
-
-const requireAuthorization = () => {
-	const err = new Error("Forbidden");
-	err.status = 403;
-	return err;
-};
 
 const requireOrganizerForGroup = async (req, res, next) => {
 	const { groupId } = req.params;
@@ -417,7 +411,6 @@ const requireMemberOfEventGroup = async (req, res, next) => {
 };
 
 module.exports = {
-	requireAuthorization,
 	checkIfUserAlreadyExists,
 	requireMemberOfEventGroup,
 	requireOrganizerForGroup,
