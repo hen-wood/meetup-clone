@@ -1,4 +1,4 @@
-// backend/utils/authenticationentication.js
+// backend/utils/authentication.js
 const jwt = require("jsonwebtoken");
 const { jwtConfig } = require("../config");
 const {
@@ -67,12 +67,6 @@ const requireAuthentication = async (req, _res, next) => {
 	return next(err);
 };
 
-const requireAuthorization = () => {
-	const err = new Error("Forbidden");
-	err.status = 403;
-	return err;
-};
-
 const requireOrganizerOrCoHost = async (req, res, next) => {
 	const { groupId } = req.params;
 	const { status } = req.body;
@@ -138,7 +132,11 @@ const requireOrganizerOrCoHostForEventImage = async (req, res, next) => {
 			model: Event,
 			include: {
 				model: Group,
-				include: { model: Membership, where: { userId, status: "co-host" } }
+				include: {
+					model: Membership,
+					as: "Memberships",
+					where: { userId, status: "co-host" }
+				}
 			}
 		}
 	});
@@ -283,32 +281,6 @@ const requireOrganizerOrCoHostToEditVenue = async (req, res, next) => {
 		err.status = 403;
 		return next(err);
 	}
-};
-
-const requireOrganizerOrCoHostOrIsUser = async (req, res, next) => {
-	const { groupId } = req.params;
-	const { memberId } = req.body;
-	const currentUserId = req.user.id;
-
-	const isCohost = await Membership.findOne({
-		where: {
-			[Op.and]: [{ groupId }, { userId: currentUserId }, { status: "co-host" }]
-		}
-	});
-
-	const isOrganizer = await Group.findOne({
-		where: { [Op.and]: [{ organizerId: currentUserId }, { id: groupId }] }
-	});
-
-	const isUser = currentUserId === memberId;
-
-	if (isCohost || isOrganizer || isUser) {
-		return next();
-	}
-
-	const err = new Error("Forbidden");
-	err.status = 403;
-	return next(err);
 };
 
 const checkIfMembershipAlreadyExists = async (req, res, next) => {
@@ -471,13 +443,11 @@ module.exports = {
 	setTokenCookie,
 	restoreUser,
 	requireAuthentication,
-	requireAuthorization,
 	checkIfUserAlreadyExists,
 	checkIfMembershipAlreadyExists,
 	checkIfGroupDoesNotExist,
 	requireOrganizerOrCoHost,
 	requireOrganizerOrCoHostToEditVenue,
-	requireOrganizerOrCoHostOrIsUser,
 	requireOrganizerOrCoHostForEvent,
 	requireOrganizerOrCoHostOrAttendeeForEvent,
 	checkIfMembershipDoesNotExist,

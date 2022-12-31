@@ -16,14 +16,14 @@ const requireAuthorization = () => {
 	return err;
 };
 
-const requireOrganizerToAddImageToGroup = async (req, res, next) => {
+const requireOrganizerForGroup = async (req, res, next) => {
 	const { groupId } = req.params;
 	const group = await Group.findByPk(groupId, { attributes: ["organizerId"] });
 	const isOrganizer = group.organizerId == req.user.id;
 	if (isOrganizer) {
 		return next();
 	} else {
-		const err = new Error("Forbidden, must be group organizer to add an image");
+		const err = new Error("Forbidden, must be group organizer");
 		err.status = 403;
 		return next(err);
 	}
@@ -54,14 +54,14 @@ const requireOrganizerOrCoHost = async (req, res, next) => {
 	return next(err);
 };
 
-const requireOrganizerOrCoHostForVenues = async (req, res, next) => {
+const requireOrganizerOrCoHostForGroup = async (req, res, next) => {
 	const { groupId } = req.params;
 	const currentUserId = req.user.id;
 
 	const group = await Group.scope({
 		method: ["singleGroupWithMemberships", currentUserId]
 	}).findByPk(groupId);
-	console.log(group.toJSON());
+
 	const authorized =
 		group.organizerId == currentUserId || group.Memberships.length > 0;
 	if (authorized) {
@@ -73,6 +73,74 @@ const requireOrganizerOrCoHostForVenues = async (req, res, next) => {
 		err.status = 403;
 		return next(err);
 	}
+};
+
+const requireCorrectUserPermissionsToEditMembership = async (
+	req,
+	res,
+	next
+) => {
+	const { groupId } = req.params;
+	const currentUserId = req.user.id;
+	const { status } = req.body;
+
+	const group = await Group.findByPk(groupId, {
+		include: {
+			model: Membership,
+			as: "Memberships",
+			where: { [Op.and]: [{ userId: currentUserId }, { status: "co-host" }] },
+			required: false
+		}
+	});
+
+	if (group.organizerId == currentUserId) return next();
+
+	const err = new Error();
+	err.status = 403;
+
+	if (group.Memberships.length > 0) {
+		if (status == "member") {
+			return next();
+		} else {
+			err.message = "Must be group organizer to change status to 'co-host'";
+			return next(err);
+		}
+	}
+	err.message = "Must be group organizer or co-host to change member status";
+	return next(err);
+};
+
+const requireOrganizerOrCoHostOrIsUserToDeleteMember = async (
+	req,
+	res,
+	next
+) => {
+	const { groupId } = req.params;
+	const { memberId } = req.body;
+	const currentUserId = req.user.id;
+
+	const group = await Group.findByPk(groupId, {
+		include: {
+			model: Membership,
+			as: "Memberships",
+			where: { [Op.and]: [{ userId: currentUserId }, { status: "co-host" }] },
+			required: false
+		}
+	});
+
+	const isOrganizer = group.organizerId == currentUserId;
+	const isCohost = group.Memberships.length > 0;
+	const isUser = currentUserId === memberId;
+
+	if (isCohost || isOrganizer || isUser) {
+		return next();
+	}
+
+	const err = new Error(
+		"Forbidden, must be group organizer, co-host, or user being deleted"
+	);
+	err.status = 403;
+	return next(err);
 };
 
 const requireOrganizerOrCoHostForEvent = async (req, res, next) => {
@@ -320,10 +388,12 @@ module.exports = {
 	requireAuthorization,
 	checkIfUserAlreadyExists,
 	checkIfUserIsNotMemberOfEventGroup,
-	requireOrganizerToAddImageToGroup,
+	requireOrganizerForGroup,
 	requireOrganizerOrCoHost,
-	requireOrganizerOrCoHostForVenues,
+	requireOrganizerOrCoHostForGroup,
 	requireOrganizerOrCoHostToEditVenue,
+	requireCorrectUserPermissionsToEditMembership,
+	requireOrganizerOrCoHostOrIsUserToDeleteMember,
 	requireOrganizerOrCoHostOrIsUser,
 	requireOrganizerOrCoHostForEvent,
 	requireOrganizerOrCoHostOrAttendeeForEvent,

@@ -50,6 +50,7 @@ const checkIfUserDoesNotExist = async (req, res, next) => {
 	}
 	return next();
 };
+
 const checkIfMembershipAlreadyExists = async (req, res, next) => {
 	const { groupId } = req.params;
 	const userId = req.user.id;

@@ -12,10 +12,7 @@ const {
 const { Op } = require("sequelize");
 const {
 	requireAuthentication,
-	requireAuthorization,
-	checkIfMembershipAlreadyExists,
-	requireOrganizerOrCoHost,
-	requireOrganizerOrCoHostOrIsUser
+	checkIfMembershipAlreadyExists
 } = require("../../utils/authentication.js");
 const {
 	validateCreateGroup,
@@ -24,7 +21,6 @@ const {
 	validateCreateGroupEvent
 } = require("../../utils/validation-chains");
 const {
-	notFound,
 	checkIfGroupDoesNotExist,
 	checkIfMembershipDoesNotExist
 } = require("../../utils/not-found");
@@ -33,8 +29,10 @@ const {
 	checkIfUserDoesNotExist
 } = require("../../utils/validation");
 const {
-	requireOrganizerToAddImageToGroup,
-	requireOrganizerOrCoHostForVenues
+	requireOrganizerForGroup,
+	requireOrganizerOrCoHostForGroup,
+	requireCorrectUserPermissionsToEditMembership,
+	requireOrganizerOrCoHostOrIsUserToDeleteMember
 } = require("../../utils/authorization");
 
 const router = express.Router();
@@ -120,7 +118,7 @@ router.get(
 	"/:groupId/venues",
 	requireAuthentication,
 	checkIfGroupDoesNotExist,
-	requireOrganizerOrCoHostForVenues,
+	requireOrganizerOrCoHostForGroup,
 	async (req, res, next) => {
 		const { groupId } = req.params;
 		const venues = await Group.findByPk(groupId, {
@@ -166,8 +164,8 @@ router.get("/", async (req, res, next) => {
 router.post(
 	"/:groupId/membership",
 	requireAuthentication,
-	checkIfMembershipAlreadyExists,
 	checkIfGroupDoesNotExist,
+	checkIfMembershipAlreadyExists,
 	async (req, res, next) => {
 		const userId = req.user.id;
 		const { groupId } = req.params;
@@ -192,7 +190,7 @@ router.post(
 	"/:groupId/images",
 	requireAuthentication,
 	checkIfGroupDoesNotExist,
-	requireOrganizerToAddImageToGroup,
+	requireOrganizerForGroup,
 	async (req, res, next) => {
 		const { groupId } = req.params;
 
@@ -238,7 +236,7 @@ router.post(
 	"/:groupId/venues",
 	requireAuthentication,
 	checkIfGroupDoesNotExist,
-	requireOrganizerOrCoHostForVenues,
+	requireOrganizerOrCoHostForGroup,
 	validateCreateGroupVenue,
 	async (req, res, next) => {
 		const { groupId } = req.params;
@@ -261,7 +259,7 @@ router.post(
 	"/:groupId/events",
 	requireAuthentication,
 	checkIfGroupDoesNotExist,
-	requireOrganizerOrCoHostOrIsUser,
+	requireOrganizerOrCoHostForGroup,
 	validateCreateGroupEvent,
 	async (req, res, next) => {
 		const { groupId } = req.params;
@@ -314,17 +312,14 @@ router.post(
 router.put(
 	"/:groupId",
 	requireAuthentication,
+	checkIfGroupDoesNotExist,
+	requireOrganizerForGroup,
 	validateEditGroup,
 	async (req, res, next) => {
 		const { groupId } = req.params;
 		const { name, about, type, private, city, state } = req.body;
 
 		const groupToEdit = await Group.findByPk(groupId);
-		if (!groupToEdit) {
-			return next(notFound("Group couldn't be found"));
-		} else if (req.user.id !== groupToEdit.organizerId) {
-			return next(requireAuthorization());
-		}
 
 		if (name) groupToEdit.name = name;
 		if (about) groupToEdit.about = about;
@@ -342,8 +337,10 @@ router.put(
 	"/:groupId/membership",
 	requireAuthentication,
 	checkIfGroupDoesNotExist,
-	requireOrganizerOrCoHost,
+	checkIfUserDoesNotExist,
+	checkIfMembershipDoesNotExist,
 	checkForValidStatus,
+	requireCorrectUserPermissionsToEditMembership,
 	async (req, res, next) => {
 		const { groupId } = req.params;
 		const { memberId, status } = req.body;
@@ -370,7 +367,7 @@ router.delete(
 	checkIfGroupDoesNotExist,
 	checkIfUserDoesNotExist,
 	checkIfMembershipDoesNotExist,
-	requireOrganizerOrCoHostOrIsUser,
+	requireOrganizerOrCoHostOrIsUserToDeleteMember,
 	async (req, res, next) => {
 		const { memberId } = req.body;
 		const { groupId } = req.params;
@@ -388,20 +385,20 @@ router.delete(
 );
 
 // Delete a group
-router.delete("/:groupId", requireAuthentication, async (req, res, next) => {
-	const { groupId } = req.params;
-	const groupToDelete = await Group.findByPk(groupId);
-	if (!groupToDelete) {
-		return next(notFound("Group couldn't be found"));
+router.delete(
+	"/:groupId",
+	requireAuthentication,
+	checkIfGroupDoesNotExist,
+	requireOrganizerForGroup,
+	async (req, res, next) => {
+		const { groupId } = req.params;
+		const groupToDelete = await Group.findByPk(groupId);
+		await groupToDelete.destroy();
+		return res.json({
+			message: "Successfully deleted",
+			statusCode: 200
+		});
 	}
-	if (groupToDelete.organizerId !== req.user.id) {
-		return next(requireAuthorization());
-	}
-	await groupToDelete.destroy();
-	return res.json({
-		message: "Successfully deleted",
-		statusCode: 200
-	});
-});
+);
 
 module.exports = router;

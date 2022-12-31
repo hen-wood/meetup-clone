@@ -3,17 +3,10 @@ const {
 	Group,
 	Membership,
 	Event,
-	Attendance,
 	EventImage,
 	Venue
 } = require("../db/models");
 const { Op } = require("sequelize");
-
-const notFound = msg => {
-	const err = new Error(msg);
-	err.status = 404;
-	return err;
-};
 
 const checkIfMembershipDoesNotExist = async (req, res, next) => {
 	const { groupId } = req.params;
@@ -96,7 +89,6 @@ const checkIfEventImageDoesNotExist = async (req, res, next) => {
 	return next();
 };
 module.exports = {
-	notFound,
 	checkIfMembershipDoesNotExist,
 	checkIfEventDoesNotExist,
 	checkIfGroupDoesNotExist,

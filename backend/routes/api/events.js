@@ -196,7 +196,7 @@ router.put(
 		attendanceToUpdate.status = status;
 		await attendanceToUpdate.save();
 		const { id } = attendanceToUpdate;
-		return res.json({ id, userId, eventId, status });
+		return res.json({ id, userId, eventId: +eventId, status });
 	}
 );
 

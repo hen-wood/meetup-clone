@@ -32,6 +32,7 @@ router.delete("/:imageId", requireAuthentication, async (req, res, next) => {
 			attributes: ["organizerId"],
 			include: {
 				model: Membership,
+				as: "Memberships",
 				attributes: ["userId", "status"]
 			}
 		}
