@@ -311,7 +311,7 @@ const requireOrganizerOrCoHostOrIsUser = async (req, res, next) => {
 	return next(err);
 };
 
-const checkIfMembershipExists = async (req, res, next) => {
+const checkIfMembershipAlreadyExists = async (req, res, next) => {
 	const { groupId } = req.params;
 	const userId = req.user.id;
 	const existingMembership = await Membership.findOne({
@@ -473,7 +473,7 @@ module.exports = {
 	requireAuthentication,
 	requireAuthorization,
 	checkIfUserAlreadyExists,
-	checkIfMembershipExists,
+	checkIfMembershipAlreadyExists,
 	checkIfGroupDoesNotExist,
 	requireOrganizerOrCoHost,
 	requireOrganizerOrCoHostToEditVenue,

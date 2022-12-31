@@ -14,7 +14,7 @@ const { Op } = require("sequelize");
 const {
 	requireAuthentication,
 	requireAuthorization,
-	checkIfMembershipExists,
+	checkIfMembershipAlreadyExists,
 	checkIfGroupDoesNotExist,
 	requireOrganizerOrCoHost,
 	requireOrganizerOrCoHostOrIsUser,

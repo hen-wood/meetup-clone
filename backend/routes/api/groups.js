@@ -13,8 +13,7 @@ const { Op } = require("sequelize");
 const {
 	requireAuthentication,
 	requireAuthorization,
-	checkIfMembershipExists,
-	checkIfGroupDoesNotExist,
+	checkIfMembershipAlreadyExists,
 	requireOrganizerOrCoHost,
 	requireOrganizerOrCoHostOrIsUser,
 	checkIfMembershipDoesNotExist
@@ -25,13 +24,14 @@ const {
 	validateCreateGroupVenue,
 	validateCreateGroupEvent
 } = require("../../utils/validation-chains");
-const { notFound } = require("../../utils/not-found");
+const { notFound, checkIfGroupDoesNotExist } = require("../../utils/not-found");
 const {
 	checkForValidStatus,
 	checkIfUserDoesNotExist
 } = require("../../utils/validation");
 const {
-	requireOrganizerOrCoHostToGetGroupVenues
+	requireOrganizerOrCoHostToGetGroupVenues,
+	requireOrganizerToAddImageToGroup
 } = require("../../utils/authorization");
 
 const router = express.Router();
@@ -150,7 +150,7 @@ router.get("/", async (req, res, next) => {
 router.post(
 	"/:groupId/membership",
 	requireAuthentication,
-	checkIfMembershipExists,
+	checkIfMembershipAlreadyExists,
 	checkIfGroupDoesNotExist,
 	async (req, res, next) => {
 		const userId = req.user.id;
@@ -175,14 +175,11 @@ router.post(
 router.post(
 	"/:groupId/images",
 	requireAuthentication,
+	checkIfGroupDoesNotExist,
+	requireOrganizerToAddImageToGroup,
 	async (req, res, next) => {
 		const { groupId } = req.params;
-		const groupToAddImageTo = await Group.findByPk(groupId);
-		if (!groupToAddImageTo) {
-			return next(notFound("Group couldn't be found"));
-		} else if (req.user.id !== groupToAddImageTo.organizerId) {
-			return next(requireAuthorization());
-		}
+
 		const { url, preview } = req.body;
 		const newGroupImage = await GroupImage.create({
 			groupId,

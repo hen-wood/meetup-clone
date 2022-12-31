@@ -16,6 +16,19 @@ const requireAuthorization = () => {
 	return err;
 };
 
+const requireOrganizerToAddImageToGroup = async (req, res, next) => {
+	const { groupId } = req.params;
+	const group = await Group.findByPk(groupId, { attributes: ["organizerId"] });
+	const isOrganizer = group.organizerId == req.user.id;
+	if (isOrganizer) {
+		return next();
+	} else {
+		const err = new Error("Forbidden, must be group organizer to add an image");
+		err.status = 403;
+		return next(err);
+	}
+};
+
 const requireOrganizerOrCoHost = async (req, res, next) => {
 	const { groupId } = req.params;
 	const { status } = req.body;
@@ -307,6 +320,7 @@ module.exports = {
 	requireAuthorization,
 	checkIfUserAlreadyExists,
 	checkIfUserIsNotMemberOfEventGroup,
+	requireOrganizerToAddImageToGroup,
 	requireOrganizerOrCoHost,
 	requireOrganizerOrCoHostToGetGroupVenues,
 	requireOrganizerOrCoHostToEditVenue,
