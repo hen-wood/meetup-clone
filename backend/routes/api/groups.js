@@ -313,7 +313,8 @@ router.put(
 		if (city) groupToEdit.city = city;
 		if (state) groupToEdit.state = state;
 		await groupToEdit.save();
-		res.json(groupToEdit);
+
+		return res.json(groupToEdit);
 	}
 );
 
