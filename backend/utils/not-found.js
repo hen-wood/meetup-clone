@@ -61,12 +61,15 @@ const checkIfEventDoesNotExist = async (req, res, next) => {
 
 const checkIfGroupDoesNotExist = async (req, res, next) => {
 	const { groupId } = req.params;
-	const groupExists = await Group.findByPk(groupId);
-	if (!groupExists) {
+	const group = await Group.scope({ method: ["singleGroup"] }).findByPk(
+		groupId
+	);
+	if (!group) {
 		const err = new Error("Group couldn't be found");
 		err.status = 404;
 		return next(err);
 	}
+	req.group = group;
 	return next();
 };
 
