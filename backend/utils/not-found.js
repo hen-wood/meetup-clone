@@ -111,6 +111,5 @@ module.exports = {
 	checkIfGroupImageDoesNotExist,
 	checkIfAttendanceDoesNotExist,
 	checkIfVenueDoesNotExist,
-	checkIfEventImageDoesNotExist,
-	checkIfGroupDoesNotExistTest
+	checkIfEventImageDoesNotExist
 };
