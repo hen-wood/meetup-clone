@@ -119,8 +119,7 @@ module.exports = (sequelize, DataTypes) => {
 								model: Membership,
 								attributes: [],
 								as: "Memberships",
-								where: { status: { [Op.in]: ["member", "co-host"] } },
-								group: ["Membership.id"]
+								where: { status: { [Op.in]: ["member", "co-host"] } }
 							},
 							{
 								model: GroupImage,
@@ -128,11 +127,10 @@ module.exports = (sequelize, DataTypes) => {
 								where: {
 									preview: true
 								},
-								required: false,
-								group: ["GroupImage.id"]
+								required: false
 							}
 						],
-						group: ["Group.id"]
+						group: ["Group.id", "GroupImages.url", "Memberships.id"]
 					};
 				},
 				currentUserGroups(userId) {
