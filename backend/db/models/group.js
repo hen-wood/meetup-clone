@@ -176,7 +176,12 @@ module.exports = (sequelize, DataTypes) => {
 								required: false
 							}
 						],
-						group: ["Group.id", "GroupImages.url", "Memberships.id"]
+						group: [
+							"Group.id",
+							"GroupImages.url",
+							"Members.Membership.id",
+							"Memberships.id"
+						]
 					};
 				},
 				singleGroup() {
