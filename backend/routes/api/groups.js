@@ -306,13 +306,13 @@ router.put(
 	async (req, res, next) => {
 		const { groupId } = req.params;
 		const { name, about, type, private, city, state } = req.body;
-
+		console.log(private);
 		const groupToEdit = await Group.findByPk(groupId);
 
 		if (name) groupToEdit.name = name;
 		if (about) groupToEdit.about = about;
 		if (type) groupToEdit.type = type;
-		if (private) groupToEdit.private = private;
+		if (private !== null) groupToEdit.private = private;
 		if (city) groupToEdit.city = city;
 		if (state) groupToEdit.state = state;
 		await groupToEdit.save();
