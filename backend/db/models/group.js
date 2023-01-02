@@ -119,7 +119,8 @@ module.exports = (sequelize, DataTypes) => {
 								model: Membership,
 								attributes: [],
 								as: "Memberships",
-								where: { status: { [Op.in]: ["member", "co-host"] } }
+								where: { status: { [Op.in]: ["member", "co-host"] } },
+								raw: true
 							},
 							{
 								model: GroupImage,
