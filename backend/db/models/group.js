@@ -1,6 +1,8 @@
 "use strict";
 const { Model } = require("sequelize");
 require("pg").defaults.parseInt8 = true;
+require("pg").types.setTypeParser(701, val => parseFloat(val));
+
 module.exports = (sequelize, DataTypes) => {
 	class Group extends Model {
 		static associate(models) {
