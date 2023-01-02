@@ -130,7 +130,8 @@ module.exports = (sequelize, DataTypes) => {
 								required: false
 							}
 						],
-						group: ["Group.id", "GroupImages.url", "Memberships.id"]
+						group: ["Group.id", "GroupImages.url", "Memberships.id"],
+						raw: true
 					};
 				},
 				currentUserGroups(userId) {
