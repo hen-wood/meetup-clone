@@ -177,12 +177,7 @@ module.exports = (sequelize, DataTypes) => {
 								required: false
 							}
 						],
-						group: [
-							"Group.id",
-							"GroupImages.url",
-							"Members.Membership.id",
-							"Memberships.id"
-						]
+						group: ["Group.id", "GroupImages.url"]
 					};
 				},
 				singleGroup() {
@@ -221,13 +216,7 @@ module.exports = (sequelize, DataTypes) => {
 								}
 							}
 						],
-						group: [
-							"Group.id",
-							"Venues.id",
-							"GroupImages.id",
-							"Memberships.id",
-							"Organizer.id"
-						]
+						group: ["Group.id", "Organizer.id", "GroupImages.id"]
 					};
 				},
 				singleGroupWithMemberships(currentUserId) {
