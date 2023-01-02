@@ -33,6 +33,8 @@ const {
 	requireOrganizerOrCoHostOrIsUserToDeleteMember
 } = require("../../utils/authorization");
 
+require("pg").defaults.parseInt8 = true;
+
 const router = express.Router();
 
 // Get all events of a group by group id
