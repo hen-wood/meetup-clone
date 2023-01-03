@@ -19,7 +19,7 @@ app.use(morgan("dev"));
 app.use(cookieParser());
 app.use(express.json());
 
-app.use(setPostgresParsers);
+app.use(setPostgresParsers());
 
 if (!isProduction) {
 	// enable cors only in development
