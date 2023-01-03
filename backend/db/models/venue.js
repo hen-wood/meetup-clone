@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const { types } = require("pg");
 module.exports = (sequelize, DataTypes) => {
 	class Venue extends Model {
 		static associate(models) {
@@ -44,11 +45,19 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			lat: {
 				type: DataTypes.DECIMAL,
-				allowNull: false
+				allowNull: false,
+				get: function () {
+					// custom getter that uses the custom parser for decimal values
+					return types.getTypeParser(701)(this.getDataValue("lat"));
+				}
 			},
 			lng: {
 				type: DataTypes.DECIMAL,
-				allowNull: false
+				allowNull: false,
+				get: function () {
+					// custom getter that uses the custom parser for decimal values
+					return types.getTypeParser(701)(this.getDataValue("lng"));
+				}
 			}
 		},
 		{
