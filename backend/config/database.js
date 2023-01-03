@@ -17,15 +17,6 @@ module.exports = {
 			ssl: {
 				require: true,
 				rejectUnauthorized: false
-			},
-			types: {
-				setTypeParser: (id, parser) => {
-					console.log(id);
-					if (id == 701) {
-						return val => parseFloat(val);
-					}
-					return parser(val);
-				}
 			}
 		},
 		define: {

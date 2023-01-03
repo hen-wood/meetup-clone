@@ -71,11 +71,7 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			price: {
 				type: DataTypes.DECIMAL,
-				allowNull: false,
-				get: function () {
-					// custom getter that uses the custom parser for decimal values
-					return types.getTypeParser(701)(this.getDataValue("price"));
-				}
+				allowNull: false
 			},
 			startDate: {
 				type: DataTypes.STRING,

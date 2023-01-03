@@ -45,19 +45,11 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			lat: {
 				type: DataTypes.DECIMAL,
-				allowNull: false,
-				get: function () {
-					// custom getter that uses the custom parser for decimal values
-					return types.getTypeParser(701)(this.getDataValue("lat"));
-				}
+				allowNull: false
 			},
 			lng: {
 				type: DataTypes.DECIMAL,
-				allowNull: false,
-				get: function () {
-					// custom getter that uses the custom parser for decimal values
-					return types.getTypeParser(701)(this.getDataValue("lng"));
-				}
+				allowNull: false
 			}
 		},
 		{
