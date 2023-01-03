@@ -2,8 +2,9 @@
 const express = require("express");
 const router = express.Router();
 const apiRouter = require("./api");
+const setPostgresParsers = require("../set-postgres-parsers");
 
-router.use("/api", apiRouter);
+router.use("/api", apiRouter, setPostgresParsers);
 // Add a XSRF-TOKEN cookie
 router.get("/api/csrf/restore", (req, res) => {
 	const csrfToken = req.csrfToken();

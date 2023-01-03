@@ -8,13 +8,12 @@ const cookieParser = require("cookie-parser");
 const routes = require("./routes");
 const { ValidationError } = require("sequelize");
 const { environment } = require("./config");
-const setPostgresParsers = require("./set-postgres-parsers.js");
+
 
 const isProduction = environment === "production";
 
 const app = express();
 
-app.use(setPostgresParsers);
 app.use(morgan("dev"));
 
 app.use(cookieParser());
