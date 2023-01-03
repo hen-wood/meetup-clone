@@ -174,7 +174,7 @@ module.exports = (sequelize, DataTypes) => {
 						subQuery: false,
 						limit: size,
 						offset: size * (page - 1),
-						group: ["Event.id"]
+						group: ["Event.id", "EventImages.url", "Attendances.id"]
 					};
 				},
 				allEventsByGroup(groupId) {
@@ -240,7 +240,7 @@ module.exports = (sequelize, DataTypes) => {
 							}
 						],
 						where: { groupId },
-						group: ["Event.id"]
+						group: ["Event.id", "EventImages.url", "Attendances.id"]
 					};
 				}
 			}
