@@ -20,6 +20,7 @@ module.exports = {
 			},
 			types: {
 				setTypeParser: (id, parser) => {
+					console.log(id);
 					if (id == 701) {
 						return val => parseFloat(val);
 					}
