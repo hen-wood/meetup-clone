@@ -22,12 +22,10 @@ module.exports = {
 				setTypeParser: (id, parser) => {
 					if (id === 701) {
 						// decimal type
+						console.log("hello");
 						return val => parseFloat(val); // parse decimal values as floats
 					}
-					if (id === 20) {
-						// int8
-						return val => parseInt(val, 10); // parse bigInt values as floats
-					}
+
 					return parser(val);
 				}
 			}
