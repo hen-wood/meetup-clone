@@ -227,7 +227,7 @@ router.post(
 		const { groupId } = req.params;
 		const { address, city, state, lat, lng } = req.body;
 		const newVenue = await Venue.create({
-			groupId,
+			groupId: Number(groupId),
 			address,
 			city,
 			state,
@@ -262,7 +262,7 @@ router.post(
 		if (!venueId) venueId = null;
 		const newEvent = await Event.create({
 			venueId,
-			groupId: +groupId,
+			groupId: Number(groupId),
 			name,
 			type,
 			capacity,
