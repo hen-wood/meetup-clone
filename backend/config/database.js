@@ -17,6 +17,14 @@ module.exports = {
 			ssl: {
 				require: true,
 				rejectUnauthorized: false
+			},
+			types: {
+				setTypeParser: (id, parser) => {
+					if (id == 701) {
+						return val => parseFloat(val);
+					}
+					return parser(val);
+				}
 			}
 		},
 		define: {
