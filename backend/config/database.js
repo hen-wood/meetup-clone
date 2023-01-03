@@ -17,17 +17,6 @@ module.exports = {
 			ssl: {
 				require: true,
 				rejectUnauthorized: false
-			},
-			types: {
-				setTypeParser: (id, parser) => {
-					if (id === 701) {
-						// decimal type
-						console.log("hello");
-						return val => parseFloat(val); // parse decimal values as floats
-					}
-
-					return parser(val);
-				}
 			}
 		},
 		define: {
