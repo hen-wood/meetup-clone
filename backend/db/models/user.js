@@ -10,10 +10,11 @@ module.exports = (sequelize, DataTypes) => {
 		validatePassword(password) {
 			return bcrypt.compareSync(password, this.hashedPassword.toString());
 		}
-		static getCurrentUserById(id) {
-			return User.scope("currentUser").findByPk(id);
+
+		static async getCurrentUserById(id) {
+			return await User.scope("currentUser").findByPk(id);
 		}
-		// ASK ABOUT WHY THIS IS NOT ASYNC ^^
+
 		static async login({ credential, password }) {
 			const { Op } = require("sequelize");
 			const user = await User.scope("loginUser").findOne({
@@ -57,13 +58,12 @@ module.exports = (sequelize, DataTypes) => {
 				onDelete: "CASCADE"
 			});
 			User.hasMany(models.Membership, {
-				foreignKey: "groupId",
+				foreignKey: "userId",
 				onDelete: "CASCADE"
 			});
 			User.hasMany(models.Group, {
 				foreignKey: "organizerId",
-				as: "Organizer",
-				onDelete: "CASCADE"
+				as: "Organizer"
 			});
 		}
 	}

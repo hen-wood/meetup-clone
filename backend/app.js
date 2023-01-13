@@ -8,6 +8,7 @@ const cookieParser = require("cookie-parser");
 const routes = require("./routes");
 const { ValidationError } = require("sequelize");
 const { environment } = require("./config");
+const setPostgresParsers = require("./set-postgres-parsers");
 
 const isProduction = environment === "production";
 
@@ -17,6 +18,8 @@ app.use(morgan("dev"));
 
 app.use(cookieParser());
 app.use(express.json());
+
+app.use(setPostgresParsers());
 
 if (!isProduction) {
 	// enable cors only in development

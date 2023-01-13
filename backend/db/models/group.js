@@ -1,6 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
-const Membership = require("./membership");
+
 module.exports = (sequelize, DataTypes) => {
 	class Group extends Model {
 		static associate(models) {
@@ -18,18 +18,14 @@ module.exports = (sequelize, DataTypes) => {
 			});
 			Group.hasMany(models.Membership, {
 				onDelete: "CASCADE",
-				foreignKey: "groupId"
+				foreignKey: "groupId",
+				as: "Memberships"
 			});
 			Group.hasMany(models.GroupImage, {
 				foreignKey: "groupId",
 				onDelete: "CASCADE"
 			});
-			// Group.belongsToMany(models.Venue, {
-			// 	through: models.Event,
-			// 	foreignKey: "groupId",
-			// 	otherKey: "venueId",
-			// 	onDelete: "CASCADE"
-			// });
+
 			Group.hasMany(models.Venue, {
 				foreignKey: "groupId",
 				onDelete: "CASCADE"
@@ -103,7 +99,147 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		{
 			sequelize,
-			modelName: "Group"
+			modelName: "Group",
+			scopes: {
+				allGroups() {
+					const { Membership, GroupImage } = require("../models");
+					const { Op } = require("sequelize");
+					return {
+						attributes: {
+							include: [
+								[
+									sequelize.fn("COUNT", sequelize.col("Memberships.id")),
+									"numMembers"
+								],
+								[sequelize.col("GroupImages.url"), "previewImage"]
+							]
+						},
+						include: [
+							{
+								model: Membership,
+								attributes: [],
+								as: "Memberships",
+								where: { status: { [Op.in]: ["member", "co-host"] } },
+								required: false
+							},
+							{
+								model: GroupImage,
+								attributes: [],
+								where: {
+									preview: true
+								},
+								required: false
+							}
+						],
+						group: ["Group.id", "GroupImages.url"]
+					};
+				},
+				currentUserGroups(userId) {
+					const { Membership, GroupImage, User } = require("../models");
+					const { Op } = require("sequelize");
+					return {
+						attributes: {
+							include: [
+								[
+									sequelize.fn("COUNT", sequelize.col("Memberships.id")),
+									"numMembers"
+								],
+								[sequelize.col("GroupImages.url"), "previewImage"]
+							]
+						},
+						include: [
+							{
+								model: Membership,
+								attributes: [],
+								as: "Memberships",
+								where: { status: { [Op.in]: ["member", "co-host"] } }
+							},
+							{
+								model: User,
+								as: "Members",
+								through: {
+									where: {
+										[Op.and]: [
+											{ userId: userId },
+											{ status: { [Op.in]: ["member", "co-host"] } }
+										]
+									}
+								},
+								required: true,
+								attributes: []
+							},
+							{
+								model: GroupImage,
+								attributes: [],
+								where: {
+									preview: true
+								},
+								required: false
+							}
+						],
+						group: ["Group.id", "GroupImages.url", "Members.Membership.id"]
+					};
+				},
+				singleGroup() {
+					const { Membership, GroupImage, User, Venue } = require("../models");
+					const { Op } = require("sequelize");
+					return {
+						attributes: {
+							include: [
+								[
+									sequelize.fn("COUNT", sequelize.col("Memberships.id")),
+									"numMembers"
+								]
+							]
+						},
+						include: [
+							{
+								model: Membership,
+								attributes: [],
+								as: "Memberships",
+								where: { status: { [Op.in]: ["member", "co-host"] } }
+							},
+							{
+								model: GroupImage,
+								attributes: ["id", "url", "preview"],
+								required: false
+							},
+							{
+								model: User,
+								as: "Organizer",
+								attributes: ["id", "firstName", "lastName"]
+							},
+							{
+								model: Venue,
+								attributes: {
+									exclude: ["createdAt", "updatedAt"]
+								}
+							}
+						],
+						group: [
+							"Group.id",
+							"Organizer.id",
+							"GroupImages.id",
+							"Memberships.id",
+							"Venues.id"
+						]
+					};
+				},
+				singleGroupWithMemberships(currentUserId) {
+					const { Membership } = require("../models");
+					const { Op } = require("sequelize");
+					return {
+						include: {
+							model: Membership,
+							as: "Memberships",
+							where: {
+								[Op.and]: [{ userId: currentUserId }, { status: "co-host" }]
+							},
+							required: false
+						}
+					};
+				}
+			}
 		}
 	);
 	return Group;
