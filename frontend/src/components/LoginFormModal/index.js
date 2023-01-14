@@ -4,6 +4,10 @@ import * as sessionActions from "../../store/session";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import "./LoginForm.css";
+import SmallLogo from "./SmallLogo";
+import { Link } from "react-router-dom";
+import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
+import SignupFormModal from "../SignupFormModal";
 
 function LoginFormModal() {
 	const dispatch = useDispatch();
@@ -25,32 +29,42 @@ function LoginFormModal() {
 
 	return (
 		<>
-			<h1>Log In</h1>
+			{<SmallLogo />}
+			<h1>Log in</h1>
+			<div>
+				Not a member yet?{" "}
+				<span className="sign-up-link">
+					<OpenModalMenuItem
+						itemText="Sign up"
+						modalComponent={<SignupFormModal />}
+					/>
+				</span>
+			</div>
 			<form onSubmit={handleSubmit}>
 				<ul>
 					{errors.map((error, idx) => (
 						<li key={idx}>{error}</li>
 					))}
 				</ul>
-				<label>
-					Username or Email
-					<input
-						type="text"
-						value={credential}
-						onChange={e => setCredential(e.target.value)}
-						required
-					/>
-				</label>
-				<label>
-					Password
-					<input
-						type="password"
-						value={password}
-						onChange={e => setPassword(e.target.value)}
-						required
-					/>
-				</label>
-				<button type="submit">Log In</button>
+				<label htmlFor="email">Email</label>
+				<input
+					name="email"
+					type="text"
+					value={credential}
+					onChange={e => setCredential(e.target.value)}
+					required
+				/>
+				<label htmlFor="password">Password</label>
+				<input
+					name="password"
+					type="password"
+					value={password}
+					onChange={e => setPassword(e.target.value)}
+					required
+				/>
+				<div>
+					<button type="submit">Log in</button>
+				</div>
 			</form>
 		</>
 	);

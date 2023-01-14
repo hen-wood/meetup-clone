@@ -1,9 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;600&display=swap');
+.navigation{
+    display: flex;
+    justify-content: space-between;
+}
 .hidden{
     display: none;
 }
+
 .menu-item{
     cursor: pointer;
 }
-#root>ul>li:nth-child(2)>button>i {
-    cursor: pointer;
+.login-signup-container{
+    width: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'Outfit',sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    margin-right: 20px;
+}
+.login-signup-container .menu-item:hover {
+   color: #0070f3;
+}
+.logo{
+    height: 30px;
+}
+@media only screen and (min-width: 990px) {
+    .logo {
+        margin-left: 40px;
+    }
 }

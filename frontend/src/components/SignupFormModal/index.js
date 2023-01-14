@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import * as sessionActions from "../../store/session";
 import "./SignupForm.css";
+import SmallLogo from "../LoginFormModal/SmallLogo";
 
 function SignupFormModal() {
 	const dispatch = useDispatch();
@@ -41,6 +42,7 @@ function SignupFormModal() {
 
 	return (
 		<>
+			{<SmallLogo />}
 			<h1>Sign Up</h1>
 			<form onSubmit={handleSubmit}>
 				<ul>
@@ -48,61 +50,57 @@ function SignupFormModal() {
 						<li key={idx}>{error}</li>
 					))}
 				</ul>
-				<label>
-					Email
-					<input
-						type="text"
-						value={email}
-						onChange={e => setEmail(e.target.value)}
-						required
-					/>
-				</label>
-				<label>
-					Username
-					<input
-						type="text"
-						value={username}
-						onChange={e => setUsername(e.target.value)}
-						required
-					/>
-				</label>
-				<label>
-					First Name
-					<input
-						type="text"
-						value={firstName}
-						onChange={e => setFirstName(e.target.value)}
-						required
-					/>
-				</label>
-				<label>
-					Last Name
-					<input
-						type="text"
-						value={lastName}
-						onChange={e => setLastName(e.target.value)}
-						required
-					/>
-				</label>
-				<label>
-					Password
-					<input
-						type="password"
-						value={password}
-						onChange={e => setPassword(e.target.value)}
-						required
-					/>
-				</label>
-				<label>
-					Confirm Password
-					<input
-						type="password"
-						value={confirmPassword}
-						onChange={e => setConfirmPassword(e.target.value)}
-						required
-					/>
-				</label>
-				<button type="submit">Sign Up</button>
+				<label htmlFor="email">Email</label>
+				<input
+					type="text"
+					name="email"
+					value={email}
+					onChange={e => setEmail(e.target.value)}
+					required
+				/>
+				<label htmlFor="username">Username</label>
+				<input
+					type="text"
+					name="username"
+					value={username}
+					onChange={e => setUsername(e.target.value)}
+					required
+				/>
+				<label htmlFor="first-name">First Name</label>
+				<input
+					type="text"
+					name="first-name"
+					value={firstName}
+					onChange={e => setFirstName(e.target.value)}
+					required
+				/>
+				<label htmlFor="last-name">Last Name</label>
+				<input
+					type="text"
+					name="last-name"
+					value={lastName}
+					onChange={e => setLastName(e.target.value)}
+					required
+				/>
+				<label htmlFor="password">Password</label>
+				<input
+					type="password"
+					name="password"
+					value={password}
+					onChange={e => setPassword(e.target.value)}
+					required
+				/>
+				<label htmlFor="confirm-password">Confirm Password</label>
+				<input
+					name="confirm-password"
+					type="password"
+					value={confirmPassword}
+					onChange={e => setConfirmPassword(e.target.value)}
+					required
+				/>
+				<div>
+					<button type="submit">Sign Up</button>
+				</div>
 			</form>
 		</>
 	);
