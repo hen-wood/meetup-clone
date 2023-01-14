@@ -52,7 +52,6 @@ export function Modal() {
 				onClick={e => {
 					e.target.nextSibling.className = "modal-content-exit";
 					e.target.className = "modal-background-exit";
-					console.log(e.target.className);
 					setTimeout(() => {
 						closeModal();
 					}, 350);

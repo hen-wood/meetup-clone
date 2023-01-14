@@ -2,6 +2,10 @@
 .navigation{
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #d9d9d9;
+    height: 64px;
+    padding: 0 16px;
 }
 .hidden{
     display: none;
@@ -19,12 +23,59 @@
     font-size: 14px;
     font-weight: 500;
     margin-right: 20px;
+    margin-top:0;
+    margin-bottom: 0;
 }
 .login-signup-container .menu-item:hover {
-   color: #0070f3;
+   color: rgb(0,130,148);
 }
 .logo{
     height: 30px;
+}
+#profile-button{
+    font-size: 48px;
+    color:#d9d9d9;
+}
+#drop-down-chevron{
+    color: #a2a2a2;
+}
+.profile-button-container{
+    width: 75px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.drop-down-link{
+    width: max-content;
+    margin: 10px 0;
+}
+.drop-down-link:hover{
+    color: rgb(0, 130, 148);
+    cursor: pointer;
+}
+
+#drop-down-divider{
+    border-bottom: 1px solid #d9d9d9;
+}
+
+.menu-drop-down{
+    border: 1px solid #d9d9d9;
+    width: 190px;
+    position: absolute;
+    top: 75px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+    padding: 0 15px;
+    box-sizing: border-box;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    margin-right: 20px;
+    box-shadow: 0px 10px 10px -10px  rgba(0, 0, 0, 0.39);
+    cursor: unset;
 }
 @media only screen and (min-width: 990px) {
     .logo {

@@ -7,7 +7,7 @@ import OpenModalMenuItem from "./OpenModalMenuItem";
 import LoginFormModal from "../LoginFormModal";
 import SignupFormModal from "../SignupFormModal";
 import "./Navigation.css";
-import Logo from "./Logo";
+import Logo from "../SVGComponents/Logo";
 function Navigation({ isLoaded }) {
 	const sessionUser = useSelector(state => state.session.user);
 	const content = sessionUser ? (
