@@ -6,6 +6,14 @@
     color:#008294;
 }
 
+.login-sign-up-prompt{
+    font-weight: 300;
+}
+
+#demo-user-button{
+    margin-top: 20px;
+}
+
 #modal-content form{
     display: flex;
     flex-direction: column;
@@ -46,5 +54,16 @@
 }
 #modal-content button:hover{
     background-color: #f77070;
+    cursor: pointer;
+}
+#x-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+    color: #a2a2a2;
+}
+
+#x-button:hover {
     cursor: pointer;
 }

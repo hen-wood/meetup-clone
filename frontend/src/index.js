@@ -14,7 +14,6 @@ import { restoreCSRF, csrfFetch } from "./store/csrf";
 import * as sessionActions from "./store/session";
 
 const store = configureStore();
-
 if (process.env.NODE_ENV !== "production") {
 	restoreCSRF();
 
@@ -22,7 +21,7 @@ if (process.env.NODE_ENV !== "production") {
 	window.store = store;
 	window.sessionActions = sessionActions;
 }
-
+document.querySelector("head > link:nth-child(4)");
 // Wrap the application with the Modal provider and render the Modal component
 // after the App component so that all the Modal content will be layered as
 // HTML elements on top of the all the other HTML elements:

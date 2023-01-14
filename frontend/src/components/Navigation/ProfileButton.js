@@ -37,40 +37,22 @@ function ProfileButton({ user }) {
 		closeMenu();
 	};
 
-	const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
-
+	const menuClassName = showMenu ? "menu-drop-down" : " hidden";
+	const chevronClassName = "fa-solid fa-chevron-" + (showMenu ? "up" : "down");
 	return (
 		<>
-			<button onClick={openMenu}>
-				<i className="fas fa-user-circle" />
-			</button>
-			<ul className={ulClassName} ref={ulRef}>
-				{user ? (
-					<>
-						<li>{user.username}</li>
-						<li>
-							{user.firstName} {user.lastName}
-						</li>
-						<li>{user.email}</li>
-						<li>
-							<button onClick={logout}>Log Out</button>
-						</li>
-					</>
-				) : (
-					<>
-						<OpenModalMenuItem
-							itemText="Log In"
-							onItemClick={closeMenu}
-							modalComponent={<LoginFormModal />}
-						/>
-						<OpenModalMenuItem
-							itemText="Sign Up"
-							onItemClick={closeMenu}
-							modalComponent={<SignupFormModal />}
-						/>
-					</>
-				)}
-			</ul>
+			<div className="profile-button-container" onClick={openMenu}>
+				<i id="profile-button" className="fas fa-user-circle" />
+				<i id="drop-down-chevron" className={chevronClassName} />
+				<div className={menuClassName} ref={ulRef}>
+					<p className="drop-down-link">Your events</p>
+					<p className="drop-down-link">Your groups</p>
+					<div id="drop-down-divider" />
+					<p className="drop-down-link" onClick={logout}>
+						Log out
+					</p>
+				</div>
+			</div>
 		</>
 	);
 }

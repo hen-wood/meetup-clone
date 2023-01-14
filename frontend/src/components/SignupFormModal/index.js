@@ -3,8 +3,7 @@ import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import * as sessionActions from "../../store/session";
 import "./SignupForm.css";
-import SmallLogo from "../LoginFormModal/SmallLogo";
-
+import SmallLogo from "../SVGComponents/SmallLogo";
 function SignupFormModal() {
 	const dispatch = useDispatch();
 	const [email, setEmail] = useState("");
@@ -43,6 +42,17 @@ function SignupFormModal() {
 	return (
 		<>
 			{<SmallLogo />}
+			<i
+				id="x-button"
+				class="fa-solid fa-xmark"
+				onClick={e => {
+					e.target.parentNode.className = "modal-content-exit";
+					e.target.parentNode.parentNode.className = "modal-background-exit";
+					setTimeout(() => {
+						closeModal();
+					}, 350);
+				}}
+			></i>
 			<h1>Sign Up</h1>
 			<form onSubmit={handleSubmit}>
 				<ul>

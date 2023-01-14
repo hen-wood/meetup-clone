@@ -4,8 +4,7 @@ import * as sessionActions from "../../store/session";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import "./LoginForm.css";
-import SmallLogo from "./SmallLogo";
-import { Link } from "react-router-dom";
+import SmallLogo from "../SVGComponents/SmallLogo";
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
 import SignupFormModal from "../SignupFormModal";
 
@@ -27,11 +26,33 @@ function LoginFormModal() {
 			});
 	};
 
+	const handleLoginDemo = () => {
+		const credential = "demo@user.io";
+		const password = "password";
+		return dispatch(sessionActions.login({ credential, password }))
+			.then(closeModal)
+			.catch(async res => {
+				const data = await res.json();
+				if (data && data.errors) setErrors(data.errors);
+			});
+	};
 	return (
 		<>
 			{<SmallLogo />}
+			<i
+				id="x-button"
+				class="fa-solid fa-xmark"
+				onClick={e => {
+					e.target.parentNode.className = "modal-content-exit";
+					e.target.parentNode.parentNode.className = "modal-background-exit";
+					setTimeout(() => {
+						closeModal();
+					}, 350);
+				}}
+			></i>
+
 			<h1>Log in</h1>
-			<div>
+			<div className="login-sign-up-prompt">
 				Not a member yet?{" "}
 				<span className="sign-up-link">
 					<OpenModalMenuItem
@@ -65,6 +86,9 @@ function LoginFormModal() {
 				<div>
 					<button type="submit">Log in</button>
 				</div>
+				<button type="button" id="demo-user-button" onClick={handleLoginDemo}>
+					Demo User
+				</button>
 			</form>
 		</>
 	);
