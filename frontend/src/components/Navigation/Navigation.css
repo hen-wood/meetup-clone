@@ -1,0 +1,9 @@
+.hidden{
+    display: none;
+}
+.menu-item{
+    cursor: pointer;
+}
+#root>ul>li:nth-child(2)>button>i {
+    cursor: pointer;
+}

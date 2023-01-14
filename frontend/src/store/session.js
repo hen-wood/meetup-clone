@@ -1,72 +1,84 @@
+// frontend/src/store/session.js
 import { csrfFetch } from "./csrf";
 
-const LOG_IN = "session/LOG_IN";
+const SET_USER = "session/setUser";
+const REMOVE_USER = "session/removeUser";
+
 const setUser = user => {
 	return {
-		type: LOG_IN,
+		type: SET_USER,
 		payload: user
 	};
 };
 
-// const LOG_OUT = "session/LOG_OUT";
-// const removeUser = user => {
-// 	return {
-// 		type: LOG_OUT
-// 	};
-// };
+const removeUser = () => {
+	return {
+		type: REMOVE_USER
+	};
+};
 
-export const postSessionLogIn = user => async dispatch => {
+export const login = user => async dispatch => {
 	const { credential, password } = user;
-	const res = await csrfFetch(`/api/session`, {
+	const response = await csrfFetch("/api/session", {
 		method: "POST",
-		headers: {
-			"Content-Type": "application/json"
-		},
 		body: JSON.stringify({
 			credential,
 			password
 		})
 	});
-
-	if (res.ok) {
-		const user = await res.json();
-		dispatch(setUser(user));
-		return res;
-	} else {
-		console.log("TODO: LOGIN ERROR HANDLING");
-	}
+	const data = await response.json();
+	dispatch(setUser(data.user));
+	return response;
 };
 
-// export const postSessionLogOut = credentials => async dispatch => {
-// 	const res = await csrfFetch(`/api/session`, {
-// 		method: "DELETE",
-// 		headers: {
-// 			"Content-Type": "application/json"
-// 		},
-// 		body: JSON.stringify(credentials)
-// 	});
+export const restoreUser = () => async dispatch => {
+	const response = await csrfFetch("/api/session");
+	const data = await response.json();
+	dispatch(setUser(data.user));
+	return response;
+};
 
-// 	if (res.ok) {
-// 		const user = await res.json();
-// 		dispatch(actionLogIn(user));
-// 	} else {
-// 		console.log("TODO: LOGIN ERROR HANDLING");
-// 	}
-// };
+export const signup = user => async dispatch => {
+	const { username, firstName, lastName, email, password } = user;
+	const response = await csrfFetch("/api/users", {
+		method: "POST",
+		body: JSON.stringify({
+			username,
+			firstName,
+			lastName,
+			email,
+			password
+		})
+	});
+	const data = await response.json();
+	dispatch(setUser(data.user));
+	return response;
+};
+
+export const logout = () => async dispatch => {
+	const response = await csrfFetch("/api/session", {
+		method: "DELETE"
+	});
+	dispatch(removeUser());
+	return response;
+};
 
 const initialState = { user: null };
 
-export default function sessionReducer(state = initialState, action) {
+const sessionReducer = (state = initialState, action) => {
+	let newState;
 	switch (action.type) {
-		case LOG_IN:
-			const logInState = { ...state };
-			logInState.user = action.payload;
-			return logInState;
-		// case LOG_OUT:
-		// 	const logOutState = { ...state };
-		// 	logOutState.user = action.input;
-		// 	return logOutState;
+		case SET_USER:
+			newState = Object.assign({}, state);
+			newState.user = action.payload;
+			return newState;
+		case REMOVE_USER:
+			newState = Object.assign({}, state);
+			newState.user = null;
+			return newState;
 		default:
 			return state;
 	}
-}
+};
+
+export default sessionReducer;
