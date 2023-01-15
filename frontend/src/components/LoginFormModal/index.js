@@ -41,7 +41,7 @@ function LoginFormModal() {
 			{<SmallLogo />}
 			<i
 				id="x-button"
-				class="fa-solid fa-xmark"
+				className="fa-solid fa-xmark"
 				onClick={e => {
 					e.target.parentNode.className = "modal-content-exit";
 					e.target.parentNode.parentNode.className = "modal-background-exit";

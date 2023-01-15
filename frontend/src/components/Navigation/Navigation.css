@@ -3,9 +3,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #d9d9d9;
     height: 64px;
-    padding: 0 16px;
+}
+.logged-in-nav{
+    position: relative;
+    border-bottom: 1px solid #d9d9d9;
+    top: 0;
 }
 .hidden{
     display: none;
@@ -61,6 +64,7 @@
 
 .menu-drop-down{
     border: 1px solid #d9d9d9;
+    background-color: #fff;
     width: 190px;
     position: absolute;
     top: 75px;
@@ -77,7 +81,7 @@
     box-shadow: 0px 10px 10px -10px  rgba(0, 0, 0, 0.39);
     cursor: unset;
 }
-@media only screen and (min-width: 990px) {
+@media only screen and (min-width: 990px){
     .logo {
         margin-left: 40px;
     }
