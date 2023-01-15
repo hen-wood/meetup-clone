@@ -8,6 +8,7 @@
 .splash-intro-top-container{
     display: flex;
     justify-content: space-between;
+    align-items: center;
     width: 100%;
 }
 .splash-intro-text-container{
@@ -24,11 +25,12 @@
     font-size: 17px;
 }
 .splash-intro-image-container{
-    width: 50%;
+    width: 46%;
 }
 
 @media only screen and (max-width: 576px) {
     .splash-intro-container {
+        margin-top: 50px;
         width: 100%;
     }
     .splash-intro-top-container{

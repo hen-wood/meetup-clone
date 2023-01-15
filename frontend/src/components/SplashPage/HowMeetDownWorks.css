@@ -1,0 +1,107 @@
+.how-meetdown-works-container{
+    margin: 150px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1120px;
+}
+
+.how-meetdown-works-text-container{
+    text-align: center;
+    width: 550px;
+}
+.how-meetdown-works-text-container h2{
+    font-size: 30px;
+    font-weight: 600;
+}
+.how-meetdown-works-text-container p{
+    font-size: 16px;
+    font-weight: 300;
+}
+.how-meetdown-works-cards-container{
+    display: flex;
+    justify-content: space-between;
+    height: max-content;
+    margin-bottom: 60px;;
+}
+.how-meetdown-works-individual-card{
+    width: 30%;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    text-align: center;
+}
+.hmw-card-image-container{
+    display: flex;
+    height: 160px;
+    justify-content: center;
+}
+
+.hmw-card-text-container{
+    display: flex;
+    flex-direction: column;
+}
+
+.hmw-links{
+    color: #008294;
+    text-decoration: none;
+    font-size: 22px;
+    font-weight: 600;
+}
+.hmw-links:hover{
+    color: #008294;
+    text-decoration: underline;
+}
+
+.hmw-card-text-container p{
+    font-size: 16px;
+    font-weight: 300;
+}
+
+#join-meetdown-button{
+    background-color: #008294;
+    color: white;
+    font-size: 16px;
+    font-weight: 300;
+    border-radius: 7px;
+    border: none;
+    height: 40px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+}
+#join-meetdown-button:hover{
+    cursor: pointer;
+    background-color: #0098ae;
+}
+
+@media screen and (max-width:1050px) {
+    .how-meetdown-works-text-container{
+        max-width: 50vw;
+    }
+}
+@media screen and (max-width:767px) {
+    .how-meetdown-works-individual-card{
+        min-width: 200px;
+        min-height: 100%;
+        margin: 3px;
+        padding: 15px;
+        border-radius: 5px;
+        background-color: #f6f7f8;
+    }
+}
+@media screen and (max-width:576px) {
+    .how-meetdown-works-text-container{
+        text-align: left;
+        max-width: 100%;
+    }
+    .how-meetdown-works-container{
+        max-width: 100%;
+        align-items: flex-start;
+    }
+    .how-meetdown-works-cards-container{
+        max-width: 100%;
+        overflow-x: scroll;
+    }
+}

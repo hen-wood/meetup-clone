@@ -208,7 +208,6 @@ const validateAllEventsQueryParams = [
 		.optional()
 		.custom((value, { req }) => {
 			const start = new Date(req.query.startDate);
-			console.log(start);
 			if (start == "Invalid Date") {
 				throw new ValidationError("Start date must be a valid datetime");
 			}
