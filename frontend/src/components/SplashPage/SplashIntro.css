@@ -1,0 +1,47 @@
+.splash-intro-container{
+    display: flex;
+    flex-direction: column;
+    margin-top: 138px;
+    overflow:wrap;
+}
+
+.splash-intro-top-container{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.splash-intro-text-container{
+    width: 50%;
+}
+.splash-intro-text-container h1{
+    margin:0;
+    font-weight:800;
+    font-size: 48px;
+    line-height: 48px;
+}
+.splash-intro-text-container p{
+    font-weight: 300;
+    font-size: 17px;
+}
+.splash-intro-image-container{
+    width: 50%;
+}
+
+@media only screen and (max-width: 576px) {
+    .splash-intro-container {
+        width: 100%;
+    }
+    .splash-intro-top-container{
+        flex-direction: column;
+    }
+    .splash-intro-text-container,
+    .splash-intro-image-container{
+        width: 100%;
+    }
+    .splash-intro-text-container h1{
+        font-size: 30px;
+        font-weight: 700;
+        width: 100%;
+    }
+
+}
