@@ -86,7 +86,6 @@ router.get(
 					}
 				}
 			});
-			console.log("organizer or co-host");
 			return res.json(eventAttendees);
 		} else {
 			const eventAttendees = await Event.findByPk(eventId, {
@@ -105,7 +104,6 @@ router.get(
 					}
 				}
 			});
-			console.log("regular user");
 			return res.json(eventAttendees);
 		}
 	}
@@ -162,7 +160,6 @@ router.get("/", validateAllEventsQueryParams, async (req, res, next) => {
 	if (startDate) {
 		where.startDate = startDate;
 	}
-	console.log(startDate);
 
 	const allEvents = await Event.findAll({
 		attributes: { exclude: ["description", "capacity", "price"] },

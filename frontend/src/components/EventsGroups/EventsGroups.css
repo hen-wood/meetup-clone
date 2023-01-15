@@ -1,0 +1,18 @@
+#events-groups-outer-container{
+    display: flex;
+    justify-content: center;
+}
+#events-groups-tabs-container{
+    border: 1px solid green;
+    width: 960px;
+}
+.events-groups-tabs a{
+    font-family: 'Outfit', sans-serif;
+    text-decoration: none;
+    color: #757575;
+}
+
+a.active{
+    color: #008294;
+    text-decoration: underline;
+}

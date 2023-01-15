@@ -2,16 +2,15 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Switch } from "react-router-dom";
-import SignupFormPage from "./components/SignupFormModal";
 import * as sessionActions from "./store/session";
 import Navigation from "./components/Navigation";
 import SplashPage from "./components/SplashPage";
 import Footer from "./components/Footer";
 import HomePage from "./components/HomePage";
+import EventsGroups from "./components/EventsGroups";
 
 function App() {
 	const user = useSelector(state => state.session.user);
-	console.log(user);
 	const dispatch = useDispatch();
 	const [isLoaded, setIsLoaded] = useState(false);
 	useEffect(() => {
@@ -23,12 +22,17 @@ function App() {
 			<Navigation isLoaded={isLoaded} />
 			{isLoaded && (
 				<Switch>
-					<Route path="/signup">
-						<SignupFormPage />
+					<Route exact path={"/"}>
+						{content}
+					</Route>
+					<Route path="/home/groups">
+						<EventsGroups activeTab={"groups"} />
+					</Route>
+					<Route path="/home/events">
+						<EventsGroups activeTab={"events"} />
 					</Route>
 				</Switch>
 			)}
-			{content}
 			<Footer />
 		</>
 	);

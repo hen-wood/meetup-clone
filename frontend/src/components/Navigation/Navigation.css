@@ -4,6 +4,7 @@
     justify-content: space-between;
     align-items: center;
     height: 64px;
+    padding: 0 10px;
 }
 .logged-in-nav{
     position: relative;
@@ -25,7 +26,6 @@
     font-family: 'Outfit',sans-serif;
     font-size: 14px;
     font-weight: 500;
-    margin-right: 20px;
     margin-top:0;
     margin-bottom: 0;
 }
@@ -34,6 +34,7 @@
 }
 .logo{
     height: 30px;
+    margin-left: 15px;
 }
 #profile-button{
     font-size: 48px;
@@ -81,8 +82,8 @@
     box-shadow: 0px 10px 10px -10px  rgba(0, 0, 0, 0.39);
     cursor: unset;
 }
-@media only screen and (min-width: 990px){
-    .logo {
-        margin-left: 40px;
+@media screen and (max-width: 992px) {
+    .logo{
+        margin-left: 5px;
     }
 }
