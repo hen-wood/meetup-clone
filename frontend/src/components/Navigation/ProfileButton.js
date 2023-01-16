@@ -35,6 +35,8 @@ function ProfileButton({ user }) {
 		e.preventDefault();
 		dispatch(sessionActions.logout());
 		closeMenu();
+		const navBar = document.querySelector(".navigation");
+		navBar.className = "navigation";
 	};
 
 	const menuClassName = showMenu ? "menu-drop-down" : " hidden";

@@ -5,7 +5,6 @@ import { Route, Switch } from "react-router-dom";
 import * as sessionActions from "./store/session";
 import Navigation from "./components/Navigation";
 import SplashPage from "./components/SplashPage";
-import Footer from "./components/Footer";
 import HomePage from "./components/HomePage";
 import EventsGroups from "./components/EventsGroups";
 
@@ -16,6 +15,7 @@ function App() {
 	useEffect(() => {
 		dispatch(sessionActions.restoreUser()).then(() => setIsLoaded(true));
 	}, [dispatch]);
+
 	const content = user && isLoaded ? <HomePage user={user} /> : <SplashPage />;
 	return (
 		<>
@@ -33,7 +33,6 @@ function App() {
 					</Route>
 				</Switch>
 			)}
-			<Footer />
 		</>
 	);
 }

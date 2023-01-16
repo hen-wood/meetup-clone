@@ -1,18 +1,33 @@
 #events-groups-outer-container{
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
-#events-groups-tabs-container{
-    border: 1px solid green;
+#events-groups-content-container{
     width: 960px;
 }
-.events-groups-tabs a{
-    font-family: 'Outfit', sans-serif;
+#events-groups-tabs-container{
+    position: sticky;
+    top: 60px;
+    display: flex;
+    align-items: flex-end;
+    padding-top: 50px;
+    padding-bottom: 35px;
+    background-color: white;
+    border-bottom: 1px solid #d9d9d9;
+    box-sizing: border-box;
+}
+#events-groups-tabs-container > a{
     text-decoration: none;
     color: #757575;
+    margin-right: 18px;
+    font-size: 22px;
+    font-weight: 500;
 }
 
-a.active{
+#events-groups-tabs-container >a.active{
     color: #008294;
     text-decoration: underline;
+    text-underline-offset: 8px;
+    text-decoration-thickness: 3px;
 }

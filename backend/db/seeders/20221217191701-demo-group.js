@@ -13,19 +13,19 @@ module.exports = {
 			[
 				{
 					organizerId: 1,
-					name: "Demo Group 1",
+					name: "Washington Skydivers",
 					about:
-						"Demo description 1 01234567890123456789012345678901234567890123456789",
-					type: "Online",
+						"Washington State Skydiving Club is all inclusive to all levels of jumpers! The primary goal is to educate members.",
+					type: "In person",
 					private: false,
-					city: "Seattle",
+					city: "Ephrata",
 					state: "WA"
 				},
 				{
 					organizerId: 2,
-					name: "Demo Group 2",
+					name: "New York Chess Club",
 					about:
-						"Demo description 2. 01234567890123456789012345678901234567890123456789",
+						"The NYC Chess Club is a community of chess enthusiasts that meets regularly to play, learn, and improve their skills.",
 					type: "Online",
 					private: false,
 					city: "New York",
@@ -33,9 +33,9 @@ module.exports = {
 				},
 				{
 					organizerId: 3,
-					name: "Demo Group 3",
+					name: "LA Book Club",
 					about:
-						"Demo description 3 01234567890123456789012345678901234567890123456789",
+						"The Los Angeles Book Club is a group of passionate readers who come together to discuss and explore different genres of literature.",
 					type: "Online",
 					private: false,
 					city: "Los Angeles",
@@ -43,9 +43,9 @@ module.exports = {
 				},
 				{
 					organizerId: 1,
-					name: "A rag tag group of misfits and bandits",
+					name: "A Rag Tag Group of Misfits and Bandits",
 					about:
-						"This is just a test group, nothing more, nothing less. It's nothing but a test group",
+						"We are a motley crew of outcasts and ne'er-do-wells, united by our disdain for authority and our love of adventure.",
 					type: "In person",
 					private: true,
 					city: "New Orleans",

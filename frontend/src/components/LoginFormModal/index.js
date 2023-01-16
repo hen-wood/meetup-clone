@@ -19,18 +19,26 @@ function LoginFormModal() {
 		e.preventDefault();
 		setErrors([]);
 		return dispatch(sessionActions.login({ credential, password }))
-			.then(closeModal)
+			.then(() => {
+				closeModal();
+				const navBar = document.querySelector(".navigation");
+				navBar.className = "navigation splash-exit";
+			})
 			.catch(async res => {
 				const data = await res.json();
 				if (data && data.errors) setErrors(data.errors);
 			});
 	};
 
-	const handleLoginDemo = () => {
+	const handleLoginDemo = e => {
 		const credential = "demo@user.io";
 		const password = "password";
 		return dispatch(sessionActions.login({ credential, password }))
-			.then(closeModal)
+			.then(() => {
+				closeModal();
+				const navBar = document.querySelector(".navigation");
+				navBar.className = "navigation splash-exit";
+			})
 			.catch(async res => {
 				const data = await res.json();
 				if (data && data.errors) setErrors(data.errors);

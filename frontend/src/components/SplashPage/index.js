@@ -5,10 +5,12 @@ import "./SplashPage.css";
 import YellowBlob from "../SVGComponents/YellowBlob";
 import RedBlob from "../SVGComponents/RedBlob";
 import GreenBlob from "../SVGComponents/GreenBlob";
+import Footer from "./Footer";
 export default function SplashPage() {
+	const navBar = document.querySelector(".navigation");
+	navBar.className = "navigation";
 	return (
 		<div className="splash-outer-container">
-			{/* <div id="blob-container"> */}
 			<RedBlob />
 			<YellowBlob />
 			<GreenBlob />
@@ -18,6 +20,7 @@ export default function SplashPage() {
 				<HowMeetDownWorks />
 				<PopularGroups />
 			</div>
+			<Footer />
 		</div>
 	);
 }
