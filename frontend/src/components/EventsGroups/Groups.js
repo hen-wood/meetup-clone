@@ -49,5 +49,5 @@ export default function Groups() {
 		<h3>Loading groups...</h3>
 	);
 
-	return <div id="group-list-container">{content}</div>;
+	return <div id="group-event-list-container">{content}</div>;
 }

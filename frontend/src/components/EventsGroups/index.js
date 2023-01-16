@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
 import "./EventsGroups.css";
 import Groups from "./Groups";
+import Events from "./Events";
 export default function EventsGroups({ activeTab }) {
 	const navBar = document.querySelector(".navigation");
 	navBar.className = "navigation splash-exit";
+
+	const content = activeTab === "groups" ? <Groups /> : <Events />;
 	return (
 		<div id="events-groups-outer-container">
 			<div id="events-groups-content-container">
@@ -21,7 +24,7 @@ export default function EventsGroups({ activeTab }) {
 						Groups
 					</Link>
 				</div>
-				<Groups />
+				{content}
 			</div>
 		</div>
 	);

@@ -1,56 +1,65 @@
-#group-event-list-container{
-    width: 620px;
-}
-
-.individual-group-container{
+.individual-event-container {
     height: 180px;
     border-bottom: 1px solid #d9d9d9;
     display: flex;
     padding: 12px 0;
 }
 
-.group-preview-image-container{
+.event-preview-image-container {
     margin-right: 16px;
 }
-.group-preview-image-container img{
+
+.event-preview-image-container img {
     border-radius: 6px;
     height: 100px;
     width: 178px;
 }
 
-.group-text-content-container{
+.event-text-content-container {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
-.group-text-title{
-    font-size: 20px;
-    font-weight: 600;
+
+.event-text-title {
+    font-size: 16px;
+    font-weight: 500;
     margin: 0;
 }
-.group-text-city-state{
+
+.event-time {
     font-size: 14px;
     font-weight: 500;
     margin: 0;
     color: #877457
 }
-.group-text-about{
+
+.event-text-about {
     font-size: 14px;
     font-weight: 300;
     color: #757575
 }
-.member-count-privacy-status{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.member-count-privacy-status p{
+
+
+.event-text-group-city-state {
     margin: 0;
     font-size: 14px;
     font-weight: 300;
     color: #757575
 }
-.member-count-privacy-status i{
+.attending-count {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.attending-count p{
+    margin: 0;
+    font-size: 14px;
+    font-weight: 300;
+    color: #757575
+
+}
+.attending-count i {
     font-size: 20px;
     color: #a2a2a2
 }
