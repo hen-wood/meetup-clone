@@ -25,11 +25,7 @@ function Navigation({ isLoaded }) {
 		</div>
 	);
 	return (
-		<div
-			className={
-				sessionUser ? "navigation logged-in-nav" : "navigation splash-nav"
-			}
-		>
+		<div className={"navigation"}>
 			<Link to="/">
 				<Logo />
 			</Link>

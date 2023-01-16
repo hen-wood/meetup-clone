@@ -5,12 +5,16 @@
     align-items: center;
     height: 64px;
     padding: 0 10px;
+    box-sizing: border-box;
 }
-.logged-in-nav{
-    position: relative;
-    border-bottom: 1px solid #d9d9d9;
+.splash-exit{
+    position: sticky;
     top: 0;
+    border-bottom: 1px solid #d9d9d9;
+    background-color: white;
+    z-index: 1;
 }
+
 .hidden{
     display: none;
 }
@@ -18,12 +22,12 @@
 .menu-item{
     cursor: pointer;
 }
+
 .login-signup-container{
     width: 110px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-family: 'Outfit',sans-serif;
     font-size: 14px;
     font-weight: 500;
     margin-top:0;
@@ -75,7 +79,6 @@
     border-radius: 5px;
     padding: 0 15px;
     box-sizing: border-box;
-    font-family: 'Outfit', sans-serif;
     font-size: 14px;
     font-weight: 300;
     margin-right: 20px;

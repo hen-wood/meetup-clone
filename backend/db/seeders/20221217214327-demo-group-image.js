@@ -13,32 +13,32 @@ module.exports = {
 			[
 				{
 					groupId: 1,
-					url: "imagesite.com/images/1",
+					url: "https://i.imgur.com/qwyV0AL.jpeg",
 					preview: true
 				},
 				{
 					groupId: 1,
-					url: "imagesite.com/images/2",
+					url: "https://i.imgur.com/rbGCRHz.jpeg",
 					preview: false
 				},
 				{
 					groupId: 2,
-					url: "imagesite.com/images/3",
+					url: "https://i.imgur.com/QWgltRG.jpeg",
 					preview: true
 				},
 				{
 					groupId: 2,
-					url: "imagesite.com/images/4",
+					url: "https://i.imgur.com/nqJtuaR.jpeg",
 					preview: false
 				},
 				{
 					groupId: 3,
-					url: "imagesite.com/images/5",
+					url: "https://i.imgur.com/Gyu4tzS.jpeg",
 					preview: true
 				},
 				{
 					groupId: 3,
-					url: "imagesite.com/images/6",
+					url: "https://i.imgur.com/cC3grqx.jpeg",
 					preview: false
 				}
 			],
