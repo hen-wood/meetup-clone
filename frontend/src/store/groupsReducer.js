@@ -13,6 +13,19 @@ const setGroups = allGroups => {
 	};
 };
 
+const GET_USER_GROUPS = "groups/GET_USER_GROUPS";
+
+const setUserGroups = userGroups => {
+	const userGroupsObj = {};
+	userGroups.forEach(group => {
+		userGroupsObj[group.id] = group;
+	});
+	return {
+		type: GET_USER_GROUPS,
+		payload: userGroupsObj
+	};
+};
+
 const CREATE_GROUP = "groups/CREATE_GROUP";
 
 const createGroup = newGroup => {
@@ -26,6 +39,13 @@ export const getAllGroups = () => async dispatch => {
 	const response = await fetch("/api/groups");
 	const data = await response.json();
 	dispatch(setGroups(data.Groups));
+	return response;
+};
+
+export const getUserGroups = () => async dispatch => {
+	const response = await csrfFetch("/api/groups/current");
+	const data = await response.json();
+	dispatch(setUserGroups(data.Groups));
 	return response;
 };
 
@@ -43,8 +63,9 @@ export const postGroup = newGroup => async dispatch => {
 };
 
 const initialState = {
-	allGroups: [],
-	singleGroup: null
+	allGroups: {},
+	singleGroup: null,
+	userGroups: {}
 };
 
 export default function groupsReducer(state = initialState, action) {
@@ -52,13 +73,16 @@ export default function groupsReducer(state = initialState, action) {
 	switch (action.type) {
 		case GET_ALL_GROUPS:
 			newState = { ...state };
-			newState.allGroups = { ...state.allGroups };
 			newState.allGroups = action.payload;
 			return newState;
 		case CREATE_GROUP:
 			newState = { ...state };
 			const { id } = action.payload;
 			newState.allGroups[id] = action.payload;
+			return newState;
+		case GET_USER_GROUPS:
+			newState = { ...state };
+			newState.userGroups = action.payload;
 			return newState;
 		default:
 			return state;

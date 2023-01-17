@@ -1,5 +1,6 @@
 // frontend/src/components/LoginFormModal/index.js
 import React, { useState } from "react";
+import { useHistory } from "react-router";
 import * as sessionActions from "../../store/session";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
@@ -9,6 +10,8 @@ import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
 import SignupFormModal from "../SignupFormModal";
 
 function LoginFormModal() {
+	const history = useHistory();
+	const redirect = () => history.push("/");
 	const dispatch = useDispatch();
 	const [credential, setCredential] = useState("");
 	const [password, setPassword] = useState("");
@@ -23,6 +26,7 @@ function LoginFormModal() {
 				closeModal();
 				const navBar = document.querySelector(".navigation");
 				navBar.className = "navigation splash-exit";
+				redirect();
 			})
 			.catch(async res => {
 				const data = await res.json();
@@ -38,6 +42,7 @@ function LoginFormModal() {
 				closeModal();
 				const navBar = document.querySelector(".navigation");
 				navBar.className = "navigation splash-exit";
+				redirect();
 			})
 			.catch(async res => {
 				const data = await res.json();
