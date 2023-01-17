@@ -3,13 +3,21 @@ import "./mobile.css";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllGroups } from "../../store/groupsReducer";
 import { useEffect } from "react";
+import { useHistory } from "react-router-dom";
 
 export default function Groups() {
 	const dispatch = useDispatch();
 
+	const history = useHistory();
+	const redirectToSingleGroup = groupId => history.push(`/groups/${groupId}`);
+
 	useEffect(() => {
 		dispatch(getAllGroups());
 	}, [dispatch]);
+
+	const handleGroupClick = groupId => {
+		redirectToSingleGroup(groupId);
+	};
 
 	const groupsObj = useSelector(state => state.groups.allGroups);
 	const groupKeys = Object.keys(groupsObj);
@@ -19,7 +27,11 @@ export default function Groups() {
 			const group = groupsObj[key];
 			const privacy = group.private ? "Private" : "Public";
 			return (
-				<div key={group.id} className="individual-group-container">
+				<div
+					key={group.id}
+					className="individual-group-container"
+					onClick={() => handleGroupClick(group.id)}
+				>
 					<div className="group-preview-image-container">
 						<img
 							src={
@@ -40,7 +52,6 @@ export default function Groups() {
 						<p className="group-text-about">{group.about}</p>
 						<div className="member-count-privacy-status">
 							<p>{group.numMembers + " members · " + privacy}</p>
-							<i className="fa-solid fa-arrow-up-from-bracket" />
 						</div>
 					</div>
 				</div>
