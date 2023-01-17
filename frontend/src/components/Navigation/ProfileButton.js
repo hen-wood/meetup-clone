@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import * as sessionActions from "../../store/session";
-import OpenModalMenuItem from "./OpenModalMenuItem";
-import LoginFormModal from "../LoginFormModal";
-import SignupFormModal from "../SignupFormModal";
+import { useHistory } from "react-router";
 
 function ProfileButton({ user }) {
+	const history = useHistory();
+	const redirect = () => history.push("/");
 	const dispatch = useDispatch();
 	const [showMenu, setShowMenu] = useState(false);
 	const ulRef = useRef();
@@ -37,6 +37,7 @@ function ProfileButton({ user }) {
 		closeMenu();
 		const navBar = document.querySelector(".navigation");
 		navBar.className = "navigation";
+		redirect();
 	};
 
 	const menuClassName = showMenu ? "menu-drop-down" : " hidden";

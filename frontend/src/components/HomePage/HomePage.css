@@ -1,10 +1,8 @@
 .home-page-outer-container{
     display: flex;
     justify-content: center;
-    border: 1px solid green;
 }
 .home-page-inner-container{
-    border: 1px solid red;
     width: 1170px;
 }
 .home-page-inner-container h2{
@@ -14,16 +12,13 @@
 }
 
 .user-events-groups{
-    border: 1px solid purple;
     display: flex;
 }
 
 .user-events{
-    border: 1px solid blue;
     width: 50%;
 }
 
 .user-groups{
-    border: 1px solid orange;
     width: 50%
 }

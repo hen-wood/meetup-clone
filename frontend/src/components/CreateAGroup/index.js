@@ -13,7 +13,7 @@ export default function CreateAGroup() {
 	const [state, setState] = useState("");
 
 	const history = useHistory();
-	const redirect = () => history.push("/all-groups");
+	const redirect = () => history.push("/");
 
 	const handleSubmit = e => {
 		e.preventDefault();
@@ -27,9 +27,7 @@ export default function CreateAGroup() {
 		};
 
 		const res = dispatch(postGroup(newGroup));
-		if (!res.ok) {
-			return;
-		}
+
 		redirect();
 	};
 	return (
