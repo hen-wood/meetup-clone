@@ -40,6 +40,11 @@ module.exports = {
 					groupId: 3,
 					url: "https://i.imgur.com/cC3grqx.jpeg",
 					preview: false
+				},
+				{
+					groupId: 4,
+					url: "https://i.imgur.com/kLoOsy5.jpeg",
+					preview: true
 				}
 			],
 			{}

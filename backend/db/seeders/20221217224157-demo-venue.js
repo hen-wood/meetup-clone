@@ -14,7 +14,7 @@ module.exports = {
 				{
 					groupId: 1,
 					address: "1234 Fakestreet",
-					city: "Seattle",
+					city: "Tacoma",
 					state: "WA",
 					lat: 47.621449,
 					lng: -122.348455

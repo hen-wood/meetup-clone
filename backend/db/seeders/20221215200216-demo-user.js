@@ -13,8 +13,8 @@ module.exports = {
 			options,
 			[
 				{
-					firstName: "Demo",
-					lastName: "User",
+					firstName: "Demo-user",
+					lastName: "Meetdown",
 					email: "demo@user.io",
 					username: "Demo-lition",
 					hashedPassword: bcrypt.hashSync("password")

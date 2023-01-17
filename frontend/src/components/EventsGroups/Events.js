@@ -1,4 +1,5 @@
 import "./Events.css";
+import "./mobile.css";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllEvents } from "../../store/eventsReducer";
 import { useEffect } from "react";

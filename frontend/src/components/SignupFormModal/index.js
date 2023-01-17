@@ -4,6 +4,8 @@ import { useModal } from "../../context/Modal";
 import * as sessionActions from "../../store/session";
 import "./SignupForm.css";
 import SmallLogo from "../SVGComponents/SmallLogo";
+import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
+import LoginFormModal from "../LoginFormModal";
 function SignupFormModal() {
 	const dispatch = useDispatch();
 	const [email, setEmail] = useState("");
@@ -54,6 +56,15 @@ function SignupFormModal() {
 				}}
 			></i>
 			<h1>Sign Up</h1>
+			<div className="login-sign-up-prompt">
+				Already a member?{" "}
+				<span className="sign-up-link">
+					<OpenModalMenuItem
+						itemText="Log in"
+						modalComponent={<LoginFormModal />}
+					/>
+				</span>
+			</div>
 			<form onSubmit={handleSubmit}>
 				<ul>
 					{errors.map((error, idx) => (

@@ -14,30 +14,29 @@ module.exports = {
 				{
 					venueId: 1,
 					groupId: 1,
-					name: "Tennis Group First Meet and Greet",
+					name: "Skydiving with our dogs",
 					type: "In person",
 					capacity: 10,
 					price: 18.5,
-					description:
-						"The first meet and greet for our group! Come say hello!",
-					startDate: "2021-11-19 20:00:00",
-					endDate: "2021-11-19 22:00:00"
+					description: "We will be teaching our dogs how to skydive.",
+					startDate: "2023-02-12 18:45:00",
+					endDate: "2023-02-12 19:45:00"
 				},
 				{
 					venueId: 1,
 					groupId: 1,
-					name: "Tennis Group meet 2: Electric Boogaloo",
+					name: "Skydiving",
 					type: "In person",
 					capacity: 10,
 					price: 18.5,
-					description: "The second meet and greet for our group!!",
-					startDate: "2021-12-19 20:00:00",
-					endDate: "2021-12-19 22:00:00"
+					description: "Just plain skydiving without dogs.",
+					startDate: "2023-06-19 08:00:00",
+					endDate: "2023-06-19 14:00:00"
 				},
 				{
 					venueId: 2,
 					groupId: 2,
-					name: "soccer Group First Meet and Greet",
+					name: "NYC Chess Inaugural Tournament",
 					type: "Online",
 					capacity: 10,
 					price: 18.5,
@@ -49,7 +48,7 @@ module.exports = {
 				{
 					venueId: 3,
 					groupId: 3,
-					name: "Hang-gliding Group First Meet and Greet",
+					name: "Book Club First Meet and Greet",
 					type: "Online",
 					capacity: 10,
 					price: 18.5,

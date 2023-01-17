@@ -21,7 +21,7 @@ export default function HowMeetDownWorks() {
 						<HighFiveImage />
 					</span>
 					<div className="hmw-card-text-container">
-						<Link to="/home/groups" className="hmw-links">
+						<Link to="/all-groups" className="hmw-links">
 							Join a group
 						</Link>
 						<p>
@@ -35,7 +35,7 @@ export default function HowMeetDownWorks() {
 						<TicketImage />
 					</span>
 					<div className="hmw-card-text-container">
-						<Link to="/home/events" className="hmw-links">
+						<Link to="/all-events" className="hmw-links">
 							Find an event
 						</Link>
 						<p>
@@ -49,9 +49,12 @@ export default function HowMeetDownWorks() {
 						<GroupImageSVG />
 					</span>
 					<div className="hmw-card-text-container">
-						<Link to="/" className="hmw-links">
-							Start a group
-						</Link>
+						<div className="hmw-links">
+							<OpenModalMenuItem
+								itemText="Start a group"
+								modalComponent={<SignupFormModal />}
+							/>
+						</div>
 						<p>
 							You don’t have to be an expert to gather people together and
 							explore shared interests.

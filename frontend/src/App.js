@@ -7,6 +7,7 @@ import Navigation from "./components/Navigation";
 import SplashPage from "./components/SplashPage";
 import HomePage from "./components/HomePage";
 import EventsGroups from "./components/EventsGroups";
+import CreateAGroup from "./components/CreateAGroup";
 
 function App() {
 	const user = useSelector(state => state.session.user);
@@ -25,11 +26,14 @@ function App() {
 					<Route exact path={"/"}>
 						{content}
 					</Route>
-					<Route path="/home/groups">
+					<Route path="/all-groups">
 						<EventsGroups activeTab={"groups"} />
 					</Route>
-					<Route path="/home/events">
+					<Route path="/all-events">
 						<EventsGroups activeTab={"events"} />
+					</Route>
+					<Route path="/create-group">
+						<CreateAGroup />
 					</Route>
 				</Switch>
 			)}

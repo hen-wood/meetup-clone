@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import "./EventsGroups.css";
+import "./mobile.css";
 import Groups from "./Groups";
 import Events from "./Events";
 export default function EventsGroups({ activeTab }) {
@@ -12,13 +13,13 @@ export default function EventsGroups({ activeTab }) {
 			<div id="events-groups-content-container">
 				<div id="events-groups-tabs-container">
 					<Link
-						to="/home/events"
+						to="/all-events"
 						className={activeTab === "events" ? "active" : ""}
 					>
 						Events
 					</Link>
 					<Link
-						to="/home/groups"
+						to="/all-groups"
 						className={activeTab === "groups" ? "active" : ""}
 					>
 						Groups

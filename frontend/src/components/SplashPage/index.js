@@ -1,6 +1,5 @@
 import SplashIntro from "./SplashIntro";
 import HowMeetDownWorks from "./HowMeetDownWorks";
-import PopularGroups from "./PopularGroups";
 import "./SplashPage.css";
 import YellowBlob from "../SVGComponents/YellowBlob";
 import RedBlob from "../SVGComponents/RedBlob";
@@ -18,7 +17,6 @@ export default function SplashPage() {
 			<div className="splash-content-container">
 				<SplashIntro />
 				<HowMeetDownWorks />
-				<PopularGroups />
 			</div>
 			<Footer />
 		</div>
