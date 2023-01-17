@@ -6,8 +6,11 @@ import "./SignupForm.css";
 import SmallLogo from "../SVGComponents/SmallLogo";
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
 import LoginFormModal from "../LoginFormModal";
+import { useHistory } from "react-router-dom";
 function SignupFormModal() {
 	const dispatch = useDispatch();
+	const history = useHistory();
+	const redirect = () => history.push("/");
 	const [email, setEmail] = useState("");
 	const [username, setUsername] = useState("");
 	const [firstName, setFirstName] = useState("");
@@ -33,6 +36,7 @@ function SignupFormModal() {
 				.then(closeModal)
 				.catch(async res => {
 					const data = await res.json();
+					redirect();
 					if (data && data.errors) setErrors(data.errors);
 				});
 		}

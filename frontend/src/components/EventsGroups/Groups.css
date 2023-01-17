@@ -37,7 +37,8 @@
 .group-text-about{
     font-size: 14px;
     font-weight: 300;
-    color: #757575
+    color: #757575;
+    text-overflow: ellipsis;
 }
 .member-count-privacy-status{
     display: flex;
