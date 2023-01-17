@@ -8,6 +8,7 @@ import SplashPage from "./components/SplashPage";
 import HomePage from "./components/HomePage";
 import EventsGroups from "./components/EventsGroups";
 import CreateAGroup from "./components/CreateAGroup";
+import SingleGroupPage from "./components/SingleGroupPage";
 
 function App() {
 	const user = useSelector(state => state.session.user);
@@ -37,6 +38,9 @@ function App() {
 					</Route>
 					<Route path="/create-group">
 						<CreateAGroup />
+					</Route>
+					<Route path="/groups/:groupId">
+						<SingleGroupPage />
 					</Route>
 				</Switch>
 			)}

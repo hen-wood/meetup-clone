@@ -40,7 +40,6 @@ export default function Events() {
 						</div>
 						<div className="attending-count">
 							<p>{event.numAttending + " attendees"}</p>
-							<i className="fa-solid fa-arrow-up-from-bracket" />
 						</div>
 					</div>
 				</div>

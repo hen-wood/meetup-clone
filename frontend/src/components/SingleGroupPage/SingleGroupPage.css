@@ -1,0 +1,56 @@
+#single-group-page-container{
+    display: flex;
+    justify-content: center;
+}
+
+#single-group-page-inner-container{
+    width: 1060px;
+    display: flex;
+    flex-direction: column;
+}
+
+#single-group-page-info-container{
+    margin-top: 25px;
+    display: flex;
+    height: 318px;
+}
+
+#single-group-page-preview-image{
+    width: 565px;
+    height: 100%;
+    border-radius: 8px;
+    margin-right: 25px;
+}
+
+#single-group-page-info-text h1{
+    font-size: 32px;
+    font-weight: 700;
+}
+
+#single-group-page-info-text pre{
+    font-size: 14px;
+    font-weight: 300;
+    margin: 5px 0;
+    font-family: 'Outfit', sans-serif;
+}
+
+#single-group-page-info-text pre i{
+    color:#a8a8a8;
+    font-size: 16px;
+}
+
+#delete-group-button{
+    background-color: #008294;
+    color: white;
+    height: 40px;
+    padding: 0 12px;
+    border: none;
+    font-size: 16px;
+    font-weight: 400;
+    border-radius: 7px;
+}
+
+#delete-group-button:hover{
+    cursor: pointer;
+    background-color: #0098ae;
+}

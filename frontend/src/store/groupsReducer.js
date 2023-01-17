@@ -26,12 +26,30 @@ const setUserGroups = userGroups => {
 	};
 };
 
+const GET_SINGLE_GROUP = "groups/GET_SINGLE_GROUP";
+
+const setSingleGroup = singleGroup => {
+	return {
+		type: GET_SINGLE_GROUP,
+		payload: singleGroup
+	};
+};
+
 const CREATE_GROUP = "groups/CREATE_GROUP";
 
 const createGroup = newGroup => {
 	return {
 		type: CREATE_GROUP,
 		payload: newGroup
+	};
+};
+
+const REMOVE_GROUP = "groups/REMOVE_GROUP";
+
+const removeGroup = groupId => {
+	return {
+		type: REMOVE_GROUP,
+		payload: groupId
 	};
 };
 
@@ -49,6 +67,13 @@ export const getUserGroups = () => async dispatch => {
 	return response;
 };
 
+export const getSingleGroup = groupId => async dispatch => {
+	const response = await fetch(`/api/groups/${groupId}`);
+	const data = await response.json();
+	dispatch(setSingleGroup(data));
+	return response;
+};
+
 export const postGroup = newGroup => async dispatch => {
 	const response = await csrfFetch("/api/groups", {
 		method: "POST",
@@ -59,6 +84,15 @@ export const postGroup = newGroup => async dispatch => {
 	});
 	const data = await response.json();
 	dispatch(createGroup(data));
+	return response;
+};
+
+export const deleteGroup = groupId => async dispatch => {
+	const response = await csrfFetch(`/api/groups/${groupId}`, {
+		method: "DELETE"
+	});
+	const data = await response.json();
+	dispatch(removeGroup(groupId));
 	return response;
 };
 
@@ -83,6 +117,15 @@ export default function groupsReducer(state = initialState, action) {
 		case GET_USER_GROUPS:
 			newState = { ...state };
 			newState.userGroups = action.payload;
+			return newState;
+		case GET_SINGLE_GROUP:
+			newState = { ...state };
+			newState.singleGroup = action.payload;
+			return newState;
+		case REMOVE_GROUP:
+			newState = { ...state };
+			const { groupId } = action.payload;
+			delete newState.allGroups[groupId];
 			return newState;
 		default:
 			return state;
