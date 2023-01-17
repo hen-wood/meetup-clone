@@ -5,7 +5,8 @@ import { useHistory } from "react-router";
 
 function ProfileButton({ user }) {
 	const history = useHistory();
-	const redirect = () => history.push("/");
+	const redirectLogout = () => history.push("/");
+	const redirectHome = () => history.push("/home");
 	const dispatch = useDispatch();
 	const [showMenu, setShowMenu] = useState(false);
 	const ulRef = useRef();
@@ -37,7 +38,14 @@ function ProfileButton({ user }) {
 		closeMenu();
 		const navBar = document.querySelector(".navigation");
 		navBar.className = "navigation";
-		redirect();
+		redirectLogout();
+	};
+
+	const handleHomeClick = () => {
+		closeMenu();
+		const navBar = document.querySelector(".navigation");
+		navBar.className = "navigation splash-exit";
+		redirectHome();
 	};
 
 	const menuClassName = showMenu ? "menu-drop-down" : " hidden";
@@ -48,8 +56,9 @@ function ProfileButton({ user }) {
 				<i id="profile-button" className="fas fa-user-circle" />
 				<i id="drop-down-chevron" className={chevronClassName} />
 				<div className={menuClassName} ref={ulRef}>
-					<p className="drop-down-link">Your events</p>
-					<p className="drop-down-link">Your groups</p>
+					<p className="drop-down-link" onClick={handleHomeClick}>
+						Home
+					</p>
 					<div id="drop-down-divider" />
 					<p className="drop-down-link" onClick={logout}>
 						Log out

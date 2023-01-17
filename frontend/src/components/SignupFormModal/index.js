@@ -10,14 +10,14 @@ import { useHistory } from "react-router-dom";
 function SignupFormModal() {
 	const dispatch = useDispatch();
 	const history = useHistory();
-	const redirect = () => history.push("/");
+	const redirect = () => history.push("/home");
 	const [email, setEmail] = useState("");
 	const [username, setUsername] = useState("");
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
-	const [errors, setErrors] = useState([]);
+	const [errors, setErrors] = useState({});
 	const { closeModal } = useModal();
 
 	const handleSubmit = e => {
@@ -33,18 +33,25 @@ function SignupFormModal() {
 					password
 				})
 			)
-				.then(closeModal)
+				.then(() => {
+					closeModal();
+					const navBar = document.querySelector(".navigation");
+					navBar.className = "navigation splash-exit";
+					redirect();
+				})
 				.catch(async res => {
 					const data = await res.json();
-					redirect();
+					console.log(data);
 					if (data && data.errors) setErrors(data.errors);
+					if (data && data.statusCode === 403)
+						setErrors({ message: data.message });
 				});
 		}
 		return setErrors([
 			"Confirm Password field must be the same as the Password field"
 		]);
 	};
-
+	const errorKeys = Object.keys(errors);
 	return (
 		<>
 			{<SmallLogo />}
@@ -70,11 +77,11 @@ function SignupFormModal() {
 				</span>
 			</div>
 			<form onSubmit={handleSubmit}>
-				<ul>
-					{errors.map((error, idx) => (
-						<li key={idx}>{error}</li>
+				<div id="signup-errors">
+					{errorKeys.map(key => (
+						<p key={key}>{errors[key]}</p>
 					))}
-				</ul>
+				</div>
 				<label htmlFor="email">Email</label>
 				<input
 					type="text"

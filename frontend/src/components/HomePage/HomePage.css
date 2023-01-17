@@ -11,14 +11,29 @@
     font-weight: 700;
 }
 
-.user-events-groups{
+#user-nav{
+    position: sticky;
+    top: 80px;
+    background-color: white;
+    border-bottom: 1px solid #d9d9d9;
+}
+
+#user-links{
     display: flex;
+    justify-content: space-between;
+}
+.user-link {
+    color: #008294;
+    text-decoration: none;
+    font-size: 22px;
+    font-weight: 600;
 }
 
-.user-events{
-    width: 50%;
+.user-link:hover {
+    color: #008294;
+    text-decoration: underline;
 }
 
-.user-groups{
-    width: 50%
+.user-content{
+    display: flex;
 }
