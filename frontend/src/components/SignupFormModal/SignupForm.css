@@ -1,3 +1,8 @@
+#signup-errors {
+    font-size: 14px;
+    font-weight: 300;
+    color: red;
+}
 #x-button{
     position:absolute;
     top: 15px;

@@ -13,7 +13,7 @@ export default function CreateAGroup() {
 	const [state, setState] = useState("");
 
 	const history = useHistory();
-	const redirect = () => history.push("/");
+	const redirect = () => history.push("/home");
 
 	const handleSubmit = e => {
 		e.preventDefault();

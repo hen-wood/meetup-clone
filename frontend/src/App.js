@@ -17,7 +17,7 @@ function App() {
 		dispatch(sessionActions.restoreUser()).then(() => setIsLoaded(true));
 	}, [dispatch]);
 
-	const content = user && isLoaded ? <HomePage user={user} /> : <SplashPage />;
+	const content = isLoaded && <SplashPage />;
 	return (
 		<>
 			<Navigation isLoaded={isLoaded} />
@@ -25,6 +25,9 @@ function App() {
 				<Switch>
 					<Route exact path={"/"}>
 						{content}
+					</Route>
+					<Route path="/home">
+						<HomePage user={user} />
 					</Route>
 					<Route path="/all-groups">
 						<EventsGroups activeTab={"groups"} />

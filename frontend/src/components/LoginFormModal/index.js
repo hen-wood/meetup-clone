@@ -11,11 +11,11 @@ import SignupFormModal from "../SignupFormModal";
 
 function LoginFormModal() {
 	const history = useHistory();
-	const redirect = () => history.push("/");
+	const redirect = () => history.push("/home");
 	const dispatch = useDispatch();
 	const [credential, setCredential] = useState("");
 	const [password, setPassword] = useState("");
-	const [errors, setErrors] = useState([]);
+	const [errors, setErrors] = useState({});
 	const { closeModal } = useModal();
 
 	const handleSubmit = e => {
@@ -30,7 +30,10 @@ function LoginFormModal() {
 			})
 			.catch(async res => {
 				const data = await res.json();
-				if (data && data.errors) setErrors(data.errors);
+				console.log(data);
+				if (data && data.statusCode === 400) setErrors(data.errors);
+				if (data && data.statusCode === 401)
+					setErrors({ message: data.message });
 			});
 	};
 
@@ -46,9 +49,13 @@ function LoginFormModal() {
 			})
 			.catch(async res => {
 				const data = await res.json();
-				if (data && data.errors) setErrors(data.errors);
+				if (data && data.statusCode === 400) setErrors(data.errors);
+				if (data && data.statusCode === 401)
+					setErrors({ message: data.message });
 			});
 	};
+
+	const errorKeys = Object.keys(errors);
 	return (
 		<>
 			{<SmallLogo />}
@@ -75,11 +82,11 @@ function LoginFormModal() {
 				</span>
 			</div>
 			<form onSubmit={handleSubmit}>
-				<ul>
-					{errors.map((error, idx) => (
-						<li key={idx}>{error}</li>
+				<div id="login-errors">
+					{errorKeys.map(key => (
+						<p key={key}>{errors[key]}</p>
 					))}
-				</ul>
+				</div>{" "}
 				<label htmlFor="email">Email</label>
 				<input
 					name="email"
