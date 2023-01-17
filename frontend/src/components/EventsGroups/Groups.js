@@ -1,4 +1,5 @@
 import "./Groups.css";
+import "./mobile.css";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllGroups } from "../../store/groupsReducer";
 import { useEffect } from "react";

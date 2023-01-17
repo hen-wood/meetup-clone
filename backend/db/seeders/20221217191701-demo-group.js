@@ -18,7 +18,7 @@ module.exports = {
 						"Washington State Skydiving Club is all inclusive to all levels of jumpers! The primary goal is to educate members.",
 					type: "In person",
 					private: false,
-					city: "Ephrata",
+					city: "Tacoma",
 					state: "WA"
 				},
 				{

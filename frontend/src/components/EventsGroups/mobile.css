@@ -1,0 +1,14 @@
+@media screen and (max-width: 960px) {
+    #events-groups-content-container{
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 766px) {
+    .individual-event-container{
+        flex-direction: row-reverse;
+    }
+    .individual-group-container{
+        flex-direction: row-reverse;
+    }
+}
