@@ -12,17 +12,30 @@
 }
 
 #user-nav{
+    display: flex;
+    flex-direction: column;
     position: sticky;
-    top: 80px;
+    top: 60px;
     background-color: white;
     border-bottom: 1px solid #d9d9d9;
-    z-index: 1;
 }
-
-#user-links{
+#user-nav-top{
     display: flex;
     justify-content: space-between;
 }
+
+#user-links{
+    position: relative;
+    bottom: -200px;
+    right: 50px;
+    border: 1px solid #d9d9d9;
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 .user-link {
     color: #008294;
     text-decoration: none;
@@ -37,4 +50,14 @@
 
 .user-content{
     display: flex;
+}
+
+.user-status-tag{
+    font-size: 14px;
+    font-weight: 500;
+    color: rgb(41, 41, 41);
+    background-color: #d9d9d9;
+    width: fit-content;
+    padding: 3px 5px;
+    border-radius: 5px;
 }

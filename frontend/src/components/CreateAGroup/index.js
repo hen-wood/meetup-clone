@@ -7,13 +7,15 @@ export default function CreateAGroup() {
 	const dispatch = useDispatch();
 	const [name, setName] = useState("");
 	const [about, setAbout] = useState("");
-	const [type, setType] = useState("");
+	const [type, setType] = useState("Online");
 	const [privacy, setPrivacy] = useState(false);
 	const [city, setCity] = useState("");
 	const [state, setState] = useState("");
 	const [previewImageUrl, setPreviewImageUrl] = useState("");
 	const [onlineChecked, setOnlineChecked] = useState(true);
 	const [publicChecked, setPublicChecked] = useState(true);
+
+	const [errors, setErrors] = useState({});
 	const history = useHistory();
 	const redirect = () => history.push("/home");
 
@@ -24,9 +26,27 @@ export default function CreateAGroup() {
 			about,
 			type,
 			private: privacy,
-			city,
-			state
+			city: city[0].toUpperCase() + city.slice(1).toLowerCase(),
+			state: state.toUpperCase()
 		};
+
+		const valErrors = {};
+		if (!previewImageUrl.length)
+			valErrors.previewImageUrl = "Preview Image is required";
+		if (!name.length) valErrors.name = "Name is required";
+		if (name.length > 60)
+			valErrors.name = "Name must be shorter than 60 characters";
+		if (!about.length) valErrors.about = "About is required";
+		if (about.length < 50)
+			valErrors.about = "About must be 50 characters or more";
+		if (!city.length) valErrors.city = "City is required";
+		if (!state.length) valErrors.state = "State is required";
+		if (state.length > 2)
+			valErrors.state = "State must be two letter abbreviation";
+		if (Object.keys(valErrors).length) {
+			setErrors(valErrors);
+			return;
+		}
 
 		const newImage = {
 			url: previewImageUrl,
@@ -38,13 +58,17 @@ export default function CreateAGroup() {
 				dispatch(postGroupImage(newImage, res.id))
 					.then(res => {
 						console.log(res);
+						redirect();
 					})
-					.catch(err => console.log(err));
+					.catch(async res => {
+						const data = await res.json();
+						setErrors(data);
+					});
 			})
-			.catch(err => {
-				console.log(err);
+			.catch(async res => {
+				const data = await res.json();
+				setErrors(data.errors);
 			});
-		redirect();
 	};
 	return (
 		<div id="create-group-outer-container">
@@ -57,12 +81,16 @@ export default function CreateAGroup() {
 						type="text"
 						onChange={e => setName(e.target.value)}
 					/>
-					<label htmlFor="group-about">Description</label>
+					{errors.name && <p className="create-group-errors">{errors.name}</p>}
+					<label htmlFor="group-about">About</label>
 					<textarea
 						id="group-about"
 						type="text-field"
 						onChange={e => setAbout(e.target.value)}
 					/>
+					{errors.about && (
+						<p className="create-group-errors">{errors.about}</p>
+					)}
 					<p>Type</p>
 					<div id="group-type-setting">
 						<div className="group-radio-one">
@@ -131,18 +159,25 @@ export default function CreateAGroup() {
 						type="text"
 						onChange={e => setCity(e.target.value)}
 					/>
+					{errors.city && <p className="create-group-errors">{errors.city}</p>}
 					<label htmlFor="group-state">State</label>
 					<input
 						id="group-state"
 						type="text"
 						onChange={e => setState(e.target.value)}
 					/>
+					{errors.state && (
+						<p className="create-group-errors">{errors.state}</p>
+					)}
 					<label htmlFor="group-preview-image">Preview Image URL</label>
 					<input
 						id="group-preview-image"
 						type="text"
 						onChange={e => setPreviewImageUrl(e.target.value)}
 					/>
+					{errors.previewImageUrl && (
+						<p className="create-group-errors">{errors.previewImageUrl}</p>
+					)}
 					<button type="submit">Submit</button>
 				</form>
 			</div>

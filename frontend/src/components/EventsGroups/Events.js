@@ -8,7 +8,7 @@ export default function Events() {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		dispatch(getAllEvents());
+		dispatch(getAllEvents()).then().catch();
 	}, [dispatch]);
 
 	const eventsObj = useSelector(state => state.events.allEvents);

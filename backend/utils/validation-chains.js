@@ -40,10 +40,11 @@ const validateLogin = [
 
 const validateCreateGroup = [
 	check("name")
-		.exists({ checkNull: true })
-		.isString()
+		.exists({ checkFalsy: true })
+		.withMessage("Name is required")
 		.isLength({ max: 60 })
-		.withMessage("Name must be 60 characters or less"),
+		.withMessage("Name must be 60 characters or less")
+		.isString(),
 	check("about")
 		.exists({ checkFalsy: true })
 		.isString()
@@ -58,8 +59,14 @@ const validateCreateGroup = [
 		.exists({ checkNull: true })
 		.isBoolean({ loose: false })
 		.withMessage("Private must be a boolean"),
-	check("city").exists().isString().withMessage("City is required"),
-	check("state").exists().isString().withMessage("State is required"),
+	check("city")
+		.exists({ checkFalsy: true })
+		.withMessage("City is required")
+		.isString(),
+	check("state")
+		.exists({ checkFalsy: true })
+		.withMessage("City is required")
+		.isString(),
 	handleValidationErrors
 ];
 const validateCreateGroupEvent = [
