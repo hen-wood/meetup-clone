@@ -76,7 +76,7 @@ export const putGroup = (updatedGroup, groupId) => async dispatch => {
 
 	const data = await res.json();
 	dispatch(updateGroup(data));
-	// return res;
+	return res;
 };
 
 export const postGroupImage = (image, groupId) => async dispatch => {

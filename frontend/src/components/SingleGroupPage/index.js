@@ -53,52 +53,54 @@ export default function SingleGroupPage() {
 			</button>
 		</div>
 	);
-	const content = currentGroup ? (
-		<div id="single-group-page-inner-container">
-			<div id="single-group-page-info-container">
-				<div id="single-page-image-container">
-					<img
-						id="single-group-page-preview-image"
-						src={
-							currentGroup.GroupImages.find(image => image.preview === true).url
-						}
-						alt={currentGroup.name + " preview image"}
-					/>
-				</div>
-
-				<div id="single-group-page-info-text">
-					<div id="single-group-page-info-text-top">
-						<h1>{currentGroup.name}</h1>
-						<pre>
-							<i className="fa-solid fa-location-dot" />
-							{`   ${currentGroup.city}, ${currentGroup.state}`}
-						</pre>
-						<pre>
-							<i className="fa-solid fa-users"></i>
-							{` ${currentGroup.numMembers} members · ${
-								currentGroup.private ? "Private group" : "Public group"
-							} · ${currentGroup.type}`}
-						</pre>
-						<pre>
-							<i className="fa-solid fa-user"></i>
-							{"   "}Organized by{" "}
-							<b>
-								{currentGroup.Organizer.firstName +
-									" " +
-									currentGroup.Organizer.lastName}
-							</b>{" "}
-						</pre>
+	const content =
+		currentGroup && currentGroup.id === +groupId ? (
+			<div id="single-group-page-inner-container">
+				<div id="single-group-page-info-container">
+					<div id="single-page-image-container">
+						<img
+							id="single-group-page-preview-image"
+							src={
+								currentGroup.GroupImages.find(image => image.preview === true)
+									.url
+							}
+							alt={currentGroup.name + " preview image"}
+						/>
 					</div>
-					{showDeleteButton && organizerOptions}
+
+					<div id="single-group-page-info-text">
+						<div id="single-group-page-info-text-top">
+							<h1>{currentGroup.name}</h1>
+							<pre>
+								<i className="fa-solid fa-location-dot" />
+								{`   ${currentGroup.city}, ${currentGroup.state}`}
+							</pre>
+							<pre>
+								<i className="fa-solid fa-users"></i>
+								{` ${currentGroup.numMembers} members · ${
+									currentGroup.private ? "Private group" : "Public group"
+								} · ${currentGroup.type}`}
+							</pre>
+							<pre>
+								<i className="fa-solid fa-user"></i>
+								{"   "}Organized by{" "}
+								<b>
+									{currentGroup.Organizer.firstName +
+										" " +
+										currentGroup.Organizer.lastName}
+								</b>{" "}
+							</pre>
+						</div>
+						{showDeleteButton && organizerOptions}
+					</div>
+				</div>
+				<div id="single-group-about-container">
+					<h2 id="single-group-about-title">What we're about</h2>
+					<p id="single-group-about-text">{currentGroup.about}</p>
 				</div>
 			</div>
-			<div id="single-group-about-container">
-				<h2 id="single-group-about-title">What we're about</h2>
-				<p id="single-group-about-text">{currentGroup.about}</p>
-			</div>
-		</div>
-	) : (
-		<h1>Loading group data...</h1>
-	);
+		) : (
+			<h1>Loading group data...</h1>
+		);
 	return <div id="single-group-page-container">{content}</div>;
 }

@@ -7,7 +7,6 @@ export default function HomePage({ user }) {
 	const history = useHistory();
 	const redirectSingleGroup = groupId => history.push(`/groups/${groupId}`);
 	const dispatch = useDispatch();
-
 	useEffect(() => {
 		dispatch(getUserGroups());
 	}, [dispatch]);
@@ -43,6 +42,11 @@ export default function HomePage({ user }) {
 							<h3 className="group-text-city-state">
 								{`${group.city}, ${group.state}`.toUpperCase()}
 							</h3>
+							{group.organizerId === user.id ? (
+								<p className="user-status-tag">Organizer</p>
+							) : (
+								<p className="user-status-tag">Member</p>
+							)}
 						</div>
 					</div>
 				</div>
@@ -55,17 +59,21 @@ export default function HomePage({ user }) {
 		<div className="home-page-outer-container">
 			<div className="home-page-inner-container">
 				<div id="user-nav">
-					<h2>Welcome, {user.firstName + "👋"}</h2>
-					<div id="user-links">
-						<Link className="user-link" to="/all-groups">
-							View all groups
-						</Link>
-						<Link className="user-link" to="/all-events">
-							View all events
-						</Link>
-						<Link className="user-link" to="create-group">
-							Start a new group
-						</Link>
+					<div id="user-nav-top">
+						<div id="user-nav-welcome">
+							<h2>Welcome, {user.firstName + "👋"}</h2>
+						</div>
+						<div id="user-links">
+							<Link className="user-link" to="create-group">
+								Start a new group
+							</Link>
+							<Link className="user-link" to="/all-groups">
+								See all groups
+							</Link>
+							<Link className="user-link" to="/all-events">
+								See all events
+							</Link>
+						</div>
 					</div>
 					<h3>Your groups</h3>
 				</div>

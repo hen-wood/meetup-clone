@@ -26,8 +26,8 @@ export default function CreateAGroup() {
 			about,
 			type,
 			private: privacy,
-			city,
-			state
+			city: city[0].toUpperCase() + city.slice(1).toLowerCase(),
+			state: state.toUpperCase()
 		};
 
 		const valErrors = {};
@@ -41,7 +41,8 @@ export default function CreateAGroup() {
 			valErrors.about = "About must be 50 characters or more";
 		if (!city.length) valErrors.city = "City is required";
 		if (!state.length) valErrors.state = "State is required";
-
+		if (state.length > 2)
+			valErrors.state = "State must be two letter abbreviation";
 		if (Object.keys(valErrors).length) {
 			setErrors(valErrors);
 			return;
