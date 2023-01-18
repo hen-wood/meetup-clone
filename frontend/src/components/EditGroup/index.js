@@ -1,24 +1,36 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import "../CreateAGroup/CreateAGroup.css";
 import "./EditGroup.css";
-import { putGroup } from "../../store/groupsReducer";
+import { putGroup, getSingleGroup } from "../../store/groupsReducer";
 
 export default function EditGroup() {
 	const dispatch = useDispatch();
 	const history = useHistory();
-	const group = useSelector(state => state.groups.singleGroup);
+	const { groupId } = useParams();
 
-	const [name, setName] = useState(group.name);
-	const [about, setAbout] = useState(group.about);
-	const [type, setType] = useState(group.type);
-	const [onlineChecked, setOnlineChecked] = useState(group.type === "Online");
-	const [privacy, setPrivacy] = useState(group.private);
-	const [privateChecked, setPrivateChecked] = useState(group.private);
-	const [city, setCity] = useState(group.city);
-	const [state, setState] = useState(group.state);
+	const [name, setName] = useState("");
+	const [about, setAbout] = useState("");
+	const [type, setType] = useState("");
+	const [onlineChecked, setOnlineChecked] = useState(type === "Online");
+	const [privacy, setPrivacy] = useState(true);
+	const [privateChecked, setPrivateChecked] = useState(privacy === true);
+	const [city, setCity] = useState("");
+	const [state, setState] = useState("");
 	const [errors, setErrors] = useState({});
+
+	useEffect(() => {
+		dispatch(getSingleGroup(groupId)).then(async res => {
+			await res;
+			setName(res.name);
+			setAbout(res.about);
+			setType(res.type);
+			setPrivacy(res.private);
+			setCity(res.city);
+			setState(res.state);
+		});
+	}, []);
 
 	const handleSubmit = e => {
 		e.preventDefault();
@@ -48,9 +60,9 @@ export default function EditGroup() {
 			return;
 		}
 
-		dispatch(putGroup(editedGroup, group.id))
+		dispatch(putGroup(editedGroup, groupId))
 			.then(() => {
-				history.push(`/groups/${group.id}`);
+				history.push(`/groups/${groupId}`);
 			})
 			.catch(async res => {
 				const data = await res.json();
@@ -58,11 +70,12 @@ export default function EditGroup() {
 			});
 	};
 
-	return group ? (
+	const group = useSelector(state => state.groups.singleGroup);
+	return Object.keys(group).length ? (
 		<div id="edit-group-outer-container">
 			<div id="edit-group-inner-container">
 				<form id="edit-group-form" onSubmit={handleSubmit}>
-					<h1>Edit {group.name}</h1>
+					<h1>Edit {name}</h1>
 					<label htmlFor="edit-group-name">Name</label>
 					<input
 						id="edit-group-name"
@@ -70,7 +83,7 @@ export default function EditGroup() {
 						value={name}
 						onChange={e => setName(e.target.value)}
 					/>
-					<p className="edit-errors">{errors.name ? errors.name : ""}</p>
+					{errors.name && <p className="edit-group-errors">{errors.name}</p>}
 					<label htmlFor="edit-group-about">About</label>
 					<textarea
 						id="edit-group-about"
@@ -78,7 +91,7 @@ export default function EditGroup() {
 						value={about}
 						onChange={e => setAbout(e.target.value)}
 					/>
-					<p className="edit-errors">{errors.about ? errors.about : ""}</p>
+					{errors.about && <p className="edit-group-errors">{errors.about}</p>}
 					<div id="edit-group-type-setting">
 						<div className="group-radio-one">
 							<label htmlFor="edit-group-type-online">Online</label>
@@ -146,7 +159,7 @@ export default function EditGroup() {
 						value={city}
 						onChange={e => setCity(e.target.value)}
 					/>
-					<p className="edit-errors">{errors.city ? errors.city : ""}</p>
+					{errors.city && <p className="edit-group-errors">{errors.city}</p>}
 					<label htmlFor="edit-group-state">State</label>
 					<input
 						id="edit-group-state"
@@ -154,12 +167,14 @@ export default function EditGroup() {
 						value={state}
 						onChange={e => setState(e.target.value)}
 					/>
-					<p className="edit-errors">{errors.state ? errors.state : ""}</p>
+					{errors.state && <p className="edit-group-errors">{errors.state}</p>}
 					<button type="submit">Submit</button>
 				</form>
 			</div>
 		</div>
 	) : (
-		<h1>loading...</h1>
+		<div id="loading-form-data">
+			<h1>Loading form data...</h1>
+		</div>
 	);
 }
