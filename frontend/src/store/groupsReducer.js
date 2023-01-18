@@ -156,7 +156,8 @@ export default function groupsReducer(state = initialState, action) {
 			return newState;
 		case GET_USER_GROUPS:
 			newState = { ...state };
-			newState.userGroups = action.payload;
+			newState.userGroups = { ...action.payload };
+			console.log(newState.userGroups);
 			return newState;
 		case GET_SINGLE_GROUP:
 			newState = { ...state };

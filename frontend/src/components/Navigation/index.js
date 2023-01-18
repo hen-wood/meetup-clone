@@ -25,7 +25,7 @@ function Navigation({ isLoaded }) {
 		</div>
 	);
 	return (
-		<div className={"navigation"}>
+		<div className={"navigation splash-exit"}>
 			<Link to="/">
 				<Logo />
 			</Link>

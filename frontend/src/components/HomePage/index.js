@@ -7,6 +7,7 @@ export default function HomePage({ user }) {
 	const history = useHistory();
 	const redirectSingleGroup = groupId => history.push(`/groups/${groupId}`);
 	const dispatch = useDispatch();
+
 	useEffect(() => {
 		dispatch(getUserGroups());
 	}, [dispatch]);
@@ -14,6 +15,7 @@ export default function HomePage({ user }) {
 	const handleGroupClick = groupId => {
 		redirectSingleGroup(groupId);
 	};
+
 	const userGroups = useSelector(state => state.groups.userGroups);
 	const userGroupKeys = Object.keys(userGroups);
 	const groupContent = userGroupKeys.length ? (

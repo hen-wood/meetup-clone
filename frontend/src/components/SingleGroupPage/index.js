@@ -1,5 +1,5 @@
 import "./SingleGroupPage.css";
-import { getSingleGroup } from "../../store/groupsReducer";
+import { getSingleGroup, getUserGroups } from "../../store/groupsReducer";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
@@ -11,8 +11,9 @@ export default function SingleGroupPage() {
 	const history = useHistory();
 	const deleteRedirect = () => history.push("/home");
 	const editRedirect = () => history.push(`/edit-group/${groupId}`);
+
 	useEffect(() => {
-		dispatch(getSingleGroup(groupId));
+		dispatch(getSingleGroup(groupId)).then().catch();
 	}, [dispatch, groupId]);
 
 	const currentGroup = useSelector(state => state.groups.singleGroup);
@@ -24,11 +25,16 @@ export default function SingleGroupPage() {
 
 	const handleDelete = () => {
 		dispatch(deleteGroup(groupId))
-			.then(res => {
-				deleteRedirect();
+			.then(() => {
+				console.log("just deleted");
+				dispatch(getUserGroups())
+					.then(() => {
+						deleteRedirect();
+					})
+					.catch(async res => console.log(res));
 			})
-			.catch(err => {
-				console.log(err);
+			.catch(async res => {
+				console.log(res);
 			});
 	};
 
@@ -40,10 +46,10 @@ export default function SingleGroupPage() {
 		<div id="organizer-options">
 			<p>Organizer options</p>
 			<button id="delete-group-button" onClick={handleDelete}>
-				Delete this group
+				Delete group
 			</button>
 			<button id="edit-group-button" onClick={handleEdit}>
-				Edit this group
+				Edit group
 			</button>
 		</div>
 	);

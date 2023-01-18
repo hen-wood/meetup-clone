@@ -12,7 +12,7 @@ export default function Groups() {
 	const redirectToSingleGroup = groupId => history.push(`/groups/${groupId}`);
 
 	useEffect(() => {
-		dispatch(getAllGroups());
+		dispatch(getAllGroups()).then().catch();
 	}, [dispatch]);
 
 	const handleGroupClick = groupId => {
