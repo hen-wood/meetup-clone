@@ -90,20 +90,6 @@ export default function EditGroup() {
 						</div>
 					</div>
 					<div id="edit-group-privacy-setting">
-						<div className="group-radio-one">
-							<label htmlFor="edit-group-privacy-true">Private</label>
-							<input
-								id="edit-group-privacy-true"
-								type="radio"
-								name="edit-group-privacy"
-								value={true}
-								checked={privateChecked}
-								onChange={e => {
-									setPrivacy(e.target.value);
-									setPrivateChecked(true);
-								}}
-							/>
-						</div>
 						<div className="group-radio-two">
 							<label htmlFor="edit-group-privacy-false">Public</label>
 							<input
@@ -115,6 +101,20 @@ export default function EditGroup() {
 								onChange={e => {
 									setPrivacy(e.target.value);
 									setPrivateChecked(false);
+								}}
+							/>
+						</div>
+						<div className="group-radio-one">
+							<label htmlFor="edit-group-privacy-true">Private</label>
+							<input
+								id="edit-group-privacy-true"
+								type="radio"
+								name="edit-group-privacy"
+								value={true}
+								checked={privateChecked}
+								onChange={e => {
+									setPrivacy(e.target.value);
+									setPrivateChecked(true);
 								}}
 							/>
 						</div>
