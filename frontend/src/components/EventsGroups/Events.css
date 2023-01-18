@@ -19,6 +19,7 @@
     border-radius: 6px;
     height: 100px;
     width: 178px;
+    object-fit: cover;
 }
 
 .event-text-content-container {
