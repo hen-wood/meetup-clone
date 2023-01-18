@@ -2,7 +2,7 @@ import "./CreateAGroup.css";
 import { useState } from "react";
 import { useHistory } from "react-router";
 import { useDispatch } from "react-redux";
-import { postGroup } from "../../store/groupsReducer";
+import { postGroup, postGroupImage } from "../../store/groupsReducer";
 export default function CreateAGroup() {
 	const dispatch = useDispatch();
 	const [name, setName] = useState("");
@@ -11,7 +11,7 @@ export default function CreateAGroup() {
 	const [privacy, setPrivacy] = useState(false);
 	const [city, setCity] = useState("");
 	const [state, setState] = useState("");
-
+	const [previewImageUrl, setPreviewImageUrl] = useState("");
 	const history = useHistory();
 	const redirect = () => history.push("/home");
 
@@ -26,8 +26,22 @@ export default function CreateAGroup() {
 			state
 		};
 
-		const res = dispatch(postGroup(newGroup));
+		const newImage = {
+			url: previewImageUrl,
+			preview: true
+		};
 
+		dispatch(postGroup(newGroup))
+			.then(res => {
+				dispatch(postGroupImage(newImage, res.id))
+					.then(res => {
+						console.log(res);
+					})
+					.catch(err => console.log(err));
+			})
+			.catch(err => {
+				console.log(err);
+			});
 		redirect();
 	};
 	return (
@@ -104,6 +118,12 @@ export default function CreateAGroup() {
 						id="group-state"
 						type="text"
 						onChange={e => setState(e.target.value)}
+					/>
+					<label htmlFor="group-preview-image">Preview Image URL</label>
+					<input
+						id="group-preview-image"
+						type="text"
+						onChange={e => setPreviewImageUrl(e.target.value)}
 					/>
 					<button type="submit">Submit</button>
 				</form>

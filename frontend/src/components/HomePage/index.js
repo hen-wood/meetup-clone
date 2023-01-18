@@ -1,20 +1,30 @@
 import "./HomePage.css";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useEffect } from "react";
 import { getUserGroups } from "../../store/groupsReducer";
 export default function HomePage({ user }) {
+	const history = useHistory();
+	const redirectSingleGroup = groupId => history.push(`/groups/${groupId}`);
 	const dispatch = useDispatch();
 	useEffect(() => {
 		dispatch(getUserGroups());
 	}, [dispatch]);
+
+	const handleGroupClick = groupId => {
+		redirectSingleGroup(groupId);
+	};
 	const userGroups = useSelector(state => state.groups.userGroups);
 	const userGroupKeys = Object.keys(userGroups);
 	const groupContent = userGroupKeys.length ? (
 		userGroupKeys.map(key => {
 			const group = userGroups[key];
 			return (
-				<div key={group.id} className="individual-user-group-container">
+				<div
+					key={group.id}
+					className="individual-user-group-container"
+					onClick={() => handleGroupClick(group.id)}
+				>
 					<div className="group-preview-image-container">
 						<img
 							src={
@@ -63,6 +73,6 @@ export default function HomePage({ user }) {
 			</div>
 		</div>
 	) : (
-		<h1>Loading home page...</h1>
+		<h1>Loading home..</h1>
 	);
 }
