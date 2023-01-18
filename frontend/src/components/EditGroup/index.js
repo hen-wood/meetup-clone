@@ -12,10 +12,10 @@ export default function EditGroup() {
 
 	const [name, setName] = useState("");
 	const [about, setAbout] = useState("");
-	const [type, setType] = useState("");
-	const [onlineChecked, setOnlineChecked] = useState(type === "Online");
+	const [type, setType] = useState("Online");
+	const [onlineChecked, setOnlineChecked] = useState(true);
 	const [privacy, setPrivacy] = useState(true);
-	const [privateChecked, setPrivateChecked] = useState(privacy === true);
+	const [privateChecked, setPrivateChecked] = useState(false);
 	const [city, setCity] = useState("");
 	const [state, setState] = useState("");
 	const [errors, setErrors] = useState({});
@@ -29,6 +29,8 @@ export default function EditGroup() {
 			setPrivacy(res.private);
 			setCity(res.city);
 			setState(res.state);
+			setOnlineChecked(res.type === "Online");
+			setPrivateChecked(res.private);
 		});
 	}, []);
 
@@ -77,7 +79,7 @@ export default function EditGroup() {
 		<div id="edit-group-outer-container">
 			<div id="edit-group-inner-container">
 				<form id="edit-group-form" onSubmit={handleSubmit}>
-					<h1>Edit {name}</h1>
+					<h1>Edit {group.name}</h1>
 					<label htmlFor="edit-group-name">Name</label>
 					<input
 						id="edit-group-name"
