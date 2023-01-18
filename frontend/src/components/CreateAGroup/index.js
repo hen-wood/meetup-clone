@@ -21,16 +21,9 @@ export default function CreateAGroup() {
 
 	const handleSubmit = e => {
 		e.preventDefault();
-		const newGroup = {
-			name,
-			about,
-			type,
-			private: privacy,
-			city: city[0].toUpperCase() + city.slice(1).toLowerCase(),
-			state: state.toUpperCase()
-		};
 
 		const valErrors = {};
+
 		if (!previewImageUrl.length)
 			valErrors.previewImageUrl = "Preview Image is required";
 		if (!name.length) valErrors.name = "Name is required";
@@ -43,10 +36,20 @@ export default function CreateAGroup() {
 		if (!state.length) valErrors.state = "State is required";
 		if (state.length > 2)
 			valErrors.state = "State must be two letter abbreviation";
+
 		if (Object.keys(valErrors).length) {
 			setErrors(valErrors);
 			return;
 		}
+
+		const newGroup = {
+			name,
+			about,
+			type,
+			private: privacy,
+			city: city[0].toUpperCase() + city.slice(1).toLowerCase(),
+			state: state.toUpperCase()
+		};
 
 		const newImage = {
 			url: previewImageUrl,

@@ -35,16 +35,8 @@ export default function EditGroup() {
 	const handleSubmit = e => {
 		e.preventDefault();
 
-		const editedGroup = {
-			name,
-			about,
-			type,
-			private: privacy,
-			city: city[0].toUpperCase() + city.slice(1).toLowerCase(),
-			state: state.toUpperCase()
-		};
-
 		const valErrors = {};
+
 		if (!name.length) valErrors.name = "Name is required";
 		if (name.length > 60)
 			valErrors.name = "Name must be shorter than 60 characters";
@@ -55,10 +47,20 @@ export default function EditGroup() {
 		if (!state.length) valErrors.state = "State is required";
 		if (state.length > 2)
 			valErrors.state = "State must be two letter abbreviation";
+
 		if (Object.keys(valErrors).length) {
 			setErrors(valErrors);
 			return;
 		}
+
+		const editedGroup = {
+			name,
+			about,
+			type,
+			private: privacy,
+			city: city[0].toUpperCase() + city.slice(1).toLowerCase(),
+			state: state.toUpperCase()
+		};
 
 		dispatch(putGroup(editedGroup, groupId))
 			.then(() => {
