@@ -12,10 +12,10 @@ export default function EditGroup() {
 
 	const [name, setName] = useState("");
 	const [about, setAbout] = useState("");
-	const [type, setType] = useState("");
-	const [onlineChecked, setOnlineChecked] = useState(type === "Online");
+	const [type, setType] = useState("Online");
+	const [onlineChecked, setOnlineChecked] = useState(true);
 	const [privacy, setPrivacy] = useState(true);
-	const [privateChecked, setPrivateChecked] = useState(privacy === true);
+	const [privateChecked, setPrivateChecked] = useState(false);
 	const [city, setCity] = useState("");
 	const [state, setState] = useState("");
 	const [errors, setErrors] = useState({});
@@ -29,22 +29,16 @@ export default function EditGroup() {
 			setPrivacy(res.private);
 			setCity(res.city);
 			setState(res.state);
+			setOnlineChecked(res.type === "Online");
+			setPrivateChecked(res.private);
 		});
 	}, []);
 
 	const handleSubmit = e => {
 		e.preventDefault();
 
-		const editedGroup = {
-			name,
-			about,
-			type,
-			private: privacy,
-			city: city[0].toUpperCase() + city.slice(1).toLowerCase(),
-			state: state.toUpperCase()
-		};
-
 		const valErrors = {};
+
 		if (!name.length) valErrors.name = "Name is required";
 		if (name.length > 60)
 			valErrors.name = "Name must be shorter than 60 characters";
@@ -55,10 +49,20 @@ export default function EditGroup() {
 		if (!state.length) valErrors.state = "State is required";
 		if (state.length > 2)
 			valErrors.state = "State must be two letter abbreviation";
+
 		if (Object.keys(valErrors).length) {
 			setErrors(valErrors);
 			return;
 		}
+
+		const editedGroup = {
+			name,
+			about,
+			type,
+			private: privacy,
+			city: city[0].toUpperCase() + city.slice(1).toLowerCase(),
+			state: state.toUpperCase()
+		};
 
 		dispatch(putGroup(editedGroup, groupId))
 			.then(() => {
@@ -75,7 +79,7 @@ export default function EditGroup() {
 		<div id="edit-group-outer-container">
 			<div id="edit-group-inner-container">
 				<form id="edit-group-form" onSubmit={handleSubmit}>
-					<h1>Edit {name}</h1>
+					<h1>Edit {group.name}</h1>
 					<label htmlFor="edit-group-name">Name</label>
 					<input
 						id="edit-group-name"
