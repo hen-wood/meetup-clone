@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { deleteGroup } from "../../store/groupsReducer";
+import GroupEvents from "./GroupEvents";
 
 export default function SingleGroupPage() {
 	const dispatch = useDispatch();
@@ -97,6 +98,10 @@ export default function SingleGroupPage() {
 				<div id="single-group-about-container">
 					<h2 id="single-group-about-title">What we're about</h2>
 					<p id="single-group-about-text">{currentGroup.about}</p>
+				</div>
+				<div>
+					<h2>Events for {currentGroup.name}</h2>
+					<GroupEvents groupId={currentGroup.id} />
 				</div>
 			</div>
 		) : (

@@ -1,19 +1,14 @@
-import "./Events.css";
-import "./mobile.css";
-import { useDispatch, useSelector } from "react-redux";
-import { getAllEvents } from "../../store/eventsReducer";
 import { useEffect } from "react";
-import dayMonthDate from "../../utils/dayMonthDate";
-import { getSingleEvent } from "../../store/eventsReducer";
 import { useHistory } from "react-router-dom";
-
-export default function Events() {
+import { useDispatch, useSelector } from "react-redux";
+import { getAllGroupEvents, getSingleEvent } from "../../store/eventsReducer";
+import dayMonthDate from "../../utils/dayMonthDate";
+export default function GroupEvents({ groupId }) {
 	const dispatch = useDispatch();
 	const history = useHistory();
-
 	useEffect(() => {
-		dispatch(getAllEvents()).then().catch();
-	}, [dispatch]);
+		dispatch(getAllGroupEvents(groupId));
+	}, [dispatch, groupId]);
 
 	const handleEventClick = eventId => {
 		dispatch(getSingleEvent(eventId)).then(() => {
@@ -21,17 +16,15 @@ export default function Events() {
 		});
 	};
 
-	const eventsObj = useSelector(state => state.events.allEvents);
-	const eventKeys = Object.keys(eventsObj);
-
-	const content = eventKeys.length ? (
-		eventKeys.map(key => {
-			const event = eventsObj[key];
+	const events = useSelector(state => state.events.allGroupEvents);
+	const eventsValues = Object.values(events);
+	return eventsValues.length ? (
+		eventsValues.map(event => {
 			const date = dayMonthDate(event.startDate);
 			return (
 				<div
 					key={event.id}
-					className="individual-event-container"
+					className="individual-group-event-container"
 					onClick={() => handleEventClick(event.id)}
 				>
 					<div className="event-preview-image-container">
@@ -60,8 +53,8 @@ export default function Events() {
 			);
 		})
 	) : (
-		<h3>Loading events...</h3>
+		<div className="no-events-container">
+			<h3>No events for this group 😭</h3>
+		</div>
 	);
-
-	return <div id="group-event-list-container">{content}</div>;
 }

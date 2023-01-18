@@ -10,6 +10,7 @@ import EventsGroups from "./components/EventsGroups";
 import CreateAGroup from "./components/CreateAGroup";
 import SingleGroupPage from "./components/SingleGroupPage";
 import EditGroup from "./components/EditGroup";
+import SingleEventDetails from "./components/SingleEventDetails";
 
 function App() {
 	const user = useSelector(state => state.session.user);
@@ -45,6 +46,9 @@ function App() {
 					</Route>
 					<Route path="/edit-group/:groupId">
 						<EditGroup />
+					</Route>
+					<Route path="/events/:eventId">
+						<SingleEventDetails />
 					</Route>
 				</Switch>
 			)}
