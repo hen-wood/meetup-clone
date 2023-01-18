@@ -147,12 +147,14 @@ const validateEditGroupVenue = [
 
 const validateEditGroup = [
 	check("name")
-		.optional()
+		.exists({ checkFalsy: true })
+		.withMessage("Name is required")
 		.isString()
 		.isLength({ max: 60 })
 		.withMessage("Name must be 60 characters or less"),
 	check("about")
-		.optional()
+		.exists({ checkFalsy: true })
+		.withMessage("About is required")
 		.isString()
 		.isLength({ min: 50 })
 		.withMessage("About must be 50 characters or more"),
@@ -165,8 +167,14 @@ const validateEditGroup = [
 		.optional()
 		.isBoolean({ loose: false })
 		.withMessage("Private must be a boolean"),
-	check("city").exists().isString().withMessage("City is required"),
-	check("state").exists().isString().withMessage("State is required"),
+	check("city")
+		.exists({ checkFalsy: true })
+		.withMessage("City is required")
+		.isString(),
+	check("state")
+		.exists({ checkFalsy: true })
+		.withMessage("State is required")
+		.isString(),
 	handleValidationErrors
 ];
 

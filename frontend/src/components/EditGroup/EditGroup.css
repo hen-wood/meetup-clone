@@ -21,7 +21,6 @@
 
 #edit-group-form input[type='text'] {
     height: 40px;
-    margin-bottom: 10px;
     border-radius: 10px;
     border: 1px solid rgb(209, 209, 209);
     padding: 0 10px;
@@ -88,7 +87,8 @@
     border-radius: 10px;
     resize: none;
     font-family: Arial;
-    height: 150px
+    height: 80px;
+    margin-bottom: 10px;
 }
 
 #edit-group-form textarea:hover {
@@ -99,4 +99,11 @@
     outline: none;
     border: 1px solid rgb(75, 163, 175);
     cursor: default;
+}
+
+.edit-errors{
+    margin: 3px 0;
+    font-size: 14px;
+    font-weight: 300;
+    color: red;
 }

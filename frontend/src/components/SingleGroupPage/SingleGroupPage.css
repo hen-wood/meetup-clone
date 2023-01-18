@@ -15,31 +15,41 @@
     height: 318px;
 }
 
+#single-page-image-container{
+    margin-right: 25px;
+}
 #single-group-page-preview-image{
     width: 565px;
     height: 100%;
+    object-fit: cover;
     border-radius: 8px;
-    margin-right: 25px;
 }
 
-#single-group-page-info-text h1{
+#single-group-page-info-text{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#single-group-page-info-text-top h1{
     font-size: 32px;
     font-weight: 700;
 }
 
-#single-group-page-info-text pre{
+#single-group-page-info-text-top pre{
     font-size: 14px;
     font-weight: 300;
     margin: 5px 0;
     font-family: 'Outfit', sans-serif;
 }
 
-#single-group-page-info-text pre i{
+#single-group-page-info-text-top pre i{
     color:#a8a8a8;
     font-size: 16px;
 }
 
-#delete-group-button{
+#delete-group-button,
+#edit-group-button{
     background-color: #008294;
     color: white;
     height: 40px;
@@ -48,9 +58,23 @@
     font-size: 16px;
     font-weight: 400;
     border-radius: 7px;
+    margin-right: 10px;
 }
 
-#delete-group-button:hover{
+#delete-group-button:hover,
+#edit-group-button:hover{
     cursor: pointer;
     background-color: #0098ae;
+}
+
+#single-group-about-container{
+    margin-top: 50px;
+}
+
+#single-group-about-title{
+    margin-top: 0;
+}
+#single-group-about-text{
+    font-size: 16px;
+    font-weight: 300;
 }

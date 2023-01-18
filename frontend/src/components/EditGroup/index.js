@@ -18,6 +18,7 @@ export default function EditGroup() {
 	const [privateChecked, setPrivateChecked] = useState(group.private);
 	const [city, setCity] = useState(group.city);
 	const [state, setState] = useState(group.state);
+	const [errors, setErrors] = useState({});
 
 	const handleSubmit = e => {
 		e.preventDefault();
@@ -31,12 +32,12 @@ export default function EditGroup() {
 		};
 
 		dispatch(putGroup(editedGroup, group.id))
-			.then(res => {
-				console.log(res);
+			.then(() => {
 				history.push(`/groups/${group.id}`);
 			})
-			.catch(err => {
-				console.log(err);
+			.catch(async res => {
+				const data = await res.json();
+				setErrors(data.errors);
 			});
 	};
 
@@ -52,6 +53,7 @@ export default function EditGroup() {
 						value={name}
 						onChange={e => setName(e.target.value)}
 					/>
+					<p className="edit-errors">{errors.name ? errors.name : ""}</p>
 					<label htmlFor="edit-group-about">About</label>
 					<textarea
 						id="edit-group-about"
@@ -59,6 +61,7 @@ export default function EditGroup() {
 						value={about}
 						onChange={e => setAbout(e.target.value)}
 					/>
+					<p className="edit-errors">{errors.about ? errors.about : ""}</p>
 					<div id="edit-group-type-setting">
 						<div className="group-radio-one">
 							<label htmlFor="edit-group-type-online">Online</label>
@@ -90,20 +93,6 @@ export default function EditGroup() {
 						</div>
 					</div>
 					<div id="edit-group-privacy-setting">
-						<div className="group-radio-one">
-							<label htmlFor="edit-group-privacy-true">Private</label>
-							<input
-								id="edit-group-privacy-true"
-								type="radio"
-								name="edit-group-privacy"
-								value={true}
-								checked={privateChecked}
-								onChange={e => {
-									setPrivacy(e.target.value);
-									setPrivateChecked(true);
-								}}
-							/>
-						</div>
 						<div className="group-radio-two">
 							<label htmlFor="edit-group-privacy-false">Public</label>
 							<input
@@ -118,6 +107,20 @@ export default function EditGroup() {
 								}}
 							/>
 						</div>
+						<div className="group-radio-one">
+							<label htmlFor="edit-group-privacy-true">Private</label>
+							<input
+								id="edit-group-privacy-true"
+								type="radio"
+								name="edit-group-privacy"
+								value={true}
+								checked={privateChecked}
+								onChange={e => {
+									setPrivacy(e.target.value);
+									setPrivateChecked(true);
+								}}
+							/>
+						</div>
 					</div>
 					<label htmlFor="edit-group-city">City</label>
 					<input
@@ -126,6 +129,7 @@ export default function EditGroup() {
 						value={city}
 						onChange={e => setCity(e.target.value)}
 					/>
+					<p className="edit-errors">{errors.city ? errors.city : ""}</p>
 					<label htmlFor="edit-group-state">State</label>
 					<input
 						id="edit-group-state"
@@ -133,6 +137,7 @@ export default function EditGroup() {
 						value={state}
 						onChange={e => setState(e.target.value)}
 					/>
+					<p className="edit-errors">{errors.state ? errors.state : ""}</p>
 					<button type="submit">Submit</button>
 				</form>
 			</div>
@@ -140,93 +145,4 @@ export default function EditGroup() {
 	) : (
 		<h1>loading...</h1>
 	);
-	// 	<div id="create-group-outer-container">
-	// 		<div id="create-group-inner-container">
-	// 			<form id="create-group-form" onSubmit={handleSubmit}>
-	// 				<h1>Edit {group.name}</h1>
-	// 				<label htmlFor="group-name">Name</label>
-	// 				<input
-	// 					id="group-name"
-	// 					type="text"
-	// 					value={name}
-	// 					onChange={e => setName(e.target.value)}
-	// 				/>
-	// 				<label htmlFor="group-about">Description</label>
-	// 				<textarea
-	// 					id="group-about"
-	// 					type="text-field"
-	// 					value={about}
-	// 					onChange={e => setAbout(e.target.value)}
-	// 				/>
-	// 				<p>Type</p>
-	// 				<div id="group-type-setting">
-	// 					<div className="group-radio-one">
-	// 						<label htmlFor="online">Online</label>
-	// 						<input
-	// 							type="radio"
-	// 							id="online"
-	// 							name="type"
-	// 							value="Online"
-	// 							checked={type === "Online"}
-	// 							onChange={e => setType(e.target.value)}
-	// 						/>
-	// 					</div>
-	// 					<div className="group-radio-two">
-	// 						<label htmlFor="in-person">In person</label>
-	// 						<input
-	// 							type="radio"
-	// 							id="in-person"
-	// 							name="type"
-	// 							value="In person"
-	// 							checked={type === "In person"}
-	// 							onChange={e => setType(e.target.value)}
-	// 						/>
-	// 					</div>
-	// 				</div>
-	// 				<p>Privacy</p>
-	// 				<div id="group-privacy-setting">
-	// 					<div className="group-radio-one">
-	// 						<label htmlFor="private">Private</label>
-	// 						<input
-	// 							type="radio"
-	// 							id="private"
-	// 							name="private"
-	// 							value={"private"}
-	// 							checked={privacy === true}
-	// 							onChange={e => setPrivacy(e.target.value)}
-	// 						/>
-	// 					</div>
-	// 					<div className="group-radio-two">
-	// 						<label htmlFor="public">Public</label>
-	// 						<input
-	// 							type="radio"
-	// 							id="public"
-	// 							name="private"
-	// 							value={"public"}
-	// 							checked={privacy === false}
-	// 							onChange={e => setPrivacy(e.target.value)}
-	// 						/>
-	// 					</div>
-	// 				</div>
-	// 				<label htmlFor="group-city">City</label>
-	// 				<input
-	// 					id="group-city"
-	// 					type="text"
-	// 					value={city}
-	// 					onChange={e => setCity(e.target.value)}
-	// 				/>
-	// 				<label htmlFor="group-state">State</label>
-	// 				<input
-	// 					id="group-state"
-	// 					type="text"
-	// 					value={state}
-	// 					onChange={e => setState(e.target.value)}
-	// 				/>
-	// 				<button type="submit">Submit</button>
-	// 			</form>
-	// 		</div>
-	// 	</div>
-	// ) : (
-	// 	<h1>loading page...</h1>
-	// );
 }

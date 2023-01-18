@@ -12,6 +12,8 @@ export default function CreateAGroup() {
 	const [city, setCity] = useState("");
 	const [state, setState] = useState("");
 	const [previewImageUrl, setPreviewImageUrl] = useState("");
+	const [onlineChecked, setOnlineChecked] = useState(true);
+	const [publicChecked, setPublicChecked] = useState(true);
 	const history = useHistory();
 	const redirect = () => history.push("/home");
 
@@ -70,7 +72,11 @@ export default function CreateAGroup() {
 								id="online"
 								name="type"
 								value="Online"
-								onChange={e => setType(e.target.value)}
+								checked={onlineChecked}
+								onChange={e => {
+									setType(e.target.value);
+									setOnlineChecked(true);
+								}}
 							/>
 						</div>
 						<div className="group-radio-two">
@@ -80,22 +86,16 @@ export default function CreateAGroup() {
 								id="in-person"
 								name="type"
 								value="In person"
-								onChange={e => setType(e.target.value)}
+								checked={!onlineChecked}
+								onChange={e => {
+									setType(e.target.value);
+									setOnlineChecked(false);
+								}}
 							/>
 						</div>
 					</div>
 					<p>Privacy</p>
 					<div id="group-privacy-setting">
-						<div className="group-radio-one">
-							<label htmlFor="private">Private</label>
-							<input
-								type="radio"
-								id="private"
-								name="private"
-								value={true}
-								onChange={e => setPrivacy(e.target.value)}
-							/>
-						</div>
 						<div className="group-radio-two">
 							<label htmlFor="public">Public</label>
 							<input
@@ -103,7 +103,25 @@ export default function CreateAGroup() {
 								id="public"
 								name="private"
 								value={false}
-								onChange={e => setPrivacy(e.target.value)}
+								checked={publicChecked}
+								onChange={e => {
+									setPrivacy(e.target.value);
+									setPublicChecked(true);
+								}}
+							/>
+						</div>
+						<div className="group-radio-one">
+							<label htmlFor="private">Private</label>
+							<input
+								type="radio"
+								id="private"
+								name="private"
+								value={true}
+								checked={!publicChecked}
+								onChange={e => {
+									setPrivacy(e.target.value);
+									setPublicChecked(false);
+								}}
 							/>
 						</div>
 					</div>
