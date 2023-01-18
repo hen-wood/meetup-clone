@@ -111,7 +111,7 @@ export const getSingleGroup = groupId => async dispatch => {
 	const response = await fetch(`/api/groups/${groupId}`);
 	const data = await response.json();
 	dispatch(setSingleGroup(data));
-	return response;
+	return data;
 };
 
 export const postGroup = newGroup => async dispatch => {
@@ -138,7 +138,7 @@ export const deleteGroup = groupId => async dispatch => {
 
 const initialState = {
 	allGroups: {},
-	singleGroup: null,
+	singleGroup: {},
 	userGroups: {}
 };
 
@@ -161,7 +161,7 @@ export default function groupsReducer(state = initialState, action) {
 			return newState;
 		case GET_SINGLE_GROUP:
 			newState = { ...state };
-			newState.singleGroup = action.payload;
+			newState.singleGroup = { ...action.payload };
 			return newState;
 		case REMOVE_GROUP:
 			newState = { ...state };

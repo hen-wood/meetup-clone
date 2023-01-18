@@ -102,9 +102,15 @@
     cursor: default;
 }
 
-.edit-errors{
+.edit-group-errors{
     margin: 3px 0;
     font-size: 14px;
     font-weight: 300;
     color: red;
+}
+
+#loading-form-data{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
