@@ -44,6 +44,52 @@ const createGroup = newGroup => {
 	};
 };
 
+const UPDATE_GROUP = "groups/UPDATE_GROUP";
+
+const updateGroup = updatedGroup => {
+	return {
+		type: UPDATE_GROUP,
+		payload: updatedGroup
+	};
+};
+
+export const putGroup = (updatedGroup, groupId) => async dispatch => {
+	const res = await csrfFetch(`/api/groups/${groupId}`, {
+		method: "PUT",
+		body: JSON.stringify(updatedGroup),
+		headers: {
+			"Content-Type": "application/json"
+		}
+	});
+
+	const data = await res.json();
+	dispatch(updateGroup(data));
+	return data;
+};
+
+const ADD_GROUP_IMAGE = "groupImages/ADD_GROUP_IMAGE";
+
+const addGroupImage = image => {
+	return {
+		type: ADD_GROUP_IMAGE,
+		payload: image
+	};
+};
+
+export const postGroupImage = (image, groupId) => async dispatch => {
+	const response = await csrfFetch(`/api/groups/${groupId}/images`, {
+		method: "POST",
+		body: JSON.stringify(image),
+		headers: {
+			"Content-Type": "application/json"
+		}
+	});
+
+	const newImage = await response.json();
+	dispatch(addGroupImage(newImage));
+	return response;
+};
+
 const REMOVE_GROUP = "groups/REMOVE_GROUP";
 
 const removeGroup = groupId => {
@@ -84,7 +130,7 @@ export const postGroup = newGroup => async dispatch => {
 	});
 	const data = await response.json();
 	dispatch(createGroup(data));
-	return response;
+	return data;
 };
 
 export const deleteGroup = groupId => async dispatch => {
@@ -126,6 +172,16 @@ export default function groupsReducer(state = initialState, action) {
 			newState = { ...state };
 			const { groupId } = action.payload;
 			delete newState.allGroups[groupId];
+			return newState;
+		case UPDATE_GROUP:
+			newState = { ...state };
+			console.log(newState.allGroups[action.payload.id]);
+			// newState.allGroups[action.payload.id].name = action.payload.name;
+			// newState.allGroups[action.payload.id].about = action.payload.about;
+			// newState.allGroups[action.payload.id].type = action.payload.type;
+			// newState.allGroups[action.payload.id].private = action.payload.private;
+			// newState.allGroups[action.payload.id].city = action.payload.city;
+			// newState.allGroups[action.payload.id].state = action.payload.state;
 			return newState;
 		default:
 			return state;

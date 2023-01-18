@@ -1,0 +1,102 @@
+#edit-group-outer-container {
+    display: flex;
+    justify-content: center;
+}
+
+#edit-group-inner-container {
+    width: 900px;
+}
+
+#edit-group-form {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+#edit-group-form label {
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+#edit-group-form input[type='text'] {
+    height: 40px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    border: 1px solid rgb(209, 209, 209);
+    padding: 0 10px;
+}
+
+#edit-group-form input:hover {
+    border: .5px solid rgb(148, 148, 148);
+}
+
+#edit-group-form input:focus {
+    outline: none;
+    border: 1px solid rgb(75, 163, 175);
+}
+
+#edit-group-type-setting,
+#edit-group-privacy-setting {
+    display: flex;
+    border-radius: 10px;
+    border: 1px solid rgb(209, 209, 209);
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+#edit-group-type-setting label,
+#edit-group-privacy-setting label {
+    margin: 0;
+}
+
+#edit-group-privacy-setting label:hover,
+#edit-group-privacy-setting input[type="radio"]:hover,
+#edit-group-type-setting label:hover,
+#edit-group-type-setting input[type="radio"] {
+    cursor: pointer;
+}
+
+.group-radio-one {
+    width: 50%;
+}
+
+.group-radio-two {
+    width: 50%;
+}
+
+#edit-group-form button {
+    outline: none;
+    border: none;
+    background-color: #f65858;
+    color: white;
+    width: 100%;
+    height: 40px;
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+#edit-group-form button:hover {
+    background-color: #f77070;
+    cursor: pointer;
+}
+
+#edit-group-form textarea {
+    border: 1px solid rgb(209, 209, 209);
+    padding: 15px;
+    border-radius: 10px;
+    resize: none;
+    font-family: Arial;
+    height: 150px
+}
+
+#edit-group-form textarea:hover {
+    border: .5px solid rgb(148, 148, 148);
+}
+
+#edit-group-form textarea:focus {
+    outline: none;
+    border: 1px solid rgb(75, 163, 175);
+    cursor: default;
+}
