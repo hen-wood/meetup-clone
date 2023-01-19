@@ -42,9 +42,11 @@ export default function SingleEventDetails() {
 	const user = useSelector(state => state.session.user);
 	const groupMembers = useSelector(state => state.groups.groupMembers);
 
-	const isCohost = Object.values(groupMembers).some(member => {
-		return member.id === user.id && member.Membership.status === "co-host";
-	});
+	const isCohost =
+		user &&
+		Object.values(groupMembers).some(member => {
+			return member.id === user.id && member.Membership.status === "co-host";
+		});
 
 	console.log(isCohost);
 

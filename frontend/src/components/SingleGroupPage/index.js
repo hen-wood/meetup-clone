@@ -21,24 +21,30 @@ export default function SingleGroupPage() {
 		history.push(`/groups/${groupId}/create-event`);
 
 	useEffect(() => {
-		dispatch(getSingleGroup(groupId)).then(() => {
-			dispatch(getGroupMemberships(groupId)).then(() => {
+		dispatch(getSingleGroup(groupId)).then(async res => {
+			const data = await res;
+			console.log(data);
+			dispatch(getGroupMemberships(data.id)).then(() => {
 				setIsLoaded(true);
 			});
 		});
-	}, [dispatch, groupId]);
+	}, [dispatch]);
 
 	const currentGroup = useSelector(state => state.groups.singleGroup);
-
+	const preview = currentGroup.GroupImages?.find(
+		img => img.preview === true
+	).url;
 	const user = useSelector(state => state.session.user);
 
 	const members = useSelector(state => state.groups.groupMembers);
 
 	const membersArr = Object.values(members);
 
-	const userMembership = membersArr.find(member => {
-		return member.id === user.id;
-	});
+	const userMembership =
+		user &&
+		membersArr.find(member => {
+			return member.id === user.id;
+		});
 
 	const isCohost =
 		userMembership && userMembership.Membership.status === "co-host";
@@ -101,10 +107,7 @@ export default function SingleGroupPage() {
 					<div id="single-page-image-container">
 						<img
 							id="single-group-page-preview-image"
-							src={
-								currentGroup.GroupImages.find(image => image.preview === true)
-									.url
-							}
+							src={preview}
 							alt={currentGroup.name + " preview image"}
 						/>
 					</div>

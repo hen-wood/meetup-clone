@@ -78,7 +78,8 @@ const setGroups = allGroups => {
 };
 
 export const getGroupMemberships = groupId => async dispatch => {
-	const response = await csrfFetch(`/api/groups/${groupId}/members`);
+	console.log(groupId);
+	const response = await fetch(`/api/groups/${groupId}/members`);
 	const data = await response.json();
 	dispatch(setGroupMemberships(data.Members));
 	return response;
