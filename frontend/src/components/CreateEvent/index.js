@@ -56,8 +56,8 @@ export default function CreateEvent() {
 			capacity,
 			price,
 			description,
-			startDate,
-			endDate
+			startDate: `${startDate}T${startTime}`,
+			endDate: `${endDate}T${endTime}`
 		};
 
 		const newImage = {
