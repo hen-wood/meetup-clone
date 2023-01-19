@@ -2,7 +2,7 @@ import "./Events.css";
 import "./mobile.css";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllEvents } from "../../store/eventsReducer";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import dayMonthDate from "../../utils/dayMonthDate";
 import { getSingleEvent } from "../../store/eventsReducer";
 import { useHistory } from "react-router-dom";
@@ -10,9 +10,11 @@ import { useHistory } from "react-router-dom";
 export default function Events() {
 	const dispatch = useDispatch();
 	const history = useHistory();
-
+	const [isLoaded, setIsLoaded] = useState(false);
 	useEffect(() => {
-		dispatch(getAllEvents()).then().catch();
+		dispatch(getAllEvents()).then(() => {
+			setIsLoaded(true);
+		});
 	}, [dispatch]);
 
 	const handleEventClick = eventId => {
@@ -64,8 +66,14 @@ export default function Events() {
 			);
 		})
 	) : (
-		<h3>Loading events...</h3>
+		<h3>No events yet 😭...</h3>
 	);
 
-	return <div id="group-event-list-container">{content}</div>;
+	return isLoaded ? (
+		<div id="group-event-list-container">{content}</div>
+	) : (
+		<div id="group-event-list-container">
+			<h1>Loading events...</h1>
+		</div>
+	);
 }

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { deleteEvent, getSingleEvent } from "../../store/eventsReducer";
@@ -9,13 +9,16 @@ import { getGroupMemberships } from "../../store/groupsReducer";
 export default function SingleEventDetails() {
 	const { eventId } = useParams();
 	const dispatch = useDispatch();
+	const [isLoaded, setIsLoaded] = useState(false);
 
 	const history = useHistory();
 
 	useEffect(() => {
 		dispatch(getSingleEvent(eventId)).then(async res => {
 			const data = await res;
-			dispatch(getGroupMemberships(data.groupId)).then(async res => await res);
+			dispatch(getGroupMemberships(data.groupId)).then(() => {
+				setIsLoaded(true);
+			});
 		});
 	}, [dispatch, eventId]);
 
@@ -56,7 +59,7 @@ export default function SingleEventDetails() {
 		</div>
 	);
 
-	return event.name ? (
+	return isLoaded ? (
 		<div id="single-event-outer-container">
 			<div id="single-event-inner-container">
 				<h1>{event.name}</h1>
@@ -95,6 +98,10 @@ export default function SingleEventDetails() {
 			</div>
 		</div>
 	) : (
-		<h1>Loading...</h1>
+		<div id="single-event-outer-container">
+			<div id="single-event-inner-container">
+				<h1>Loading event...</h1>
+			</div>
+		</div>
 	);
 }

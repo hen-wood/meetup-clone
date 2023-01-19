@@ -2,17 +2,21 @@ import "./Groups.css";
 import "./mobile.css";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllGroups } from "../../store/groupsReducer";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 export default function Groups() {
 	const dispatch = useDispatch();
 
 	const history = useHistory();
+	const [isLoaded, setIsLoaded] = useState(false);
+
 	const redirectToSingleGroup = groupId => history.push(`/groups/${groupId}`);
 
 	useEffect(() => {
-		dispatch(getAllGroups()).then().catch();
+		dispatch(getAllGroups()).then(() => {
+			setIsLoaded(true);
+		});
 	}, [dispatch]);
 
 	const handleGroupClick = groupId => {
@@ -62,8 +66,14 @@ export default function Groups() {
 			);
 		})
 	) : (
-		<h3>Loading groups...</h3>
+		<h3>No groups yet 😭...</h3>
 	);
 
-	return <div id="group-event-list-container">{content}</div>;
+	return isLoaded ? (
+		<div id="group-event-list-container">{content}</div>
+	) : (
+		<div id="group-event-list-container">
+			<h1>Loading groups...</h1>
+		</div>
+	);
 }

@@ -4,7 +4,7 @@ import {
 	getUserGroups,
 	getGroupMemberships
 } from "../../store/groupsReducer";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { deleteGroup } from "../../store/groupsReducer";
@@ -14,14 +14,18 @@ export default function SingleGroupPage() {
 	const dispatch = useDispatch();
 	const { groupId } = useParams();
 	const history = useHistory();
+	const [isLoaded, setIsLoaded] = useState(false);
 	const deleteRedirect = () => history.push("/home");
 	const editRedirect = () => history.push(`/edit-group/${groupId}`);
 	const createEventRedirect = () =>
 		history.push(`/groups/${groupId}/create-event`);
 
 	useEffect(() => {
-		dispatch(getSingleGroup(groupId));
-		dispatch(getGroupMemberships(groupId));
+		dispatch(getSingleGroup(groupId)).then(() => {
+			dispatch(getGroupMemberships(groupId)).then(() => {
+				setIsLoaded(true);
+			});
+		});
 	}, [dispatch, groupId]);
 
 	const currentGroup = useSelector(state => state.groups.singleGroup);
@@ -142,7 +146,13 @@ export default function SingleGroupPage() {
 				</div>
 			</div>
 		) : (
-			<h1>Loading group data...</h1>
+			<h1>No group data 😭...</h1>
 		);
-	return <div id="single-group-page-container">{content}</div>;
+	return isLoaded ? (
+		<div id="single-group-page-container">{content}</div>
+	) : (
+		<div id="single-group-page-container">
+			<h1>Loading group...</h1>
+		</div>
+	);
 }

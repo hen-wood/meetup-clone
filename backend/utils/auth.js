@@ -120,12 +120,12 @@ const requireOrganizerOrCoHostForEvent = async (req, res, next) => {
 		}
 	});
 
-	if (!(userOrganizer && userCohost)) {
-		const err = new Error("Forbidden");
-		err.status = 403;
-		return next(err);
+	if (userOrganizer || userCohost) {
+		return next();
 	}
-	return next();
+	const err = new Error("Forbidden");
+	err.status = 403;
+	return next(err);
 };
 const requireOrganizerOrCoHostForEventImage = async (req, res, next) => {
 	const { imageId } = req.params;
