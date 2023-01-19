@@ -20,7 +20,7 @@
 }
 .how-meetdown-works-cards-container{
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     height: max-content;
     margin-bottom: 60px;;
 }

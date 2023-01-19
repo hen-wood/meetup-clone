@@ -13,12 +13,10 @@ export default function SplashPage() {
 			<RedBlob />
 			<YellowBlob />
 			<GreenBlob />
-			{/* </div> */}
 			<div className="splash-content-container">
 				<SplashIntro />
 				<HowMeetDownWorks />
 			</div>
-			<Footer />
 		</div>
 	);
 }

@@ -5,7 +5,25 @@
     padding: 12px 0;
     transition: 100ms linear;
 }
-.individual-event-container:hover {
+
+.individual-group-event-container{
+    height: 110px;
+    border-bottom: 1px solid #d9d9d9;
+    display: flex;
+    padding: 12px 0;
+    transition: 100ms linear;
+    width:60%;
+}
+.no-events-container{
+    height: 110px;
+    border-bottom: 1px solid #d9d9d9;
+    display: flex;
+    padding: 12px 0;
+    transition: 100ms linear;
+    width:50%;
+}
+.individual-event-container:hover,
+.individual-group-event-container:hover {
     cursor: pointer;
     padding: 12px 4px;
     opacity: .7;

@@ -51,7 +51,11 @@ export default function Groups() {
 						</div>
 						<p className="group-text-about">{group.about}</p>
 						<div className="member-count-privacy-status">
-							<p>{group.numMembers + " members · " + privacy}</p>
+							<p>
+								{(group.numMembers > 1
+									? group.numMembers + " members · "
+									: group.numMembers + " member · ") + privacy}
+							</p>
 						</div>
 					</div>
 				</div>

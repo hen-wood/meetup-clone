@@ -1,9 +1,6 @@
-import GroupImageSVG from "../SVGComponents/GroupImageSVG";
 import HighFiveImage from "../SVGComponents/HighFive";
 import TicketImage from "../SVGComponents/TicketImage";
 import { Link } from "react-router-dom";
-import SignupFormModal from "../SignupFormModal";
-import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
 import "./HowMeetDownWorks.css";
 export default function HowMeetDownWorks() {
 	return (
@@ -22,7 +19,7 @@ export default function HowMeetDownWorks() {
 					</span>
 					<div className="hmw-card-text-container">
 						<Link to="/all-groups" className="hmw-links">
-							Join a group
+							Browse groups
 						</Link>
 						<p>
 							Do what you love, meet others who love it, find your community.
@@ -44,29 +41,6 @@ export default function HowMeetDownWorks() {
 						</p>
 					</div>
 				</div>
-				<div className="how-meetdown-works-individual-card">
-					<span className="hmw-card-image-container">
-						<GroupImageSVG />
-					</span>
-					<div className="hmw-card-text-container">
-						<div className="hmw-links">
-							<OpenModalMenuItem
-								itemText="Start a group"
-								modalComponent={<SignupFormModal />}
-							/>
-						</div>
-						<p>
-							You don’t have to be an expert to gather people together and
-							explore shared interests.
-						</p>
-					</div>
-				</div>
-			</div>
-			<div id="join-meetdown-button">
-				<OpenModalMenuItem
-					itemText="Join Meetdown"
-					modalComponent={<SignupFormModal />}
-				/>
 			</div>
 		</div>
 	);

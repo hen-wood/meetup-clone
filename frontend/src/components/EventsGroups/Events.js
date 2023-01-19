@@ -4,12 +4,22 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllEvents } from "../../store/eventsReducer";
 import { useEffect } from "react";
 import dayMonthDate from "../../utils/dayMonthDate";
+import { getSingleEvent } from "../../store/eventsReducer";
+import { useHistory } from "react-router-dom";
+
 export default function Events() {
 	const dispatch = useDispatch();
+	const history = useHistory();
 
 	useEffect(() => {
 		dispatch(getAllEvents()).then().catch();
 	}, [dispatch]);
+
+	const handleEventClick = eventId => {
+		dispatch(getSingleEvent(eventId)).then(() => {
+			history.push(`/events/${eventId}`);
+		});
+	};
 
 	const eventsObj = useSelector(state => state.events.allEvents);
 	const eventKeys = Object.keys(eventsObj);
@@ -19,7 +29,11 @@ export default function Events() {
 			const event = eventsObj[key];
 			const date = dayMonthDate(event.startDate);
 			return (
-				<div key={event.id} className="individual-event-container">
+				<div
+					key={event.id}
+					className="individual-event-container"
+					onClick={() => handleEventClick(event.id)}
+				>
 					<div className="event-preview-image-container">
 						<img
 							src={
@@ -35,11 +49,15 @@ export default function Events() {
 							<h3 className="event-time">{date}</h3>
 							<h2 className="event-text-title">{event.name}</h2>
 							<p className="event-text-group-city-state">
-								{`${event.Group.name} · ${event.Venue.city}, ${event.Venue.state}`.toUpperCase()}
+								{`${event.Group.name} · ${event.Group.city}, ${event.Group.state}`.toUpperCase()}
 							</p>
 						</div>
 						<div className="attending-count">
-							<p>{event.numAttending + " attendees"}</p>
+							<p>
+								{event.numAttending > 1
+									? event.numAttending + " attendees"
+									: event.numAttending + " attendee"}
+							</p>
 						</div>
 					</div>
 				</div>

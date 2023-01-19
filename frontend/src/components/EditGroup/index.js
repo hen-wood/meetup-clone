@@ -32,7 +32,7 @@ export default function EditGroup() {
 			setOnlineChecked(res.type === "Online");
 			setPrivateChecked(res.private);
 		});
-	}, []);
+	}, [dispatch, groupId]);
 
 	const handleSubmit = e => {
 		e.preventDefault();

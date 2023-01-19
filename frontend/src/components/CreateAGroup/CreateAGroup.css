@@ -2,25 +2,30 @@
     display: flex;
     justify-content: center;
 }
+
 #create-group-inner-container{
     width:900px;
 }
+
 #create-group-form{
     width: 400px;
     display: flex;
     flex-direction: column;
 }
+
 #create-group-form label {
     margin: 10px 0;
     font-size: 16px;
     font-weight: 500;
 }
+
 #create-group-form input[type='text']{
     height: 40px;
     border-radius: 10px;
     border: 1px solid rgb(209, 209, 209);
     padding: 0 10px;
 }
+
 #create-group-form input:hover {
     border: .5px solid rgb(148, 148, 148);
 }
