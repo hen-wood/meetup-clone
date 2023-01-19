@@ -1,6 +1,7 @@
 export default function GroupImageSVG() {
 	return (
 		<svg
+			id="group-image-svg"
 			width="160"
 			height="152"
 			viewBox="0 0 160 152"

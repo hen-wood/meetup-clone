@@ -1,14 +1,25 @@
 import "./HomePage.css";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
-import { useEffect } from "react";
-import { getGroupMemberships, getUserGroups } from "../../store/groupsReducer";
-export default function HomePage({ user }) {
+import { useEffect, useState } from "react";
+import { getUserGroups } from "../../store/groupsReducer";
+import * as sessionActions from "../../store/session";
+
+export default function HomePage() {
 	const history = useHistory();
 	const redirectSingleGroup = groupId => history.push(`/groups/${groupId}`);
 	const dispatch = useDispatch();
+	const user = useSelector(state => state.session.user);
+
+	const [isLoaded, setIsLoaded] = useState(false);
+
 	useEffect(() => {
-		dispatch(getUserGroups()).then(async res => await res);
+		dispatch(sessionActions.restoreUser()).then(async res => {
+			const user = await res;
+			dispatch(getUserGroups(user.id)).then(() => {
+				setIsLoaded(true);
+			});
+		});
 	}, [dispatch]);
 
 	const handleGroupClick = groupId => {
@@ -54,9 +65,9 @@ export default function HomePage({ user }) {
 			);
 		})
 	) : (
-		<h3>Loading user groups...</h3>
+		<h3>No groups yet 😭</h3>
 	);
-	return user ? (
+	return isLoaded ? (
 		<div className="home-page-outer-container">
 			<div className="home-page-inner-container">
 				<div id="user-nav">
@@ -84,6 +95,10 @@ export default function HomePage({ user }) {
 			</div>
 		</div>
 	) : (
-		<h1>Loading home..</h1>
+		<div className="home-page-outer-container">
+			<div className="home-page-inner-container">
+				<h1>Loading home..</h1>
+			</div>
+		</div>
 	);
 }

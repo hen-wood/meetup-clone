@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useHistory } from "react-router";
 import { useDispatch } from "react-redux";
 import { postGroup, postGroupImage } from "../../store/groupsReducer";
+import GroupImageSVG from "../SVGComponents/GroupImageSVG";
 export default function CreateAGroup() {
 	const dispatch = useDispatch();
 	const [name, setName] = useState("");
@@ -33,8 +34,12 @@ export default function CreateAGroup() {
 		if (about.length < 50)
 			valErrors.about = "About must be 50 characters or more";
 		if (!city.length) valErrors.city = "City is required";
+		if (city.toLowerCase() === city.toUpperCase())
+			valErrors.city = "City must be all letters";
+		if (state.toLowerCase() === state.toUpperCase())
+			valErrors.state = "State must be all letters";
 		if (!state.length) valErrors.state = "State is required";
-		if (state.length > 2)
+		if (state.length < 2 || state.length > 2)
 			valErrors.state = "State must be two letter abbreviation";
 
 		if (Object.keys(valErrors).length) {
@@ -74,6 +79,7 @@ export default function CreateAGroup() {
 	};
 	return (
 		<div id="create-group-outer-container">
+			<GroupImageSVG />
 			<div id="create-group-inner-container">
 				<form id="create-group-form" onSubmit={handleSubmit}>
 					<h1>Create a group</h1>
@@ -174,7 +180,7 @@ export default function CreateAGroup() {
 					<label htmlFor="group-preview-image">Preview Image URL</label>
 					<input
 						id="group-preview-image"
-						type="text"
+						type="url"
 						onChange={e => setPreviewImageUrl(e.target.value)}
 					/>
 					{errors.previewImageUrl && (

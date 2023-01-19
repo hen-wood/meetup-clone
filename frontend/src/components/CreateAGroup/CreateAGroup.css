@@ -7,6 +7,10 @@
     width:900px;
 }
 
+
+#create-group-inner-container h1{
+    margin-bottom: 0;
+}
 #create-group-form{
     width: 400px;
     display: flex;
@@ -19,7 +23,8 @@
     font-weight: 500;
 }
 
-#create-group-form input[type='text']{
+#create-group-form input[type='text'],
+#create-group-form input[type='url']{
     height: 40px;
     border-radius: 10px;
     border: 1px solid rgb(209, 209, 209);
@@ -102,4 +107,14 @@
     color: red;
     font-size: 14px;
     font-weight: 300;
+}
+
+#group-image-svg {
+    position: absolute;
+    opacity: .8;
+    top: 20vh;
+    right: 20vw;
+    height: 400px;
+    width: 400px;
+    z-index: -1;
 }
