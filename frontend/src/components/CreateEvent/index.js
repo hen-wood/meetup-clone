@@ -8,7 +8,7 @@ export default function CreateEvent() {
 	const { groupId } = useParams();
 	const dispatch = useDispatch();
 	const [name, setName] = useState("");
-	const [type, setType] = useState("Online");
+	const [type, setType] = useState("In person");
 	const [capacity, setCapacity] = useState("");
 	const [price, setPrice] = useState("");
 	const [description, setDescription] = useState("");
@@ -34,12 +34,15 @@ export default function CreateEvent() {
 		if (new Date(start) > new Date(end))
 			valErrors.startDate =
 				"Event start time/date must be before end time/date";
+		if (!startDate.length || !endDate.length)
+			valErrors.startDate = "Start/end time and date are required";
 		if (!previewImageUrl.length)
 			valErrors.previewImageUrl = "Preview Image is required";
 		if (!name.length) valErrors.name = "Name is required";
 		if (name.length < 5) valErrors.name = "Name must be at least 5 characters";
 		if (!description.length) valErrors.description = "Description is required";
-
+		if (!price.length) valErrors.price = "Price is required";
+		if (!capacity.length) valErrors.capacity = "Capacity is required";
 		if (Object.keys(valErrors).length) {
 			setErrors(valErrors);
 			console.log(valErrors);
@@ -154,6 +157,9 @@ export default function CreateEvent() {
 						step="0.01"
 						onChange={e => setPrice(e.target.value)}
 					/>
+					{errors.price && (
+						<p className="create-event-errors">{errors.price}</p>
+					)}
 					<label htmlFor="event-capacity">Capacity</label>
 					<input
 						id="event-capacity"
@@ -167,6 +173,9 @@ export default function CreateEvent() {
 						onChange={e => setCapacity(e.target.value)}
 					/>
 					<div id="event-dates">
+						{errors.startDate && (
+							<p className="create-event-errors">{errors.startDate}</p>
+						)}
 						<div id="event-start">
 							<div className="time-date-container">
 								<label htmlFor="event-start-date">Start date</label>
@@ -212,6 +221,9 @@ export default function CreateEvent() {
 						id="preview-url"
 						onChange={e => setPreviewImageUrl(e.target.value)}
 					/>
+					{errors.previewImageUrl && (
+						<p className="create-event-errors">{errors.previewImageUrl}</p>
+					)}
 					<button type="submit">Submit</button>
 				</form>
 			</div>
