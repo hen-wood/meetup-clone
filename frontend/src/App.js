@@ -11,6 +11,7 @@ import CreateAGroup from "./components/CreateAGroup";
 import SingleGroupPage from "./components/SingleGroupPage";
 import EditGroup from "./components/EditGroup";
 import SingleEventDetails from "./components/SingleEventDetails";
+import CreateEvent from "./components/CreateEvent";
 
 function App() {
 	const user = useSelector(state => state.session.user);
@@ -41,8 +42,11 @@ function App() {
 					<Route path="/create-group">
 						<CreateAGroup />
 					</Route>
-					<Route path="/groups/:groupId">
+					<Route exact path="/groups/:groupId">
 						<SingleGroupPage />
+					</Route>
+					<Route path="/groups/:groupId/create-event">
+						<CreateEvent />
 					</Route>
 					<Route path="/edit-group/:groupId">
 						<EditGroup />

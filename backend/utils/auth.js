@@ -203,12 +203,12 @@ const requireOrganizerOrCoHostOrAttendeeForEvent = async (req, res, next) => {
 		where: { eventId, userId, [Op.not]: { status: "pending" } }
 	});
 
-	if (!(userOrganizer && userCohost && isAttendee)) {
-		const err = new Error("Forbidden");
-		err.status = 403;
-		return next(err);
+	if (userOrganizer || userCohost || isAttendee) {
+		return next();
 	}
-	return next();
+	const err = new Error("Forbidden");
+	err.status = 403;
+	return next(err);
 };
 
 const requireOrganizerOrCohostOrIsUserToDeleteAttendance = async (

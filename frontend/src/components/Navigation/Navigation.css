@@ -6,13 +6,13 @@
     height: 64px;
     padding: 0 10px;
     box-sizing: border-box;
+    z-index: 2;
 }
 .splash-exit{
     position: sticky;
     top: 0;
     border-bottom: 1px solid #d9d9d9;
     background-color: white;
-    z-index: 1;
 }
 
 .hidden{

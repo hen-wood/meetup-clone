@@ -59,13 +59,12 @@ export default function CreateAGroup() {
 		dispatch(postGroup(newGroup))
 			.then(res => {
 				dispatch(postGroupImage(newImage, res.id))
-					.then(res => {
-						console.log(res);
+					.then(() => {
 						redirect();
 					})
 					.catch(async res => {
 						const data = await res.json();
-						setErrors(data);
+						setErrors(data.errors);
 					});
 			})
 			.catch(async res => {

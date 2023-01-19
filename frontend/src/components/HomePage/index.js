@@ -2,13 +2,13 @@ import "./HomePage.css";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import { useEffect } from "react";
-import { getUserGroups } from "../../store/groupsReducer";
+import { getGroupMemberships, getUserGroups } from "../../store/groupsReducer";
 export default function HomePage({ user }) {
 	const history = useHistory();
 	const redirectSingleGroup = groupId => history.push(`/groups/${groupId}`);
 	const dispatch = useDispatch();
 	useEffect(() => {
-		dispatch(getUserGroups());
+		dispatch(getUserGroups()).then(async res => await res);
 	}, [dispatch]);
 
 	const handleGroupClick = groupId => {
@@ -20,6 +20,7 @@ export default function HomePage({ user }) {
 	const groupContent = userGroupKeys.length ? (
 		userGroupKeys.map(key => {
 			const group = userGroups[key];
+
 			return (
 				<div
 					key={group.id}

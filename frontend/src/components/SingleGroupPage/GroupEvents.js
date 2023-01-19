@@ -3,11 +3,13 @@ import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllGroupEvents, getSingleEvent } from "../../store/eventsReducer";
 import dayMonthDate from "../../utils/dayMonthDate";
+
 export default function GroupEvents({ groupId }) {
 	const dispatch = useDispatch();
 	const history = useHistory();
+
 	useEffect(() => {
-		dispatch(getAllGroupEvents(groupId));
+		dispatch(getAllGroupEvents(groupId)).then(async res => await res);
 	}, [dispatch, groupId]);
 
 	const handleEventClick = eventId => {

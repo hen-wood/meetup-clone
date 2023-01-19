@@ -1,10 +1,15 @@
 import "./SingleGroupPage.css";
-import { getSingleGroup, getUserGroups } from "../../store/groupsReducer";
+import {
+	getSingleGroup,
+	getUserGroups,
+	getGroupMemberships
+} from "../../store/groupsReducer";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { deleteGroup } from "../../store/groupsReducer";
 import GroupEvents from "./GroupEvents";
+import CreateEvent from "../CreateEvent";
 
 export default function SingleGroupPage() {
 	const dispatch = useDispatch();
@@ -12,22 +17,37 @@ export default function SingleGroupPage() {
 	const history = useHistory();
 	const deleteRedirect = () => history.push("/home");
 	const editRedirect = () => history.push(`/edit-group/${groupId}`);
+	const createEventRedirect = () =>
+		history.push(`/groups/${groupId}/create-event`);
 
 	useEffect(() => {
 		dispatch(getSingleGroup(groupId)).then().catch();
+		dispatch(getGroupMemberships(groupId)).then(async res => await res);
 	}, [dispatch, groupId]);
 
 	const currentGroup = useSelector(state => state.groups.singleGroup);
 
 	const user = useSelector(state => state.session.user);
 
-	const showDeleteButton =
+	const members = useSelector(state => state.groups.groupMembers);
+
+	const membersArr = Object.values(members);
+
+	const userMembership = membersArr.find(member => {
+		return member.id === user.id;
+	});
+
+	const isCohost =
+		userMembership && userMembership.Membership.status === "co-host";
+
+	const showOrgOptions =
 		user && currentGroup && currentGroup.organizerId === user.id;
+
+	const showCohostOptions = user && isCohost && !showOrgOptions;
 
 	const handleDelete = () => {
 		dispatch(deleteGroup(groupId))
 			.then(() => {
-				console.log("just deleted");
 				dispatch(getUserGroups())
 					.then(() => {
 						deleteRedirect();
@@ -43,6 +63,10 @@ export default function SingleGroupPage() {
 		editRedirect();
 	};
 
+	const handleCreateEvent = () => {
+		createEventRedirect();
+	};
+
 	const organizerOptions = (
 		<div id="organizer-options">
 			<p>Organizer options</p>
@@ -52,8 +76,21 @@ export default function SingleGroupPage() {
 			<button id="edit-group-button" onClick={handleEdit}>
 				Edit group
 			</button>
+			<button id="add-group-event-button" onClick={handleCreateEvent}>
+				Add event
+			</button>
 		</div>
 	);
+
+	const cohostOptions = (
+		<div id="organizer-options">
+			<p>Co-host options</p>
+			<button id="add-group-event-button" onClick={handleCreateEvent}>
+				Add event
+			</button>
+		</div>
+	);
+
 	const content =
 		currentGroup && currentGroup.id === +groupId ? (
 			<div id="single-group-page-inner-container">
@@ -92,7 +129,8 @@ export default function SingleGroupPage() {
 								</b>{" "}
 							</pre>
 						</div>
-						{showDeleteButton && organizerOptions}
+						{showOrgOptions && organizerOptions}
+						{showCohostOptions && cohostOptions}
 					</div>
 				</div>
 				<div id="single-group-about-container">

@@ -3,10 +3,22 @@ import { csrfFetch } from "./csrf";
 const GET_ALL_GROUPS = "groups/GET_ALL_GROUPS";
 const GET_USER_GROUPS = "groups/GET_USER_GROUPS";
 const GET_SINGLE_GROUP = "groups/GET_SINGLE_GROUP";
+const GET_GROUP_MEMBERSHIPS = "groups/GET_GROUP_MEMBERSHIPS";
 const CREATE_GROUP = "groups/CREATE_GROUP";
 const UPDATE_GROUP = "groups/UPDATE_GROUP";
 const ADD_GROUP_IMAGE = "groupImages/ADD_GROUP_IMAGE";
 const REMOVE_GROUP = "groups/REMOVE_GROUP";
+
+const setGroupMemberships = memberships => {
+	const membershipsObj = {};
+	memberships.forEach(member => {
+		membershipsObj[member.id] = member;
+	});
+	return {
+		type: GET_GROUP_MEMBERSHIPS,
+		payload: membershipsObj
+	};
+};
 
 const setUserGroups = userGroups => {
 	const userGroupsObj = {};
@@ -63,6 +75,13 @@ const setGroups = allGroups => {
 		type: GET_ALL_GROUPS,
 		payload: allGroupsObj
 	};
+};
+
+export const getGroupMemberships = groupId => async dispatch => {
+	const response = await csrfFetch(`/api/groups/${groupId}/members`);
+	const data = await response.json();
+	dispatch(setGroupMemberships(data.Members));
+	return response;
 };
 
 export const putGroup = (updatedGroup, groupId) => async dispatch => {
@@ -139,7 +158,8 @@ export const deleteGroup = groupId => async dispatch => {
 const initialState = {
 	allGroups: {},
 	singleGroup: {},
-	userGroups: {}
+	userGroups: {},
+	groupMembers: {}
 };
 
 export default function groupsReducer(state = initialState, action) {
@@ -172,6 +192,11 @@ export default function groupsReducer(state = initialState, action) {
 			newState = { ...state };
 			const updatedGroupId = action.payload.id;
 			newState.allGroups[updatedGroupId] = { ...action.payload };
+			return newState;
+		case GET_GROUP_MEMBERSHIPS:
+			newState = { ...state };
+			newState.groupMembers = { ...state.groupMembers };
+			newState.groupMembers = action.payload;
 			return newState;
 		default:
 			return state;

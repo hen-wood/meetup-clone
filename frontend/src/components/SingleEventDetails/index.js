@@ -12,10 +12,12 @@ export default function SingleEventDetails() {
 	}, [dispatch, eventId]);
 
 	const event = useSelector(state => state.events.singleEvent);
-	return (
+	return event.name ? (
 		<div>
 			<h1>{event.name}</h1>
 			<h2>{event.Group.name}</h2>
 		</div>
+	) : (
+		<h1>Loading...</h1>
 	);
 }
