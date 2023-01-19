@@ -150,8 +150,10 @@ export default function CreateEvent() {
 									splitPrice[1] = splitPrice[1] + "0";
 								}
 								e.target.value = splitPrice.join(".");
+								setPrice(e.target.value);
 							} else {
 								e.target.value = `${price}.00`;
+								setPrice(e.target.value);
 							}
 						}}
 						step="0.01"
@@ -168,6 +170,8 @@ export default function CreateEvent() {
 						onBlur={e => {
 							if (e.target.value % 1 !== 0) {
 								e.target.value = Math.floor(e.target.value);
+							} else if (e.target.value < 1) {
+								e.target.value = 1;
 							}
 						}}
 						onChange={e => setCapacity(e.target.value)}
