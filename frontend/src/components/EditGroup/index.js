@@ -4,6 +4,7 @@ import { useHistory, useParams } from "react-router-dom";
 import "../CreateAGroup/CreateAGroup.css";
 import "./EditGroup.css";
 import { putGroup, getSingleGroup } from "../../store/groupsReducer";
+import GroupImageSVG from "../SVGComponents/GroupImageSVG";
 
 export default function EditGroup() {
 	const dispatch = useDispatch();
@@ -46,8 +47,12 @@ export default function EditGroup() {
 		if (about.length < 50)
 			valErrors.about = "About must be 50 characters or more";
 		if (!city.length) valErrors.city = "City is required";
+		if (city.toLowerCase() === city.toUpperCase())
+			valErrors.city = "City must be all letters";
+		if (state.toLowerCase() === state.toUpperCase())
+			valErrors.state = "State must be all letters";
 		if (!state.length) valErrors.state = "State is required";
-		if (state.length > 2)
+		if (state.length < 2 || state.length > 2)
 			valErrors.state = "State must be two letter abbreviation";
 
 		if (Object.keys(valErrors).length) {
@@ -77,6 +82,7 @@ export default function EditGroup() {
 	const group = useSelector(state => state.groups.singleGroup);
 	return Object.keys(group).length ? (
 		<div id="edit-group-outer-container">
+			<GroupImageSVG />
 			<div id="edit-group-inner-container">
 				<form id="edit-group-form" onSubmit={handleSubmit}>
 					<h1>Edit {group.name}</h1>
@@ -96,6 +102,7 @@ export default function EditGroup() {
 						onChange={e => setAbout(e.target.value)}
 					/>
 					{errors.about && <p className="edit-group-errors">{errors.about}</p>}
+					<p>Type</p>
 					<div id="edit-group-type-setting">
 						<div className="group-radio-one">
 							<label htmlFor="edit-group-type-online">Online</label>
@@ -126,6 +133,7 @@ export default function EditGroup() {
 							/>
 						</div>
 					</div>
+					<p>Privacy</p>
 					<div id="edit-group-privacy-setting">
 						<div className="group-radio-two">
 							<label htmlFor="edit-group-privacy-false">Public</label>

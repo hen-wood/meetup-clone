@@ -6,6 +6,9 @@
 #edit-group-inner-container {
     width: 900px;
 }
+#edit-group-inner-container h1{
+    margin-bottom: 0;
+}
 
 #edit-group-form {
     width: 400px;
@@ -14,7 +17,7 @@
 }
 
 #edit-group-form label {
-    margin-bottom: 10px;
+    margin: 10px 0;
     font-size: 16px;
     font-weight: 500;
 }
@@ -42,6 +45,7 @@
     border: 1px solid rgb(209, 209, 209);
     padding: 15px;
     margin-bottom: 10px;
+    background-color: white;
 }
 
 #edit-group-type-setting label,
@@ -113,4 +117,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#group-image-svg {
+    position: absolute;
+    opacity: .8;
+    top: 20vh;
+    right: 20vw;
+    height: 400px;
+    width: 400px;
+    z-index: -1;
 }

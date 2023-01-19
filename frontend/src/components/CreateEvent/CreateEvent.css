@@ -123,3 +123,13 @@
     font-size: 14px;
     font-weight: 300;
 }
+
+#calendar-svg {
+    position: absolute;
+    opacity: .8;
+    top: 20vh;
+    right: 20vw;
+    height: 500px;
+    width: 500px;
+    z-index: -1;
+}

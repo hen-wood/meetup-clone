@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory, useParams } from "react-router";
 import "./CreateEvent.css";
-
+import CalendarSVG from "../SVGComponents/CalendarSVG";
 export default function CreateEvent() {
 	const { groupId } = useParams();
 	const dispatch = useDispatch();
@@ -84,6 +84,7 @@ export default function CreateEvent() {
 	return (
 		<div id="create-event-outer-container">
 			<div id="create-event-inner-container">
+				<CalendarSVG />
 				<form id="create-event-form" onSubmit={handleSubmit}>
 					<h1>Create new event</h1>
 					<label htmlFor="event-name">Name</label>
