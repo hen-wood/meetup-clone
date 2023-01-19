@@ -84,12 +84,15 @@ router.get(
 // Get all members of a group by group id
 router.get("/:groupId/members", async (req, res, next) => {
 	const { groupId } = req.params;
-	const isOrganizer = await Group.findOne({
-		attributes: ["organizerId"],
-		where: {
-			[Op.and]: [{ organizerId: req.user.id }, { id: groupId }]
-		}
-	});
+
+	const isOrganizer = req.user
+		? await Group.findOne({
+				attributes: ["organizerId"],
+				where: {
+					[Op.and]: [{ organizerId: req.user.id }, { id: groupId }]
+				}
+		  })
+		: false;
 
 	let where = {};
 	if (!isOrganizer) {
