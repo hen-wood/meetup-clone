@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllGroupEvents, getSingleEvent } from "../../store/eventsReducer";
@@ -7,10 +7,13 @@ import dayMonthDate from "../../utils/dayMonthDate";
 export default function GroupEvents({ groupId }) {
 	const dispatch = useDispatch();
 	const history = useHistory();
+	const [isLoaded, setIsLoaded] = useState(false);
 
 	useEffect(() => {
-		dispatch(getAllGroupEvents(groupId));
-	}, []);
+		dispatch(getAllGroupEvents(groupId)).then(() => {
+			setIsLoaded(true);
+		});
+	}, [dispatch, groupId]);
 
 	const handleEventClick = eventId => {
 		dispatch(getSingleEvent(eventId)).then(() => {
@@ -20,7 +23,7 @@ export default function GroupEvents({ groupId }) {
 
 	const events = useSelector(state => state.events.allGroupEvents);
 	const eventsValues = Object.values(events);
-	return eventsValues.length > 0 ? (
+	const content = eventsValues.length ? (
 		eventsValues.map(event => {
 			const date = dayMonthDate(event.startDate);
 			return (
@@ -56,4 +59,5 @@ export default function GroupEvents({ groupId }) {
 			<h3>No events for this group 😭</h3>
 		</div>
 	);
+	return isLoaded ? <>{content}</> : <h1>Loading events...</h1>;
 }
