@@ -170,6 +170,8 @@ export default function CreateEvent() {
 						onBlur={e => {
 							if (e.target.value % 1 !== 0) {
 								e.target.value = Math.floor(e.target.value);
+							} else if (e.target.value < 1) {
+								e.target.value = 1;
 							}
 						}}
 						onChange={e => setCapacity(e.target.value)}

@@ -5,6 +5,7 @@ import { deleteEvent, getSingleEvent } from "../../store/eventsReducer";
 import "./SingleEventDetails.css";
 import { timeFormatForEvent } from "../../utils/timeFormatForEvent";
 import { getGroupMemberships } from "../../store/groupsReducer";
+import formatEventPrice from "../../utils/formatEventPrice";
 
 export default function SingleEventDetails() {
 	const { eventId } = useParams();
@@ -91,6 +92,9 @@ export default function SingleEventDetails() {
 								<p>{timeFormatForEvent(event.startDate)}</p>
 								<p>{"to " + timeFormatForEvent(event.endDate)}</p>
 							</div>
+						</div>
+						<div id="event-price-box">
+							<p>{formatEventPrice(event.price)}</p>
 						</div>
 						{isCohost && cohostOptions}
 					</div>
