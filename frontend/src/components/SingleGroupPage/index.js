@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { deleteGroup } from "../../store/groupsReducer";
 import GroupEvents from "./GroupEvents";
-import CreateEvent from "../CreateEvent";
 
 export default function SingleGroupPage() {
 	const dispatch = useDispatch();
@@ -21,8 +20,8 @@ export default function SingleGroupPage() {
 		history.push(`/groups/${groupId}/create-event`);
 
 	useEffect(() => {
-		dispatch(getSingleGroup(groupId)).then().catch();
-		dispatch(getGroupMemberships(groupId)).then(async res => await res);
+		dispatch(getSingleGroup(groupId));
+		dispatch(getGroupMemberships(groupId));
 	}, [dispatch, groupId]);
 
 	const currentGroup = useSelector(state => state.groups.singleGroup);

@@ -1,0 +1,125 @@
+#create-event-outer-container{
+    display: flex;
+    justify-content: center;
+}
+
+#create-event-inner-container{
+    width:900px;
+}
+
+#create-event-form{
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+#create-event-form h1{
+    margin-bottom: 5px;
+}
+
+#create-event-form label {
+    margin: 10px 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+#create-event-form input[type='date'],
+#create-event-form input[type='time']{
+    font-family: Arial;
+    height: 35px;
+    border-radius: 10px;
+    border: 1px solid rgb(209, 209, 209);
+    padding: 0 10px;
+}
+
+#create-event-form input[type='text'],
+#create-event-form input[type='number'],
+#create-event-form input[type='url']{
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid rgb(209, 209, 209);
+    padding: 0 10px;
+}
+
+#event-start,
+#event-end{
+    display: flex;
+    justify-content: space-between;
+}
+
+.time-date-container{
+    display: flex;
+    flex-direction: column;
+    width: 46%;
+}
+
+#create-event-form input:hover {
+    border: .5px solid rgb(148, 148, 148);
+}
+
+#create-event-form input:focus {
+    outline: none;
+    border: 1px solid rgb(75, 163, 175);
+}
+
+#create-event-form textarea{
+    border: 1px solid rgb(209, 209, 209);
+    padding: 15px;
+    border-radius: 10px;
+    resize: none;
+    font-family: Arial;
+    height: 60px
+}
+
+#create-event-form textarea:hover{
+    border: .5px solid rgb(148, 148, 148);
+}
+
+#create-event-form textarea:focus{
+    outline: none;
+    border: 1px solid rgb(75, 163, 175);
+    cursor: default;
+}
+
+#create-event-form button {
+    outline: none;
+    border: none;
+    background-color: #f65858;
+    color: white;
+    width: 100%;
+    height: 40px;
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 20px 0;
+}
+
+#event-type-setting{
+    display: flex;
+    border-radius: 10px;
+    border: 1px solid rgb(209, 209, 209);
+    padding: 15px;
+    margin-bottom: 10px;
+}
+#event-type-setting label{
+    margin: 0;
+}
+
+.event-radio-one{
+    width: 50%;
+}
+
+.event-radio-two{
+    width: 50%
+}
+
+#create-event-form button:hover {
+    background-color: #f77070;
+    cursor: pointer;
+}
+
+.create-event-errors{
+    margin: 3px 0;
+    color: red;
+    font-size: 14px;
+    font-weight: 300;
+}

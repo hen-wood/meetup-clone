@@ -9,8 +9,8 @@ export default function GroupEvents({ groupId }) {
 	const history = useHistory();
 
 	useEffect(() => {
-		dispatch(getAllGroupEvents(groupId)).then(async res => await res);
-	}, [dispatch, groupId]);
+		dispatch(getAllGroupEvents(groupId));
+	}, []);
 
 	const handleEventClick = eventId => {
 		dispatch(getSingleEvent(eventId)).then(() => {
@@ -20,7 +20,7 @@ export default function GroupEvents({ groupId }) {
 
 	const events = useSelector(state => state.events.allGroupEvents);
 	const eventsValues = Object.values(events);
-	return eventsValues.length ? (
+	return eventsValues.length > 0 ? (
 		eventsValues.map(event => {
 			const date = dayMonthDate(event.startDate);
 			return (
@@ -43,9 +43,6 @@ export default function GroupEvents({ groupId }) {
 						<div>
 							<h3 className="event-time">{date}</h3>
 							<h2 className="event-text-title">{event.name}</h2>
-							<p className="event-text-group-city-state">
-								{`${event.Group.name} · ${event.Venue.city}, ${event.Venue.state}`.toUpperCase()}
-							</p>
 						</div>
 						<div className="attending-count">
 							<p>{event.numAttending + " attendees"}</p>

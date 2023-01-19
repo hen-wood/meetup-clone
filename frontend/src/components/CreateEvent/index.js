@@ -2,6 +2,7 @@ import { postNewEvent, postNewEventImage } from "../../store/eventsReducer";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory, useParams } from "react-router";
+import "./CreateEvent.css";
 
 export default function CreateEvent() {
 	const { groupId } = useParams();
@@ -12,7 +13,10 @@ export default function CreateEvent() {
 	const [price, setPrice] = useState("");
 	const [description, setDescription] = useState("");
 	const [startDate, setStartDate] = useState("");
+	const [startTime, setStartTime] = useState("");
+
 	const [endDate, setEndDate] = useState("");
+	const [endTime, setEndTime] = useState("");
 	const [previewImageUrl, setPreviewImageUrl] = useState("");
 	const [onlineChecked, setOnlineChecked] = useState(false);
 
@@ -22,8 +26,14 @@ export default function CreateEvent() {
 	const handleSubmit = e => {
 		e.preventDefault();
 
+		const start = startDate + "T" + startTime;
+		const end = endDate + "T" + endTime;
+
 		const valErrors = {};
 
+		if (new Date(start) > new Date(end))
+			valErrors.startDate =
+				"Event start time/date must be before end time/date";
 		if (!previewImageUrl.length)
 			valErrors.previewImageUrl = "Preview Image is required";
 		if (!name.length) valErrors.name = "Name is required";
@@ -57,17 +67,15 @@ export default function CreateEvent() {
 			.then(res => {
 				dispatch(postNewEventImage(newImage, res.id))
 					.then(() => {
-						history.push(`/home`);
+						history.push(`/events/${res.id}`);
 					})
 					.catch(async res => {
 						const data = await res.json();
-						console.log(data);
 						setErrors(data.errors);
 					});
 			})
 			.catch(async res => {
 				const data = await res.json();
-				console.log(data);
 				setErrors(data.errors);
 			});
 	};
@@ -128,7 +136,22 @@ export default function CreateEvent() {
 						id="event-price"
 						type="number"
 						min="0"
-						step=".01"
+						onBlur={e => {
+							const price = e.target.value;
+							const splitPrice = price.split(".");
+							if (splitPrice.length === 2) {
+								if (splitPrice[1].length > 2) {
+									splitPrice[1] = splitPrice[1].slice(0, 2);
+								}
+								if (splitPrice[1].length < 2) {
+									splitPrice[1] = splitPrice[1] + "0";
+								}
+								e.target.value = splitPrice.join(".");
+							} else {
+								e.target.value = `${price}.00`;
+							}
+						}}
+						step="0.01"
 						onChange={e => setPrice(e.target.value)}
 					/>
 					<label htmlFor="event-capacity">Capacity</label>
@@ -136,22 +159,53 @@ export default function CreateEvent() {
 						id="event-capacity"
 						type="number"
 						min="1"
-						step="1"
+						onBlur={e => {
+							if (e.target.value % 1 !== 0) {
+								e.target.value = Math.floor(e.target.value);
+							}
+						}}
 						onChange={e => setCapacity(e.target.value)}
 					/>
-					<label htmlFor="event-start-date">Start date</label>
-					<input
-						id="event-start-date"
-						type="datetime-local"
-						min={new Date(new Date().getTime() + 24 * 60 * 60 * 1000)}
-						onChange={e => setStartDate(e.target.value)}
-					/>
-					<input
-						id="event-end-date"
-						type="datetime-local"
-						min={new Date(new Date().getTime() + 24 * 60 * 60 * 1000)}
-						onChange={e => setEndDate(e.target.value)}
-					/>
+					<div id="event-dates">
+						<div id="event-start">
+							<div className="time-date-container">
+								<label htmlFor="event-start-date">Start date</label>
+								<input
+									id="event-start-date"
+									type="date"
+									min={new Date(Date.now() + 24).toISOString().split("T")[0]}
+									onChange={e => setStartDate(e.target.value)}
+								/>
+							</div>
+							<div className="time-date-container">
+								<label htmlFor="event-start-time">Start time</label>
+								<input
+									id="event-start-time"
+									type="time"
+									onChange={e => setStartTime(e.target.value)}
+								/>
+							</div>
+						</div>
+						<div id="event-end">
+							<div className="time-date-container">
+								<label htmlFor="event-end-date">End date</label>
+								<input
+									id="event-end-date"
+									type="date"
+									min={new Date(Date.now() + 24).toISOString().split("T")[0]}
+									onChange={e => setEndDate(e.target.value)}
+								/>
+							</div>
+							<div className="time-date-container">
+								<label htmlFor="event-end-time">End time</label>
+								<input
+									id="event-end-time"
+									type="time"
+									onChange={e => setEndTime(e.target.value)}
+								/>
+							</div>
+						</div>
+					</div>
 					<label htmlFor="preview-url">Preview image url</label>
 					<input
 						type="url"
