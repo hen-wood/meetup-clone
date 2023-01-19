@@ -150,8 +150,10 @@ export default function CreateEvent() {
 									splitPrice[1] = splitPrice[1] + "0";
 								}
 								e.target.value = splitPrice.join(".");
+								setPrice(e.target.value);
 							} else {
 								e.target.value = `${price}.00`;
+								setPrice(e.target.value);
 							}
 						}}
 						step="0.01"
