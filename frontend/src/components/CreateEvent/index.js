@@ -52,7 +52,6 @@ export default function CreateEvent() {
 		const newEvent = {
 			name,
 			groupId,
-			venueId: 2,
 			type,
 			capacity,
 			price,

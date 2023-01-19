@@ -49,11 +49,15 @@ export default function Events() {
 							<h3 className="event-time">{date}</h3>
 							<h2 className="event-text-title">{event.name}</h2>
 							<p className="event-text-group-city-state">
-								{`${event.Group.name} · ${event.Venue.city}, ${event.Venue.state}`.toUpperCase()}
+								{`${event.Group.name} · ${event.Group.city}, ${event.Group.state}`.toUpperCase()}
 							</p>
 						</div>
 						<div className="attending-count">
-							<p>{event.numAttending + " attendees"}</p>
+							<p>
+								{event.numAttending > 1
+									? event.numAttending + " attendees"
+									: event.numAttending + " attendee"}
+							</p>
 						</div>
 					</div>
 				</div>

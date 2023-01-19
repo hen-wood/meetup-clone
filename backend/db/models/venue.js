@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
 
 			Venue.hasMany(models.Event, {
 				foreignKey: "venueId",
-				onDelete: "SET NULL"
+				onDelete: "CASCADE"
 			});
 		}
 	}
@@ -27,8 +27,7 @@ module.exports = (sequelize, DataTypes) => {
 				references: {
 					model: "Groups"
 				},
-				onDelete: "CASCADE",
-				allowNull: false
+				onDelete: "CASCADE"
 			},
 			address: {
 				type: DataTypes.STRING,

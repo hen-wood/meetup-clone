@@ -5,6 +5,15 @@ const GET_ALL_GROUP_EVENTS = "events/GET_ALL_GROUP_EVENTS";
 const GET_EVENT_DETAILS = "events/GET_EVENT_DETAILS";
 const CREATE_GROUP_EVENT = "events/CREATE_GROUP_EVENT";
 const ADD_EVENT_IMAGE = "events/ADD_EVENT_IMAGE";
+const REMOVE_GROUP_EVENT = "events/REMOVE_GROUP_EVENT";
+
+const removeEvent = eventId => {
+	console.log(eventId);
+	return {
+		type: REMOVE_GROUP_EVENT,
+		payload: eventId
+	};
+};
 
 const createEventImage = newImage => {
 	return {
@@ -47,6 +56,15 @@ const setSingleEvent = singleEvent => {
 		type: GET_EVENT_DETAILS,
 		payload: singleEvent
 	};
+};
+
+export const deleteEvent = eventId => async dispatch => {
+	const response = await csrfFetch(`/api/events/${eventId}`, {
+		method: "DELETE"
+	});
+	const data = await response.json();
+	dispatch(removeEvent(eventId));
+	return data;
 };
 
 export const postNewEvent = (newEvent, groupId) => async dispatch => {
@@ -96,7 +114,7 @@ export const getSingleEvent = eventId => async dispatch => {
 	const response = await fetch(`/api/events/${eventId}`);
 	const data = await response.json();
 	dispatch(setSingleEvent(data));
-	return response;
+	return data;
 };
 
 const initialState = {
@@ -125,16 +143,20 @@ export default function eventsReducer(state = initialState, action) {
 			newState.singleEvent = action.payload;
 			return newState;
 		case CREATE_GROUP_EVENT:
-			console.log("creating group");
 			newState = { ...state };
 			newState.allGroupEvents = { ...state.allGroupEvents };
 			newState.allGroupEvents[action.payload.id] = action.payload;
 			return newState;
 		case ADD_EVENT_IMAGE:
-			console.log("creating image");
 			newState = { ...state };
 			newState.eventImages = { ...state.eventImages };
 			newState.eventImages[action.payload.id] = action.payload;
+			return newState;
+		case REMOVE_GROUP_EVENT:
+			newState = { ...state };
+			newState.allGroupEvents = { ...state.allGroupEvents };
+			console.log(action.payload);
+			delete newState.allGroupEvents[action.payload];
 			return newState;
 		default:
 			return state;
