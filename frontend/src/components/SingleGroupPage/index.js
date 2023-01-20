@@ -6,7 +6,7 @@ import {
 } from "../../store/groupsReducer";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, NavLink } from "react-router-dom";
 import { deleteGroup } from "../../store/groupsReducer";
 import GroupEvents from "./GroupEvents";
 
@@ -108,7 +108,7 @@ export default function SingleGroupPage() {
 						<img
 							id="single-group-page-preview-image"
 							src={preview}
-							alt={currentGroup.name + " preview image"}
+							alt={currentGroup.name}
 						/>
 					</div>
 
@@ -137,6 +137,9 @@ export default function SingleGroupPage() {
 						</div>
 						{showOrgOptions && organizerOptions}
 						{showCohostOptions && cohostOptions}
+						<div id="group-title-and-nav-link">
+							<NavLink to="/all-groups">See all groups</NavLink>
+						</div>
 					</div>
 				</div>
 				<div id="single-group-about-container">
