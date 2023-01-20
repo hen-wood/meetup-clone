@@ -4,69 +4,15 @@ const GET_ALL_GROUPS = "groups/GET_ALL_GROUPS";
 const GET_USER_GROUPS = "groups/GET_USER_GROUPS";
 const GET_SINGLE_GROUP = "groups/GET_SINGLE_GROUP";
 const GET_GROUP_MEMBERSHIPS = "groups/GET_GROUP_MEMBERSHIPS";
-const CREATE_GROUP = "groups/CREATE_GROUP";
-const UPDATE_GROUP = "groups/UPDATE_GROUP";
-const ADD_GROUP_IMAGE = "groupImages/ADD_GROUP_IMAGE";
-const REMOVE_GROUP = "groups/REMOVE_GROUP";
+const POST_GROUP = "groups/POST_GROUP";
+const PUT_GROUP = "groups/PUT_GROUP";
+const POST_GROUP_IMAGE = "groupImages/POST_GROUP_IMAGE";
+const DELETE_GROUP = "groups/DELETE_GROUP";
 
-const setGroupMemberships = memberships => {
-	const membershipsObj = {};
-	memberships.forEach(member => {
-		membershipsObj[member.id] = member;
-	});
-	return {
-		type: GET_GROUP_MEMBERSHIPS,
-		payload: membershipsObj
-	};
-};
+// Action creators
 
-const setUserGroups = userGroups => {
-	const userGroupsObj = {};
-	userGroups.forEach(group => {
-		userGroupsObj[group.id] = group;
-	});
-	return {
-		type: GET_USER_GROUPS,
-		payload: userGroupsObj
-	};
-};
-
-const setSingleGroup = singleGroup => {
-	return {
-		type: GET_SINGLE_GROUP,
-		payload: singleGroup
-	};
-};
-
-const createGroup = newGroup => {
-	return {
-		type: CREATE_GROUP,
-		payload: newGroup
-	};
-};
-
-const updateGroup = updatedGroup => {
-	return {
-		type: UPDATE_GROUP,
-		payload: updatedGroup
-	};
-};
-
-const addGroupImage = image => {
-	return {
-		type: ADD_GROUP_IMAGE,
-		payload: image
-	};
-};
-
-const removeGroup = groupId => {
-	return {
-		type: REMOVE_GROUP,
-		payload: groupId
-	};
-};
-
-const setGroups = allGroups => {
+// GET actions
+const actionGetAllGroups = allGroups => {
 	const allGroupsObj = {};
 	allGroups.forEach(group => {
 		allGroupsObj[group.id] = group;
@@ -77,15 +23,104 @@ const setGroups = allGroups => {
 	};
 };
 
-export const getGroupMemberships = groupId => async dispatch => {
-	console.log(groupId);
-	const response = await fetch(`/api/groups/${groupId}/members`);
-	const data = await response.json();
-	dispatch(setGroupMemberships(data.Members));
-	return response;
+const actionGetGroupMemberships = memberships => {
+	const membershipsObj = {};
+	memberships.forEach(member => {
+		membershipsObj[member.id] = member;
+	});
+	return {
+		type: GET_GROUP_MEMBERSHIPS,
+		payload: membershipsObj
+	};
 };
 
-export const putGroup = (updatedGroup, groupId) => async dispatch => {
+const actionGetUserGroups = userGroups => {
+	const userGroupsObj = {};
+	userGroups.forEach(group => {
+		userGroupsObj[group.id] = group;
+	});
+	return {
+		type: GET_USER_GROUPS,
+		payload: userGroupsObj
+	};
+};
+
+const actionGetSingleGroup = singleGroup => {
+	return {
+		type: GET_SINGLE_GROUP,
+		payload: singleGroup
+	};
+};
+
+// POST actions
+const actionPostGroup = newGroup => {
+	return {
+		type: POST_GROUP,
+		payload: newGroup
+	};
+};
+
+const actionPostGroupImage = image => {
+	return {
+		type: POST_GROUP_IMAGE,
+		payload: image
+	};
+};
+
+// PUT actions
+const actionPutGroup = updatedGroup => {
+	return {
+		type: PUT_GROUP,
+		payload: updatedGroup
+	};
+};
+
+// DELETE actions
+const actionDeleteGroup = groupId => {
+	return {
+		type: DELETE_GROUP,
+		payload: groupId
+	};
+};
+
+// Thunks
+
+// GET thunks
+export const thunkGetAllGroups = () => async dispatch => {
+	const response = await fetch("/api/groups");
+	if (response.ok) {
+		const data = await response.json();
+		dispatch(actionGetAllGroups(data.Groups));
+		return data;
+	}
+};
+export const thunkGetGroupMemberships = groupId => async dispatch => {
+	const response = await fetch(`/api/groups/${groupId}/members`);
+	if (response.ok) {
+		const data = await response.json();
+		dispatch(actionGetGroupMemberships(data.Members));
+		return data;
+	}
+};
+export const thunkGetUserGroups = () => async dispatch => {
+	const response = await csrfFetch("/api/groups/current");
+	if (response.ok) {
+		const data = await response.json();
+		dispatch(actionGetUserGroups(data.Groups));
+		return data;
+	}
+};
+export const thunkGetSingleGroup = groupId => async dispatch => {
+	const response = await fetch(`/api/groups/${groupId}`);
+	if (response.ok) {
+		const data = await response.json();
+		dispatch(actionGetSingleGroup(data));
+		return data;
+	}
+};
+
+// PUT thunks
+export const thunkPutGroup = (updatedGroup, groupId) => async dispatch => {
 	const res = await csrfFetch(`/api/groups/${groupId}`, {
 		method: "PUT",
 		body: JSON.stringify(updatedGroup),
@@ -94,12 +129,33 @@ export const putGroup = (updatedGroup, groupId) => async dispatch => {
 		}
 	});
 
-	const data = await res.json();
-	dispatch(updateGroup(data));
-	return res;
+	if (res.ok) {
+		const data = await res.json();
+		dispatch(actionPutGroup(data));
+		return data;
+	} else {
+		return res;
+	}
 };
 
-export const postGroupImage = (image, groupId) => async dispatch => {
+// POST thunks
+export const thunkPostGroup = newGroup => async dispatch => {
+	const response = await csrfFetch("/api/groups", {
+		method: "POST",
+		body: JSON.stringify(newGroup),
+		headers: {
+			"Content-Type": "application/json"
+		}
+	});
+	if (response.ok) {
+		const data = await response.json();
+		dispatch(actionPostGroup(data));
+		return data;
+	} else {
+		return response;
+	}
+};
+export const thunkPostGroupImage = (image, groupId) => async dispatch => {
 	const response = await csrfFetch(`/api/groups/${groupId}/images`, {
 		method: "POST",
 		body: JSON.stringify(image),
@@ -108,52 +164,28 @@ export const postGroupImage = (image, groupId) => async dispatch => {
 		}
 	});
 
-	const data = await response.json();
-	dispatch(addGroupImage(data));
-	return data;
+	if (response.ok) {
+		const data = await response.json();
+		dispatch(actionPostGroupImage(data));
+		return data;
+	} else {
+		return response;
+	}
 };
 
-export const getAllGroups = () => async dispatch => {
-	const response = await fetch("/api/groups");
-	const data = await response.json();
-	dispatch(setGroups(data.Groups));
-	return response;
-};
-
-export const getUserGroups = () => async dispatch => {
-	const response = await csrfFetch("/api/groups/current");
-	const data = await response.json();
-	dispatch(setUserGroups(data.Groups));
-	return response;
-};
-
-export const getSingleGroup = groupId => async dispatch => {
-	const response = await fetch(`/api/groups/${groupId}`);
-	const data = await response.json();
-	dispatch(setSingleGroup(data));
-	return data;
-};
-
-export const postGroup = newGroup => async dispatch => {
-	const response = await csrfFetch("/api/groups", {
-		method: "POST",
-		body: JSON.stringify(newGroup),
-		headers: {
-			"Content-Type": "application/json"
-		}
-	});
-	const data = await response.json();
-	dispatch(createGroup(data));
-	return data;
-};
-
-export const deleteGroup = groupId => async dispatch => {
+// DELETE thunks
+export const thunkDeleteGroup = groupId => async dispatch => {
 	const response = await csrfFetch(`/api/groups/${groupId}`, {
 		method: "DELETE"
 	});
-	const data = await response.json();
-	dispatch(removeGroup(groupId));
-	return data;
+
+	if (response.ok) {
+		const data = await response.json();
+		dispatch(actionDeleteGroup(groupId));
+		return data;
+	} else {
+		return response;
+	}
 };
 
 const initialState = {
@@ -170,7 +202,7 @@ export default function groupsReducer(state = initialState, action) {
 			newState = { ...state };
 			newState.allGroups = action.payload;
 			return newState;
-		case CREATE_GROUP:
+		case POST_GROUP:
 			newState = { ...state };
 			const { id } = action.payload;
 			newState.allGroups[id] = action.payload;
@@ -184,12 +216,12 @@ export default function groupsReducer(state = initialState, action) {
 			newState = { ...state };
 			newState.singleGroup = { ...action.payload };
 			return newState;
-		case REMOVE_GROUP:
+		case DELETE_GROUP:
 			newState = { ...state };
 			const { groupId } = action.payload;
 			delete newState.allGroups[groupId];
 			return newState;
-		case UPDATE_GROUP:
+		case PUT_GROUP:
 			newState = { ...state };
 			const updatedGroupId = action.payload.id;
 			newState.allGroups[updatedGroupId] = { ...action.payload };

@@ -2,7 +2,7 @@ import "./HomePage.css";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getUserGroups } from "../../store/groupsReducer";
+import { thunkGetUserGroups } from "../../store/groupsReducer";
 import * as sessionActions from "../../store/session";
 
 export default function HomePage() {
@@ -16,7 +16,7 @@ export default function HomePage() {
 	useEffect(() => {
 		dispatch(sessionActions.restoreUser()).then(async res => {
 			const user = await res;
-			dispatch(getUserGroups(user.id)).then(() => {
+			dispatch(thunkGetUserGroups(user.id)).then(() => {
 				setIsLoaded(true);
 			});
 		});

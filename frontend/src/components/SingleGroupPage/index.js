@@ -1,13 +1,13 @@
 import "./SingleGroupPage.css";
 import {
-	getSingleGroup,
-	getUserGroups,
-	getGroupMemberships
+	thunkGetSingleGroup,
+	thunkGetUserGroups,
+	thunkGetGroupMemberships
 } from "../../store/groupsReducer";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams, NavLink } from "react-router-dom";
-import { deleteGroup } from "../../store/groupsReducer";
+import { thunkDeleteGroup } from "../../store/groupsReducer";
 import GroupEvents from "./GroupEvents";
 
 export default function SingleGroupPage() {
@@ -21,10 +21,10 @@ export default function SingleGroupPage() {
 		history.push(`/groups/${groupId}/create-event`);
 
 	useEffect(() => {
-		dispatch(getSingleGroup(groupId)).then(async res => {
+		dispatch(thunkGetSingleGroup(groupId)).then(async res => {
 			const data = await res;
 			console.log(data);
-			dispatch(getGroupMemberships(data.id)).then(() => {
+			dispatch(thunkGetGroupMemberships(data.id)).then(() => {
 				setIsLoaded(true);
 			});
 		});
@@ -55,9 +55,9 @@ export default function SingleGroupPage() {
 	const showCohostOptions = user && isCohost && !showOrgOptions;
 
 	const handleDelete = () => {
-		dispatch(deleteGroup(groupId))
+		dispatch(thunkDeleteGroup(groupId))
 			.then(() => {
-				dispatch(getUserGroups())
+				dispatch(thunkGetUserGroups())
 					.then(() => {
 						deleteRedirect();
 					})

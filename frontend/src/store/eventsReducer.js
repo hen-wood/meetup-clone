@@ -3,33 +3,14 @@ import { csrfFetch } from "./csrf";
 const GET_ALL_EVENTS = "events/GET_ALL_EVENTS";
 const GET_ALL_GROUP_EVENTS = "events/GET_ALL_GROUP_EVENTS";
 const GET_EVENT_DETAILS = "events/GET_EVENT_DETAILS";
-const CREATE_GROUP_EVENT = "events/CREATE_GROUP_EVENT";
-const ADD_EVENT_IMAGE = "events/ADD_EVENT_IMAGE";
-const REMOVE_GROUP_EVENT = "events/REMOVE_GROUP_EVENT";
+const POST_EVENT = "events/POST_EVENT";
+const POST_EVENT_IMAGE = "events/POST_EVENT_IMAGE";
+const DELETE_GROUP_EVENT = "events/DELETE_GROUP_EVENT";
 
-const removeEvent = eventId => {
-	console.log(eventId);
-	return {
-		type: REMOVE_GROUP_EVENT,
-		payload: eventId
-	};
-};
+// Action creators
 
-const createEventImage = newImage => {
-	return {
-		type: ADD_EVENT_IMAGE,
-		payload: newImage
-	};
-};
-
-const createGroupEvent = newEvent => {
-	return {
-		type: CREATE_GROUP_EVENT,
-		payload: newEvent
-	};
-};
-
-const setEvents = allEvents => {
+// GET actions
+const actionGetAllEvents = allEvents => {
 	const allEventsObj = {};
 	allEvents.forEach(event => {
 		allEventsObj[event.id] = event;
@@ -40,7 +21,7 @@ const setEvents = allEvents => {
 	};
 };
 
-const setGroupEvents = allGroupEvents => {
+const actionGetGroupEvents = allGroupEvents => {
 	const allGroupEventsObj = {};
 	allGroupEvents.forEach(event => {
 		allGroupEventsObj[event.id] = event;
@@ -51,23 +32,77 @@ const setGroupEvents = allGroupEvents => {
 	};
 };
 
-const setSingleEvent = singleEvent => {
+const actionGetSingleEvent = singleEvent => {
 	return {
 		type: GET_EVENT_DETAILS,
 		payload: singleEvent
 	};
 };
 
-export const deleteEvent = eventId => async dispatch => {
-	const response = await csrfFetch(`/api/events/${eventId}`, {
-		method: "DELETE"
-	});
-	const data = await response.json();
-	dispatch(removeEvent(eventId));
-	return data;
+// POST actions
+const actionPostEventImage = newImage => {
+	return {
+		type: POST_EVENT_IMAGE,
+		payload: newImage
+	};
 };
 
-export const postNewEvent = (newEvent, groupId) => async dispatch => {
+const actionPostEvent = newEvent => {
+	return {
+		type: POST_EVENT,
+		payload: newEvent
+	};
+};
+
+// DELETE actions
+const actionDeleteEvent = eventId => {
+	console.log(eventId);
+	return {
+		type: DELETE_GROUP_EVENT,
+		payload: eventId
+	};
+};
+
+// Thunks
+
+// GET thunks
+export const thunkGetAllEvents = () => async dispatch => {
+	const response = await fetch("/api/events");
+	if (response.ok) {
+		const data = await response.json();
+		dispatch(actionGetAllEvents(data.Events));
+		return data;
+	} else {
+		return response;
+	}
+};
+
+export const thunkGetSingleEvent = eventId => async dispatch => {
+	const response = await fetch(`/api/events/${eventId}`);
+
+	if (response.ok) {
+		const data = await response.json();
+		dispatch(actionGetSingleEvent(data));
+		return data;
+	} else {
+		return response;
+	}
+};
+
+export const thunkGetAllGroupEvents = groupId => async dispatch => {
+	const response = await fetch(`/api/groups/${groupId}/events`);
+
+	if (response.ok) {
+		const data = await response.json();
+		dispatch(actionGetGroupEvents(data.Events));
+		return data;
+	} else {
+		return response;
+	}
+};
+
+// POST thunks
+export const thunkPostEvent = (newEvent, groupId) => async dispatch => {
 	const response = await csrfFetch(`/api/groups/${groupId}/events`, {
 		method: "POST",
 		body: JSON.stringify(newEvent),
@@ -76,13 +111,16 @@ export const postNewEvent = (newEvent, groupId) => async dispatch => {
 		}
 	});
 
-	const data = await response.json();
-	console.log(data);
-	dispatch(createGroupEvent(data));
-	return data;
+	if (response.ok) {
+		const data = await response.json();
+		dispatch(actionPostEvent(data));
+		return data;
+	} else {
+		return response;
+	}
 };
 
-export const postNewEventImage = (newImage, eventId) => async dispatch => {
+export const thunkPostEventImage = (newImage, eventId) => async dispatch => {
 	const response = await csrfFetch(`/api/events/${eventId}/images`, {
 		method: "POST",
 		body: JSON.stringify(newImage),
@@ -91,30 +129,27 @@ export const postNewEventImage = (newImage, eventId) => async dispatch => {
 		}
 	});
 
-	const data = await response.json();
-	dispatch(createEventImage(data));
-	return data;
+	if (response.ok) {
+		const data = await response.json();
+		dispatch(actionPostEventImage(data));
+		return data;
+	} else {
+		return response;
+	}
 };
 
-export const getAllEvents = () => async dispatch => {
-	const response = await fetch("/api/events");
-	const data = await response.json();
-	dispatch(setEvents(data.Events));
-	return response;
-};
-
-export const getAllGroupEvents = groupId => async dispatch => {
-	const response = await fetch(`/api/groups/${groupId}/events`);
-	const data = await response.json();
-	dispatch(setGroupEvents(data.Events));
-	return response;
-};
-
-export const getSingleEvent = eventId => async dispatch => {
-	const response = await fetch(`/api/events/${eventId}`);
-	const data = await response.json();
-	dispatch(setSingleEvent(data));
-	return data;
+// DELETE thunks
+export const thunkDeleteEvent = eventId => async dispatch => {
+	const response = await csrfFetch(`/api/events/${eventId}`, {
+		method: "DELETE"
+	});
+	if (response.ok) {
+		const data = await response.json();
+		dispatch(actionDeleteEvent(eventId));
+		return data;
+	} else {
+		return response;
+	}
 };
 
 const initialState = {
@@ -142,17 +177,17 @@ export default function eventsReducer(state = initialState, action) {
 			newState.singleEvent = { ...state.singleEvent };
 			newState.singleEvent = action.payload;
 			return newState;
-		case CREATE_GROUP_EVENT:
+		case POST_EVENT:
 			newState = { ...state };
 			newState.allGroupEvents = { ...state.allGroupEvents };
 			newState.allGroupEvents[action.payload.id] = action.payload;
 			return newState;
-		case ADD_EVENT_IMAGE:
+		case POST_EVENT_IMAGE:
 			newState = { ...state };
 			newState.eventImages = { ...state.eventImages };
 			newState.eventImages[action.payload.id] = action.payload;
 			return newState;
-		case REMOVE_GROUP_EVENT:
+		case DELETE_GROUP_EVENT:
 			newState = { ...state };
 			newState.allGroupEvents = { ...state.allGroupEvents };
 			console.log(action.payload);

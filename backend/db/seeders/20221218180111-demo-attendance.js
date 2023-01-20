@@ -11,64 +11,138 @@ module.exports = {
 		return queryInterface.bulkInsert(
 			options,
 			[
+				// Skydiving Event#1 1
+
+				// Creator
 				{
 					userId: 1,
 					eventId: 1,
 					status: "attending"
 				},
+				// Other Attendees
 				{
-					userId: 2,
+					userId: 9,
 					eventId: 1,
-					status: "waitlist"
+					status: "attending"
 				},
 				{
-					userId: 3,
+					userId: 10,
 					eventId: 1,
-					status: "pending"
+					status: "attending"
 				},
+				{
+					userId: 11,
+					eventId: 1,
+					status: "attending"
+				},
+
+				// Skydiving Event#2 2
+
+				// Creator
 				{
 					userId: 1,
 					eventId: 2,
-					status: "waitlist"
+					status: "attending"
 				},
+				// Other Attendees
 				{
-					userId: 2,
+					userId: 9,
 					eventId: 2,
 					status: "attending"
 				},
 				{
-					userId: 3,
+					userId: 10,
 					eventId: 2,
-					status: "pending"
+					status: "attending"
 				},
 				{
-					userId: 1,
-					eventId: 3,
-					status: "pending"
+					userId: 11,
+					eventId: 2,
+					status: "attending"
 				},
+
+				// Chess Event 3
+
+				// Creator
 				{
 					userId: 2,
 					eventId: 3,
-					status: "waitlist"
+					status: "attending"
 				},
+				// Other Attendees
 				{
-					userId: 3,
+					userId: 6,
 					eventId: 3,
 					status: "attending"
 				},
 				{
+					userId: 7,
+					eventId: 3,
+					status: "attending"
+				},
+				{
+					userId: 8,
+					eventId: 3,
+					status: "attending"
+				},
+
+				// Book Club Event 4
+
+				// Creator
+				{
+					userId: 3,
+					eventId: 4,
+					status: "attending"
+				},
+				// Other Attendees
+				{
 					userId: 1,
 					eventId: 4,
-					status: "waitlist"
+					status: "attending"
 				},
 				{
 					userId: 2,
 					eventId: 4,
-					status: "pending"
+					status: "attending"
+				},
+				{
+					userId: 4,
+					eventId: 4,
+					status: "attending"
+				},
+				{
+					userId: 5,
+					eventId: 4,
+					status: "attending"
+				},
+				{
+					userId: 6,
+					eventId: 4,
+					status: "attending"
+				},
+
+				// Surf Event 5
+
+				// Creator
+				{
+					userId: 4,
+					eventId: 5,
+					status: "attending"
+				},
+				// Other Attendees
+				{
+					userId: 1,
+					eventId: 5,
+					status: "attending"
 				},
 				{
 					userId: 3,
-					eventId: 4,
+					eventId: 5,
+					status: "attending"
+				},
+				{
+					userId: 9,
+					eventId: 5,
 					status: "attending"
 				}
 			],

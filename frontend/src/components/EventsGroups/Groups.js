@@ -1,7 +1,7 @@
 import "./Groups.css";
 import "./mobile.css";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllGroups } from "../../store/groupsReducer";
+import { thunkGetAllGroups } from "../../store/groupsReducer";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -14,7 +14,7 @@ export default function Groups() {
 	const redirectToSingleGroup = groupId => history.push(`/groups/${groupId}`);
 
 	useEffect(() => {
-		dispatch(getAllGroups()).then(() => {
+		dispatch(thunkGetAllGroups()).then(() => {
 			setIsLoaded(true);
 		});
 	}, [dispatch]);
@@ -56,7 +56,7 @@ export default function Groups() {
 						<p className="group-text-about">{group.about}</p>
 						<div className="member-count-privacy-status">
 							<p>
-								{(group.numMembers > 1
+								{(group.numMembers !== 1
 									? group.numMembers + " members · "
 									: group.numMembers + " member · ") + privacy}
 							</p>

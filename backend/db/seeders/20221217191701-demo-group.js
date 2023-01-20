@@ -11,6 +11,7 @@ module.exports = {
 		return queryInterface.bulkInsert(
 			options,
 			[
+				// 1
 				{
 					organizerId: 1,
 					name: "Washington Skydivers",
@@ -21,26 +22,7 @@ module.exports = {
 					city: "Tacoma",
 					state: "WA"
 				},
-				{
-					organizerId: 2,
-					name: "New York Chess Club",
-					about:
-						"The NYC Chess Club is a community of chess enthusiasts that meets regularly to play, learn, and improve their skills.",
-					type: "Online",
-					private: false,
-					city: "New York",
-					state: "NY"
-				},
-				{
-					organizerId: 3,
-					name: "LA Book Club",
-					about:
-						"The Los Angeles Book Club is a group of passionate readers who come together to discuss and explore different genres of literature.",
-					type: "Online",
-					private: false,
-					city: "Los Angeles",
-					state: "CA"
-				},
+				// 2
 				{
 					organizerId: 1,
 					name: "A Rag Tag Group of Misfits and Bandits",
@@ -48,8 +30,74 @@ module.exports = {
 						"We are a motley crew of outcasts and ne'er-do-wells, united by our disdain for authority and our love of adventure.",
 					type: "In person",
 					private: true,
-					city: "New Orleans",
-					state: "LA"
+					city: "Tacoma",
+					state: "WA"
+				},
+				// 3
+				{
+					organizerId: 1,
+					name: "Cooking Club",
+					about:
+						"Discover new recipes and share your cooking skills. We welcome members of any skill level!",
+					type: "Online",
+					private: false,
+					city: "Tacoma",
+					state: "WA"
+				},
+				// 4
+				{
+					organizerId: 2,
+					name: "New York Chess Club",
+					about:
+						"The NYC Chess Club is a community of chess enthusiasts that meets regularly to play, learn, and improve their skills.",
+					type: "In person",
+					private: false,
+					city: "New York",
+					state: "NY"
+				},
+				// 5
+				{
+					organizerId: 3,
+					name: "Online Book Club",
+					about:
+						"The Online Book Club is a group of passionate readers who come together to discuss and explore different genres of literature.",
+					type: "Online",
+					private: false,
+					city: "Los Angeles",
+					state: "CA"
+				},
+				// 6
+				{
+					organizerId: 5,
+					name: "Photography Group",
+					about:
+						"Learn and share photography techniques. All skill levels welcome!",
+					type: "Online",
+					private: false,
+					city: "Chicago",
+					state: "IL"
+				},
+				// 7
+				{
+					organizerId: 5,
+					name: "Puzzle Solvers",
+					about:
+						"We love puzzles of all sorts! Join us and challenge your mind...",
+					type: "Online",
+					private: false,
+					city: "Chicago",
+					state: "IL"
+				},
+				// 8
+				{
+					organizerId: 4,
+					name: "North Shore Surfers",
+					about:
+						"We love to surf! We welcome anyone who has a decent amount of experience.",
+					type: "In person",
+					private: true,
+					city: "Haleiwa",
+					state: "HI"
 				}
 			],
 			{}

@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllGroupEvents, getSingleEvent } from "../../store/eventsReducer";
+import {
+	thunkGetAllGroupEvents,
+	thunkGetSingleEvent
+} from "../../store/eventsReducer";
 import dayMonthDate from "../../utils/dayMonthDate";
 
 export default function GroupEvents({ groupId }) {
@@ -10,13 +13,13 @@ export default function GroupEvents({ groupId }) {
 	const [isLoaded, setIsLoaded] = useState(false);
 
 	useEffect(() => {
-		dispatch(getAllGroupEvents(groupId)).then(() => {
+		dispatch(thunkGetAllGroupEvents(groupId)).then(() => {
 			setIsLoaded(true);
 		});
 	}, [dispatch, groupId]);
 
 	const handleEventClick = eventId => {
-		dispatch(getSingleEvent(eventId)).then(() => {
+		dispatch(thunkGetSingleEvent(eventId)).then(() => {
 			history.push(`/events/${eventId}`);
 		});
 	};
