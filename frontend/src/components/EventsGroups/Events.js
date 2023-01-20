@@ -56,7 +56,7 @@ export default function Events() {
 						</div>
 						<div className="attending-count">
 							<p>
-								{event.numAttending > 1
+								{event.numAttending !== 1
 									? event.numAttending + " attendees"
 									: event.numAttending + " attendee"}
 							</p>

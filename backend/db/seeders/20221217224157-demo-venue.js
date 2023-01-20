@@ -11,6 +11,7 @@ module.exports = {
 		return queryInterface.bulkInsert(
 			options,
 			[
+				// Skydiving
 				{
 					groupId: 1,
 					address: "1234 Fakestreet",
@@ -19,21 +20,23 @@ module.exports = {
 					lat: 47.621449,
 					lng: -122.348455
 				},
+				// Chess
 				{
-					groupId: 2,
+					groupId: 4,
 					address: "4321 Fakestreet",
 					city: "New York",
 					state: "NY",
 					lat: 40.748954,
 					lng: -73.985741
 				},
+				// Surfers
 				{
 					groupId: 3,
 					address: "1243 Fakestreet",
-					city: "Los Angeles",
-					state: "CA",
-					lat: 34.123729,
-					lng: -118.29938
+					city: "Haleiwa",
+					state: "HI",
+					lat: 21.593884,
+					lng: -158.108306
 				}
 			],
 			{}

@@ -18,7 +18,7 @@ export default function CreateAGroup() {
 
 	const [errors, setErrors] = useState({});
 	const history = useHistory();
-	const redirect = () => history.push("/home");
+	const redirect = path => history.push(path);
 
 	const handleSubmit = e => {
 		e.preventDefault();
@@ -65,7 +65,7 @@ export default function CreateAGroup() {
 			.then(res => {
 				dispatch(thunkPostGroupImage(newImage, res.id))
 					.then(() => {
-						redirect();
+						redirect(`/groups/${res.id}`);
 					})
 					.catch(async res => {
 						const data = await res.json();

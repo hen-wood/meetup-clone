@@ -12,6 +12,7 @@ module.exports = {
 		return queryInterface.bulkInsert(
 			options,
 			[
+				// Group Organizers
 				{
 					firstName: "Demo-user",
 					lastName: "Meetdown",
@@ -22,16 +23,75 @@ module.exports = {
 				{
 					firstName: "John",
 					lastName: "Fakeman",
-					email: "user1@user.io",
-					username: "FakeUser1",
+					email: "john@user.io",
+					username: "JohnFakeman",
 					hashedPassword: bcrypt.hashSync("password2")
 				},
 				{
 					firstName: "Don",
 					lastName: "Manfake",
-					email: "user2@user.io",
-					username: "FakeUser2",
+					email: "don@user.io",
+					username: "DonManfake",
 					hashedPassword: bcrypt.hashSync("password3")
+				},
+				{
+					firstName: "Jane",
+					lastName: "Doe",
+					email: "jane@user.io",
+					username: "JaneDoe",
+					hashedPassword: bcrypt.hashSync("password4")
+				},
+				{
+					firstName: "Bob",
+					lastName: "Smith",
+					email: "bob@user.io",
+					username: "BobSmith",
+					hashedPassword: bcrypt.hashSync("password5")
+				},
+				// Extra members
+				// New Yorkers
+				{
+					firstName: "Emily",
+					lastName: "Williams",
+					email: "emily@user.io",
+					username: "EmilyWilliams",
+					hashedPassword: bcrypt.hashSync("password6")
+				},
+				{
+					firstName: "Mike",
+					lastName: "Jones",
+					email: "whomikejones@user.io",
+					username: "whoMikeJones",
+					hashedPassword: bcrypt.hashSync("password7")
+				},
+				{
+					firstName: "Ashley",
+					lastName: "Brown",
+					email: "ashley@user.io",
+					username: "AshleyBrown",
+					hashedPassword: bcrypt.hashSync("password8")
+				},
+				// Seattle-ites
+				{
+					firstName: "Joshua",
+					lastName: "Garcia",
+					email: "josh@user.io",
+					username: "JoshuaGarcia",
+					hashedPassword: bcrypt.hashSync("password9")
+				},
+				{
+					firstName: "Matthew",
+					lastName: "Davis",
+					email: "matthew@user.io",
+					username: "MatthewDavis",
+					hashedPassword: bcrypt.hashSync("password10")
+				},
+				{
+					firstName: "Lauren",
+					lastName: "Conner",
+					email: "lauren@user.io",
+					username: "LaurenConner",
+					hashedPassword: bcrypt.hashSync("password11")
 				}
 			],
 			{}
