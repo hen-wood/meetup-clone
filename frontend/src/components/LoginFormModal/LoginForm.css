@@ -21,7 +21,6 @@
     flex-direction: column;
     justify-content: space-between;
     width: 344px;
-    /* height: 100%; */
     overflow-y: auto;
 }
 
