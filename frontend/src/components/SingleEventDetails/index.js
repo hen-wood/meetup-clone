@@ -4,7 +4,7 @@ import { useHistory, useParams, NavLink } from "react-router-dom";
 import { deleteEvent, getSingleEvent } from "../../store/eventsReducer";
 import "./SingleEventDetails.css";
 import { timeFormatForEvent } from "../../utils/timeFormatForEvent";
-import { getGroupMemberships } from "../../store/groupsReducer";
+import { thunkGetGroupMemberships } from "../../store/groupsReducer";
 import formatEventPrice from "../../utils/formatEventPrice";
 
 export default function SingleEventDetails() {
@@ -17,7 +17,7 @@ export default function SingleEventDetails() {
 	useEffect(() => {
 		dispatch(getSingleEvent(eventId)).then(async res => {
 			const data = await res;
-			dispatch(getGroupMemberships(data.groupId)).then(() => {
+			dispatch(thunkGetGroupMemberships(data.groupId)).then(() => {
 				setIsLoaded(true);
 			});
 		});

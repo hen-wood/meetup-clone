@@ -2,7 +2,7 @@ import "./CreateAGroup.css";
 import { useState } from "react";
 import { useHistory } from "react-router";
 import { useDispatch } from "react-redux";
-import { postGroup, postGroupImage } from "../../store/groupsReducer";
+import { thunkPostGroup, thunkPostGroupImage } from "../../store/groupsReducer";
 import GroupImageSVG from "../SVGComponents/GroupImageSVG";
 export default function CreateAGroup() {
 	const dispatch = useDispatch();
@@ -61,9 +61,9 @@ export default function CreateAGroup() {
 			preview: true
 		};
 
-		dispatch(postGroup(newGroup))
+		dispatch(thunkPostGroup(newGroup))
 			.then(res => {
-				dispatch(postGroupImage(newImage, res.id))
+				dispatch(thunkPostGroupImage(newImage, res.id))
 					.then(() => {
 						redirect();
 					})

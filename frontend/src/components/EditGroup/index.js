@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import "../CreateAGroup/CreateAGroup.css";
 import "./EditGroup.css";
-import { putGroup, getSingleGroup } from "../../store/groupsReducer";
+import { thunkPutGroup, thunkGetSingleGroup } from "../../store/groupsReducer";
 import GroupImageSVG from "../SVGComponents/GroupImageSVG";
 
 export default function EditGroup() {
@@ -22,7 +22,7 @@ export default function EditGroup() {
 	const [errors, setErrors] = useState({});
 
 	useEffect(() => {
-		dispatch(getSingleGroup(groupId)).then(async res => {
+		dispatch(thunkGetSingleGroup(groupId)).then(async res => {
 			await res;
 			setName(res.name);
 			setAbout(res.about);
@@ -69,7 +69,7 @@ export default function EditGroup() {
 			state: state.toUpperCase()
 		};
 
-		dispatch(putGroup(editedGroup, groupId))
+		dispatch(thunkPutGroup(editedGroup, groupId))
 			.then(() => {
 				history.push(`/groups/${groupId}`);
 			})
