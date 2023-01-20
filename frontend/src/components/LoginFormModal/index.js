@@ -4,7 +4,6 @@ import { useHistory } from "react-router";
 import * as sessionActions from "../../store/session";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
-import "./LoginForm.css";
 import SmallLogo from "../SVGComponents/SmallLogo";
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
 import SignupFormModal from "../SignupFormModal";
