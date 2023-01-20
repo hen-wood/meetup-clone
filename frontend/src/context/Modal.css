@@ -22,6 +22,8 @@
 }
 
 #modal-content {
+    height: 80vh;
+    overflow-y: auto;
     position: absolute;
     background-color: white;
     border-radius: 10px;
