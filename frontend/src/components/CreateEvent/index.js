@@ -1,4 +1,4 @@
-import { postNewEvent, postNewEventImage } from "../../store/eventsReducer";
+import { thunkPostEvent, thunkPostEventImage } from "../../store/eventsReducer";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory, useParams } from "react-router";
@@ -68,9 +68,9 @@ export default function CreateEvent() {
 			preview: true
 		};
 
-		dispatch(postNewEvent(newEvent, groupId))
+		dispatch(thunkPostEvent(newEvent, groupId))
 			.then(res => {
-				dispatch(postNewEventImage(newImage, res.id))
+				dispatch(thunkPostEventImage(newImage, res.id))
 					.then(() => {
 						history.push(`/events/${res.id}`);
 					})

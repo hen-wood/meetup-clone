@@ -1,10 +1,10 @@
 import "./Events.css";
 import "./mobile.css";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllEvents } from "../../store/eventsReducer";
+import { thunkGetAllEvents } from "../../store/eventsReducer";
 import { useEffect, useState } from "react";
 import dayMonthDate from "../../utils/dayMonthDate";
-import { getSingleEvent } from "../../store/eventsReducer";
+import { thunkGetSingleEvent } from "../../store/eventsReducer";
 import { useHistory } from "react-router-dom";
 
 export default function Events() {
@@ -12,13 +12,13 @@ export default function Events() {
 	const history = useHistory();
 	const [isLoaded, setIsLoaded] = useState(false);
 	useEffect(() => {
-		dispatch(getAllEvents()).then(() => {
+		dispatch(thunkGetAllEvents()).then(() => {
 			setIsLoaded(true);
 		});
 	}, [dispatch]);
 
 	const handleEventClick = eventId => {
-		dispatch(getSingleEvent(eventId)).then(() => {
+		dispatch(thunkGetSingleEvent(eventId)).then(() => {
 			history.push(`/events/${eventId}`);
 		});
 	};

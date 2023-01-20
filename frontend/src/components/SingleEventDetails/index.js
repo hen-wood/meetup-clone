@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams, NavLink } from "react-router-dom";
-import { deleteEvent, getSingleEvent } from "../../store/eventsReducer";
+import {
+	thunkDeleteEvent,
+	thunkGetSingleEvent
+} from "../../store/eventsReducer";
 import "./SingleEventDetails.css";
 import { timeFormatForEvent } from "../../utils/timeFormatForEvent";
 import { thunkGetGroupMemberships } from "../../store/groupsReducer";
@@ -15,7 +18,7 @@ export default function SingleEventDetails() {
 	const history = useHistory();
 
 	useEffect(() => {
-		dispatch(getSingleEvent(eventId)).then(async res => {
+		dispatch(thunkGetSingleEvent(eventId)).then(async res => {
 			const data = await res;
 			dispatch(thunkGetGroupMemberships(data.groupId)).then(() => {
 				setIsLoaded(true);
@@ -28,7 +31,7 @@ export default function SingleEventDetails() {
 	};
 
 	const handleDeleteClick = () => {
-		dispatch(deleteEvent(eventId))
+		dispatch(thunkDeleteEvent(eventId))
 			.then(async res => {
 				await res;
 				history.push("/home");
