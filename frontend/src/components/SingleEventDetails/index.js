@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, NavLink } from "react-router-dom";
 import { deleteEvent, getSingleEvent } from "../../store/eventsReducer";
 import "./SingleEventDetails.css";
 import { timeFormatForEvent } from "../../utils/timeFormatForEvent";
@@ -65,13 +65,16 @@ export default function SingleEventDetails() {
 	return isLoaded ? (
 		<div id="single-event-outer-container">
 			<div id="single-event-inner-container">
-				<h1>{event.name}</h1>
+				<div id="event-title-and-nav-link">
+					<h1>{event.name}</h1>
+					<NavLink to="/all-events">See all events</NavLink>
+				</div>
 				<div id="single-event-info-container">
 					<div id="single-event-image-container">
 						<img
 							id="single-event-preview-image"
 							src={event.EventImages.find(image => image.preview === true).url}
-							alt={`${event.name} preview image`}
+							alt={event.name}
 						/>
 					</div>
 					<div

@@ -8,8 +8,26 @@
     display: flex;
     flex-direction: column;
 }
-#single-event-inner-container h1{
+#event-title-and-nav-link{
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+#event-title-and-nav-link h1{
     margin-bottom:0;
+}
+
+#event-title-and-nav-link a{
+    color: #008294;
+    text-decoration: none;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+#event-title-and-nav-link a:hover {
+    color: #008294;
+    text-decoration: underline;
 }
 
 #single-event-info-container{

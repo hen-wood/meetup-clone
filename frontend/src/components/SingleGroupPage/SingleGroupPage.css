@@ -31,9 +31,20 @@
     justify-content: space-between;
 }
 
-#single-group-page-info-text-top h1{
+#single-group-page-info-text h1 {
     font-size: 32px;
     font-weight: 700;
+}
+
+#group-title-and-nav-link a {
+    color: #008294;
+    text-decoration: none;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+#group-title-and-nav-link a:hover{
+    text-decoration: underline;
 }
 
 #single-group-page-info-text-top pre{
