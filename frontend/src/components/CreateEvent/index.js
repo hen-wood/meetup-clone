@@ -31,9 +31,12 @@ export default function CreateEvent() {
 
 		const valErrors = {};
 
-		if (new Date(start) > new Date(end))
+		if (new Date(start) > new Date(end)) {
+			console.log(start);
+			console.log(end);
 			valErrors.startDate =
 				"Event start time/date must be before end time/date";
+		}
 		if (!startDate.length || !endDate.length)
 			valErrors.startDate = "Start/end time and date are required";
 		if (!previewImageUrl.length)
@@ -170,8 +173,10 @@ export default function CreateEvent() {
 						onBlur={e => {
 							if (e.target.value % 1 !== 0) {
 								e.target.value = Math.floor(e.target.value);
+								setCapacity(e.target.value);
 							} else if (e.target.value < 1) {
 								e.target.value = 1;
+								setCapacity(e.target.value);
 							}
 						}}
 						onChange={e => setCapacity(e.target.value)}

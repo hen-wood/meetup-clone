@@ -125,6 +125,12 @@
     cursor: pointer;
 }
 
+#label-input-div {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px;
+}
+
 @keyframes modal-content-enter {
     from {
         transform: translateY(70px);
