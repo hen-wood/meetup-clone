@@ -67,7 +67,8 @@
     border-radius: 10px;
     resize: none;
     font-family: Arial;
-    height: 60px
+    height: 60px;
+    font-size: 14px;
 }
 
 #create-event-form textarea:hover{

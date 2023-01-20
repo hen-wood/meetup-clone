@@ -1,5 +1,5 @@
 export const timeFormatForEvent = date => {
-	console.log(Date(date).toString());
+	console.log(date);
 	let day = new Date(date).toString().slice(0, 3).toLowerCase();
 	if (day === "tue") {
 		day = "Tuesday";
@@ -16,13 +16,20 @@ export const timeFormatForEvent = date => {
 	} else if (day === "fri") {
 		day = "Friday";
 	}
-	console.log({ day });
-	let time = new Date(date).toString().slice(16, 21);
+	let time = date.slice(11, 16);
+	console.log(time);
 	let hours = time.slice(0, 2);
+	console.log(hours);
 	let amPm = "AM";
-	if (+hours > 12) {
-		time = `${hours - 12}:${time.slice(4)}`;
+	if (hours === "12") {
 		amPm = "PM";
+	} else if (+hours > 12) {
+		time = `${hours - 12}:${time.slice(3)}`;
+		amPm = "PM";
+	} else if (hours === "00") {
+		time = `12:${time.slice(3)}`;
+	} else if (hours[0] === "0") {
+		time = `${hours[1]}:${time.slice(3)}`;
 	}
 	return `${day}, ${new Date(date).toString().slice(4, 7)} ${new Date(date)
 		.toString()
