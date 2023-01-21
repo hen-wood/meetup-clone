@@ -4,9 +4,10 @@ const GET_ALL_GROUPS = "groups/GET_ALL_GROUPS";
 const GET_USER_GROUPS = "groups/GET_USER_GROUPS";
 const GET_SINGLE_GROUP = "groups/GET_SINGLE_GROUP";
 const GET_GROUP_MEMBERSHIPS = "groups/GET_GROUP_MEMBERSHIPS";
+const GET_GROUP_IMAGES = "groups/GET_GROUP_IMAGES";
+const POST_GROUP_IMAGE = "groups/POST_GROUP_IMAGE";
 const POST_GROUP = "groups/POST_GROUP";
 const PUT_GROUP = "groups/PUT_GROUP";
-const POST_GROUP_IMAGE = "groupImages/POST_GROUP_IMAGE";
 const DELETE_GROUP = "groups/DELETE_GROUP";
 
 // Action creators
@@ -155,12 +156,20 @@ export const thunkPostGroup = newGroup => async dispatch => {
 		return response;
 	}
 };
-export const thunkPostGroupImage = (image, groupId) => async dispatch => {
+
+export const thunkPostGroupImage = groupImageObj => async dispatch => {
+	const { image, groupId, preview } = groupImageObj;
+	const formData = new FormData();
+
+	formData.append("image", image);
+	formData.append("groupId", groupId);
+	formData.append("preview", preview);
+
 	const response = await csrfFetch(`/api/groups/${groupId}/images`, {
 		method: "POST",
-		body: JSON.stringify(image),
+		body: formData,
 		headers: {
-			"Content-Type": "application/json"
+			"Content-Type": "multipart/form-data"
 		}
 	});
 

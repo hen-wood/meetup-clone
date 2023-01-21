@@ -16,6 +16,7 @@ function SignupFormModal() {
 	const [lastName, setLastName] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
+	const [image, setImage] = useState(null);
 	const [errors, setErrors] = useState({});
 	const { closeModal } = useModal();
 
@@ -25,6 +26,7 @@ function SignupFormModal() {
 			setErrors([]);
 			return dispatch(
 				sessionActions.signup({
+					image,
 					email,
 					username,
 					firstName,
@@ -40,7 +42,6 @@ function SignupFormModal() {
 				})
 				.catch(async res => {
 					const data = await res.json();
-					console.log(data);
 					if (data && data.errors) setErrors(data.errors);
 					if (data && data.statusCode === 403)
 						setErrors({ message: data.message });
@@ -50,6 +51,12 @@ function SignupFormModal() {
 			"Confirm Password field must be the same as the Password field"
 		]);
 	};
+
+	const updateFile = e => {
+		const file = e.target.files[0];
+		if (file) setImage(file);
+	};
+
 	const errorKeys = Object.keys(errors);
 	return (
 		<>
@@ -138,6 +145,15 @@ function SignupFormModal() {
 						type="password"
 						value={confirmPassword}
 						onChange={e => setConfirmPassword(e.target.value)}
+						required
+					/>
+				</div>
+				<div id="label-input-div">
+					<label htmlFor="profile-picture">Profile picture</label>
+					<input
+						name="profile-picture"
+						type="file"
+						onChange={updateFile}
 						required
 					/>
 				</div>

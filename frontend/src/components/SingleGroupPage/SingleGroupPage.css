@@ -91,3 +91,9 @@
     font-size: 16px;
     font-weight: 300;
 }
+
+#group-img-indiv{
+    height: 100px;
+    width: 150px;
+    object-fit: cover;
+}

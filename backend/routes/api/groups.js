@@ -31,6 +31,12 @@ const {
 	checkForValidStatus,
 	checkIfUserDoesNotExist
 } = require("../../utils/validation");
+const {
+	singleMulterUpload,
+	singlePublicFileUpload,
+	multipleMulterUpload,
+	multiplePublicFileUpload
+} = require("../../awsS3");
 
 const router = express.Router();
 
@@ -293,6 +299,7 @@ router.post(
 // Create an image for a group
 router.post(
 	"/:groupId/images",
+	singleMulterUpload("image"),
 	requireAuthentication,
 	async (req, res, next) => {
 		const { groupId } = req.params;
@@ -302,7 +309,10 @@ router.post(
 		} else if (req.user.id !== groupToAddImageTo.organizerId) {
 			return next(requireAuthorization());
 		}
-		const { url, preview } = req.body;
+		const { preview } = req.body;
+
+		const url = await singlePublicFileUpload(req.file);
+
 		const newGroupImage = await GroupImage.create({
 			groupId,
 			url,

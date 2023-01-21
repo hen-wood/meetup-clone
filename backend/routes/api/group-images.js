@@ -1,25 +1,10 @@
 // backend/routes/api/group-images.js
 const express = require("express");
-const {
-	Group,
-	Membership,
-	GroupImage,
-	Event,
-	Attendance,
-	EventImage,
-	User,
-	Venue
-} = require("../../db/models");
-const { Op } = require("sequelize");
+const { Group, Membership, GroupImage } = require("../../db/models");
 const {
 	requireAuthentication,
 	requireAuthorization
 } = require("../../utils/auth");
-const {
-	validateCreateGroup,
-	validateEditGroup,
-	validateCreateGroupVenue
-} = require("../../utils/validation-chains");
 const { notFound } = require("../../utils/not-found");
 
 const router = express.Router();

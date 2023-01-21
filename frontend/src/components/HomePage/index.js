@@ -12,6 +12,7 @@ export default function HomePage() {
 	const user = useSelector(state => state.session.user);
 
 	const [isLoaded, setIsLoaded] = useState(false);
+	const [image, setImage] = useState(null);
 
 	useEffect(() => {
 		dispatch(sessionActions.restoreUser()).then(async res => {
@@ -24,6 +25,22 @@ export default function HomePage() {
 
 	const handleGroupClick = groupId => {
 		redirectSingleGroup(groupId);
+	};
+
+	const handleUploadPicture = e => {
+		e.preventDefault();
+		return dispatch(
+			sessionActions.thunkUploadPicture({
+				image
+			})
+		).then(res => {
+			console.log(res);
+		});
+	};
+
+	const updateFile = e => {
+		const file = e.target.files[0];
+		if (file) setImage(file);
 	};
 
 	const userGroups = useSelector(state => state.groups.userGroups);
@@ -88,6 +105,18 @@ export default function HomePage() {
 						</div>
 					</div>
 					<h3>Your groups</h3>
+					<form onSubmit={handleUploadPicture}>
+						<div id="label-input-div">
+							<label htmlFor="profile-picture">Upload a picture</label>
+							<input
+								name="profile-picture"
+								type="file"
+								onChange={updateFile}
+								required
+							/>
+							<button type="submit">Submit</button>
+						</div>
+					</form>
 				</div>
 				<div className="user-content">
 					<div className="user-groups">{groupContent}</div>

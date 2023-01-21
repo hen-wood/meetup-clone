@@ -2,7 +2,8 @@ import "./SingleGroupPage.css";
 import {
 	thunkGetSingleGroup,
 	thunkGetUserGroups,
-	thunkGetGroupMemberships
+	thunkGetGroupMemberships,
+	thunkPostGroupImage
 } from "../../store/groupsReducer";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +16,7 @@ export default function SingleGroupPage() {
 	const { groupId } = useParams();
 	const history = useHistory();
 	const [isLoaded, setIsLoaded] = useState(false);
+	const [image, setImage] = useState(null);
 	const deleteRedirect = () => history.push("/home");
 	const editRedirect = () => history.push(`/edit-group/${groupId}`);
 	const createEventRedirect = () =>
@@ -76,6 +78,22 @@ export default function SingleGroupPage() {
 		createEventRedirect();
 	};
 
+	const handleUploadImage = e => {
+		e.preventDefault();
+		dispatch(thunkPostGroupImage({ image, groupId, preview: false })).then(
+			() => {
+				dispatch(thunkGetSingleGroup(groupId)).then(() => {
+					console.log("success");
+				});
+			}
+		);
+	};
+
+	const updateFile = e => {
+		const file = e.target.files[0];
+		if (file) setImage(file);
+	};
+
 	const organizerOptions = (
 		<div id="organizer-options">
 			<p>Organizer options</p>
@@ -88,6 +106,13 @@ export default function SingleGroupPage() {
 			<button id="add-group-event-button" onClick={handleCreateEvent}>
 				Add event
 			</button>
+			<form onSubmit={handleUploadImage}>
+				<label htmlFor="image-upload-field">Upload new group pic</label>
+				<input id="image-upload-field" type="file" onChange={updateFile} />
+				<button id="add-group-image" type="submit">
+					Add pic
+				</button>
+			</form>
 		</div>
 	);
 
@@ -149,6 +174,18 @@ export default function SingleGroupPage() {
 				<div>
 					<h2>Events for {currentGroup.name}</h2>
 					<GroupEvents groupId={currentGroup.id} />
+				</div>
+				<div id="group-images">
+					{currentGroup.GroupImages.map(img => {
+						return (
+							<img
+								id="group-img-indiv"
+								key={img.id}
+								src={img.url}
+								alt={currentGroup.name}
+							/>
+						);
+					})}
 				</div>
 			</div>
 		) : (

@@ -38,18 +38,47 @@ export const restoreUser = () => async dispatch => {
 	return response;
 };
 
+export const thunkUploadPicture = picObj => async dispatch => {
+	const { image } = picObj;
+	const formData = new FormData();
+
+	if (image) {
+		formData.append("image", image);
+	}
+
+	const res = await csrfFetch("/api/users/pictures", {
+		method: "POST",
+		body: formData,
+		headers: {
+			"Content-Type": "multipart/form-data"
+		}
+	});
+
+	const data = await res.json();
+	return data;
+};
+
 export const signup = user => async dispatch => {
-	const { username, firstName, lastName, email, password } = user;
+	const { image, username, firstName, lastName, email, password } = user;
+
+	const formData = new FormData();
+
+	formData.append("username", username);
+	formData.append("firstName", firstName);
+	formData.append("lastName", lastName);
+	formData.append("email", email);
+	formData.append("password", password);
+
+	if (image) formData.append("image", image);
+
 	const response = await csrfFetch("/api/users", {
 		method: "POST",
-		body: JSON.stringify({
-			username,
-			firstName,
-			lastName,
-			email,
-			password
-		})
+		body: formData,
+		headers: {
+			"Content-Type": "multipart/form-data"
+		}
 	});
+
 	const data = await response.json();
 	dispatch(setUser(data.user));
 	return response;
