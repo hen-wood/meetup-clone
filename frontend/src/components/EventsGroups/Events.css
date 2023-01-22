@@ -38,6 +38,7 @@
     height: 100px;
     width: 178px;
     object-fit: cover;
+    object-position: top;
 }
 
 .event-text-content-container {

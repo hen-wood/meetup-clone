@@ -42,7 +42,8 @@ export default function CreateEvent() {
 		if (!previewImageUrl.length)
 			valErrors.previewImageUrl = "Preview Image is required";
 		if (!name.length) valErrors.name = "Name is required";
-		if (name.length < 5) valErrors.name = "Name must be at least 5 characters";
+		if (name.length < 5 || name.length > 40)
+			valErrors.name = "Name must be 5-40 characters";
 		if (!description.length) valErrors.description = "Description is required";
 		if (!price.length) valErrors.price = "Price is required";
 		if (!capacity.length) valErrors.capacity = "Capacity is required";

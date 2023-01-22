@@ -32,6 +32,7 @@
     height: 100px;
     width: 178px;
     object-fit: cover;
+    object-position: top;
 }
 
 .group-text-content-container{
