@@ -25,7 +25,6 @@ export default function CreateEvent() {
 
 	const handleSubmit = e => {
 		e.preventDefault();
-
 		const start = startDate + "T" + startTime;
 		const end = endDate + "T" + endTime;
 
@@ -46,7 +45,10 @@ export default function CreateEvent() {
 			valErrors.name = "Name must be 5-40 characters";
 		if (!description.length) valErrors.description = "Description is required";
 		if (!price.length) valErrors.price = "Price is required";
+		if (+price > 9999) valErrors.price = "Price must be less than $10k";
 		if (!capacity.length) valErrors.capacity = "Capacity is required";
+		if (+capacity > 999999)
+			valErrors.capacity = "Capacity must be less than a million";
 		if (Object.keys(valErrors).length) {
 			setErrors(valErrors);
 			console.log(valErrors);
@@ -182,10 +184,10 @@ export default function CreateEvent() {
 						}}
 						onChange={e => setCapacity(e.target.value)}
 					/>
+					{errors.capacity && (
+						<p className="create-event-errors">{errors.capacity}</p>
+					)}
 					<div id="event-dates">
-						{errors.startDate && (
-							<p className="create-event-errors">{errors.startDate}</p>
-						)}
 						<div id="event-start">
 							<div className="time-date-container">
 								<label htmlFor="event-start-date">Start date</label>
@@ -205,6 +207,9 @@ export default function CreateEvent() {
 								/>
 							</div>
 						</div>
+						{errors.startDate && (
+							<p className="create-event-errors">{errors.startDate}</p>
+						)}
 						<div id="event-end">
 							<div className="time-date-container">
 								<label htmlFor="event-end-date">End date</label>
