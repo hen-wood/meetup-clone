@@ -51,6 +51,11 @@
     margin: 0;
     color: #877457
 }
+#indiv-group-about-container{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 50px;
+}
 .group-text-about{
     max-width: 420px;
     font-size: 14px;
