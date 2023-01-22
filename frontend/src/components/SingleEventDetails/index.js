@@ -106,7 +106,9 @@ export default function SingleEventDetails() {
 					</div>
 				</div>
 				<h2 id="event-details-title">Details</h2>
-				<p id="event-description">{event.description}</p>
+				<div id="event-description-container">
+					<p id="event-description">{event.description}</p>
+				</div>
 			</div>
 		</div>
 	) : (

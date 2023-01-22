@@ -4,6 +4,7 @@ import { useHistory } from "react-router";
 import { useDispatch } from "react-redux";
 import { thunkPostGroup, thunkPostGroupImage } from "../../store/groupsReducer";
 import GroupImageSVG from "../SVGComponents/GroupImageSVG";
+
 export default function CreateAGroup() {
 	const dispatch = useDispatch();
 	const [name, setName] = useState("");
@@ -36,6 +37,9 @@ export default function CreateAGroup() {
 		if (!city.length) valErrors.city = "City is required";
 		if (city.toLowerCase() === city.toUpperCase())
 			valErrors.city = "City must be all letters";
+		if (city.length > 20) {
+			valErrors.city = "City must be 20 characters or less";
+		}
 		if (state.toLowerCase() === state.toUpperCase())
 			valErrors.state = "State must be all letters";
 		if (!state.length) valErrors.state = "State is required";

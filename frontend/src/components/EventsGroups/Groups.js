@@ -53,7 +53,9 @@ export default function Groups() {
 								{`${group.city}, ${group.state}`.toUpperCase()}
 							</h3>
 						</div>
-						<p className="group-text-about">{group.about}</p>
+						<div id="indiv-group-about-container">
+							<p className="group-text-about">{group.about}</p>
+						</div>
 						<div className="member-count-privacy-status">
 							<p>
 								{(group.numMembers !== 1
