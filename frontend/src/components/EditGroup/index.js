@@ -47,6 +47,9 @@ export default function EditGroup() {
 		if (about.length < 50)
 			valErrors.about = "About must be 50 characters or more";
 		if (!city.length) valErrors.city = "City is required";
+		if (city.length > 20) {
+			valErrors.city = "City must be 20 characters or less";
+		}
 		if (city.toLowerCase() === city.toUpperCase())
 			valErrors.city = "City must be all letters";
 		if (state.toLowerCase() === state.toUpperCase())
