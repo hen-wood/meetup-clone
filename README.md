@@ -1,10 +1,14 @@
-<img src='meetdown-logo.png' style='height: 50px'/>
+<img src='meetdown-logo.png' style='height: 40px'/>
 
 <br>
 
 # About the project
 
 Meetdown is a clone of [meetup.com](https://www.meetup.com/). Users can create an account, and create groups. Groups can be updated and deleted as well. Depending on their status in a group, users can also create Events. Events can be deleted, but not updated (yet).
+
+## What I'm Most Proud Of
+
+I'm proud of the styling in general. I think it comes very close to pixel perfect, especially on the splash page. I made specific SVGs from meetup in to react components and used them throughout the site. I love vector graphics! I'm also proud of the upcoming implementation of Amazon S3, to allow uploads of user files.
 
 ## Upcoming features
 
@@ -16,7 +20,9 @@ Meetdown is a clone of [meetup.com](https://www.meetup.com/). Users can create a
 
 <br>
 
-[![Live site](https://img.shields.io/badge/%20-%20Live%20Site-black)](https://meetup-clone-p32k.onrender.com/)
+## [🔗 Live Site](https://meetup-clone-p32k.onrender.com/)
+
+<br>
 
 ## Tech Stack 🥞
 
