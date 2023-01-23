@@ -1,6 +1,20 @@
-<img src='meetdown-logo.png' style='height: 100px'/>
+<img src='meetdown-logo.png' style='height: 50px'/>
 
-Meetdown is a clone of [meetup.com](https://www.meetup.com/). Users can create an account, and create groups. Groups can be join by other users and depending on their status in that group, users can create events. More features coming soon!
+<br>
+
+# About the project
+
+Meetdown is a clone of [meetup.com](https://www.meetup.com/). Users can create an account, and create groups. Groups can be updated and deleted as well. Depending on their status in a group, users can also create Events. Events can be deleted, but not updated (yet).
+
+## Upcoming features
+
+- Functionality to request/approve/update membership status in a group
+- Functionality to request/approve/update attendance status for an event
+- Ability to upload images for groups and events
+- User profile pictures
+- Full CRUD on events
+
+<br>
 
 [![Live site](https://img.shields.io/badge/%20-%20Live%20Site-black)](https://meetup-clone-p32k.onrender.com/)
 
