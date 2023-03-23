@@ -5,7 +5,8 @@ module.exports = (sequelize, DataTypes) => {
 		static associate(models) {
 			Attendance.belongsTo(models.Event, {
 				foreignKey: "eventId",
-				onDelete: "CASCADE"
+				onDelete: "CASCADE",
+				as: "Attendances"
 			});
 			Attendance.belongsTo(models.User, {
 				foreignKey: "eventId",

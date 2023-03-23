@@ -1,9 +1,8 @@
-// backend/utils/auth.js
-const jwt = require("jsonwebtoken");
-const { jwtConfig } = require("../config");
+// backend/utils/authorization.js
 const {
 	User,
 	Group,
+	GroupImage,
 	Membership,
 	Event,
 	Attendance,
@@ -11,66 +10,18 @@ const {
 	Venue
 } = require("../db/models");
 const { Op } = require("sequelize");
-const { secret, expiresIn } = jwtConfig;
 
-// Sends a JWT Cookie
-const setTokenCookie = (res, user) => {
-	// Create the token.
-	const token = jwt.sign(
-		{ data: user.toSafeObject() },
-		secret,
-		{ expiresIn: parseInt(expiresIn) } // 604,800 seconds = 1 week
-	);
-
-	const isProduction = process.env.NODE_ENV === "production";
-
-	// Set the token cookie
-	res.cookie("token", token, {
-		maxAge: expiresIn * 1000, // maxAge in milliseconds
-		httpOnly: true,
-		secure: isProduction,
-		sameSite: isProduction && "Lax"
-	});
-
-	return token;
-};
-
-const restoreUser = (req, res, next) => {
-	// token parsed from cookies
-	const { token } = req.cookies;
-	req.user = null;
-
-	return jwt.verify(token, secret, null, async (err, jwtPayload) => {
-		if (err) {
-			return next();
-		}
-
-		try {
-			const { id } = jwtPayload.data;
-			req.user = await User.scope("currentUser").findByPk(id);
-		} catch (e) {
-			res.clearCookie("token");
-			return next();
-		}
-
-		if (!req.user) res.clearCookie("token");
-
+const requireOrganizerForGroup = async (req, res, next) => {
+	const { groupId } = req.params;
+	const group = await Group.findByPk(groupId, { attributes: ["organizerId"] });
+	const isOrganizer = group.organizerId == req.user.id;
+	if (isOrganizer) {
 		return next();
-	});
-};
-
-const requireAuthentication = async (req, _res, next) => {
-	if (req.user) return next();
-
-	const err = new Error("Authentication required");
-	err.status = 401;
-	return next(err);
-};
-
-const requireAuthorization = () => {
-	const err = new Error("Forbidden");
-	err.status = 403;
-	return err;
+	} else {
+		const err = new Error("Forbidden, must be group organizer");
+		err.status = 403;
+		return next(err);
+	}
 };
 
 const requireOrganizerOrCoHost = async (req, res, next) => {
@@ -94,6 +45,95 @@ const requireOrganizerOrCoHost = async (req, res, next) => {
 		return next();
 	}
 	const err = new Error("Forbidden");
+	err.status = 403;
+	return next(err);
+};
+
+const requireOrganizerOrCoHostForGroup = async (req, res, next) => {
+	const { groupId } = req.params;
+	const currentUserId = req.user.id;
+
+	const group = await Group.scope({
+		method: ["singleGroupWithMemberships", currentUserId]
+	}).findByPk(groupId);
+
+	const authorized =
+		group.organizerId == currentUserId || group.Memberships.length > 0;
+	if (authorized) {
+		return next();
+	} else {
+		const err = new Error(
+			"Forbidden, must be group organizer or member with a status of 'co-host'"
+		);
+		err.status = 403;
+		return next(err);
+	}
+};
+
+const requireCorrectUserPermissionsToEditMembership = async (
+	req,
+	res,
+	next
+) => {
+	const { groupId } = req.params;
+	const currentUserId = req.user.id;
+	const { status } = req.body;
+
+	const group = await Group.findByPk(groupId, {
+		include: {
+			model: Membership,
+			as: "Memberships",
+			where: { [Op.and]: [{ userId: currentUserId }, { status: "co-host" }] },
+			required: false
+		}
+	});
+
+	if (group.organizerId == currentUserId) return next();
+
+	const err = new Error();
+	err.status = 403;
+
+	if (group.Memberships.length > 0) {
+		if (status == "member") {
+			return next();
+		} else {
+			err.message = "Must be group organizer to change status to 'co-host'";
+			return next(err);
+		}
+	}
+	err.message = "Must be group organizer or co-host to change member status";
+	return next(err);
+};
+
+const requireOrganizerOrCoHostOrIsUserToDeleteMember = async (
+	req,
+	res,
+	next
+) => {
+	const { groupId } = req.params;
+	const { memberId } = req.body;
+	const currentUserId = req.user.id;
+
+	const group = await Group.findByPk(groupId, {
+		include: {
+			model: Membership,
+			as: "Memberships",
+			where: { [Op.and]: [{ userId: currentUserId }, { status: "co-host" }] },
+			required: false
+		}
+	});
+
+	const isOrganizer = group.organizerId == currentUserId;
+	const isCohost = group.Memberships.length > 0;
+	const isUser = currentUserId === memberId;
+
+	if (isCohost || isOrganizer || isUser) {
+		return next();
+	}
+
+	const err = new Error(
+		"Forbidden, must be group organizer, co-host, or user being deleted"
+	);
 	err.status = 403;
 	return next(err);
 };
@@ -127,6 +167,33 @@ const requireOrganizerOrCoHostForEvent = async (req, res, next) => {
 	err.status = 403;
 	return next(err);
 };
+
+const requireOrganizerOrCoHostForGroupImage = async (req, res, next) => {
+	const { imageId } = req.params;
+	const currentUserId = req.user.id;
+	const group = await GroupImage.findByPk(imageId, {
+		include: {
+			model: Group,
+			include: {
+				model: Membership,
+				as: "Memberships",
+				where: { [Op.and]: [{ userId: currentUserId }, { status: "co-host" }] },
+				required: false
+			}
+		}
+	});
+
+	const authorized =
+		group.Group.organizerId == currentUserId ||
+		group.Group.Memberships.length > 0;
+
+	if (!authorized) {
+		const err = new Error("Forbidden, must be group organizer or co-host");
+		err.status = 403;
+		return next(err);
+	}
+	return next();
+};
 const requireOrganizerOrCoHostForEventImage = async (req, res, next) => {
 	const { imageId } = req.params;
 	const userId = req.user.id;
@@ -138,7 +205,11 @@ const requireOrganizerOrCoHostForEventImage = async (req, res, next) => {
 			model: Event,
 			include: {
 				model: Group,
-				include: { model: Membership, where: { userId, status: "co-host" } }
+				include: {
+					model: Membership,
+					as: "Memberships",
+					where: { userId, status: "co-host" }
+				}
 			}
 		}
 	});
@@ -150,28 +221,6 @@ const requireOrganizerOrCoHostForEventImage = async (req, res, next) => {
 	if (!(isOrganizer || isCoHost)) {
 		const err = new Error("Forbidden");
 		err.status = 403;
-		return next(err);
-	}
-	return next();
-};
-
-const checkIfVenueDoesNotExist = async (req, res, next) => {
-	const venueExists = await Venue.findByPk(req.params.venueId);
-	if (!venueExists) {
-		const err = new Error("Venue couldn't be found");
-		err.status = 404;
-		return next(err);
-	} else {
-		return next();
-	}
-};
-
-const checkIfEventImageDoesNotExist = async (req, res, next) => {
-	const { imageId } = req.params;
-	const imageToDelete = await EventImage.findByPk(imageId);
-	if (!imageToDelete) {
-		const err = new Error("Event Image couldn't be found");
-		err.status = 404;
 		return next(err);
 	}
 	return next();
@@ -310,69 +359,7 @@ const requireOrganizerOrCoHostOrIsUser = async (req, res, next) => {
 	return next(err);
 };
 
-const checkIfMembershipExists = async (req, res, next) => {
-	const { groupId } = req.params;
-	const userId = req.user.id;
-	const existingMembership = await Membership.findOne({
-		where: {
-			[Op.and]: [{ groupId }, { userId }]
-		}
-	});
-
-	if (existingMembership) {
-		const err = new Error();
-		err.status = 400;
-		if (existingMembership.status === "pending") {
-			err.message = "Membership has already been requested";
-		} else {
-			err.message = "User is already a member of the group";
-		}
-		return next(err);
-	} else {
-		return next();
-	}
-};
-
-const checkIfMembershipDoesNotExist = async (req, res, next) => {
-	const { groupId } = req.params;
-	const { memberId } = req.body;
-	const existingMembership = await Membership.findOne({
-		where: { [Op.and]: [{ userId: memberId }, { groupId }] }
-	});
-
-	if (!existingMembership) {
-		const err = new Error();
-		err.status = 404;
-		err.message = "Membership does not exist for this user";
-		return next(err);
-	}
-	return next();
-};
-
-const checkIfAttendanceDoesNotExist = async (req, res, next) => {
-	const { eventId } = req.params;
-	const { userId } = req.body;
-	const event = await Event.findByPk(eventId, {
-		include: {
-			model: User,
-			as: "Attendees",
-			through: {
-				where: {
-					userId
-				}
-			}
-		}
-	});
-	if (!event.Attendees.length) {
-		const err = new Error();
-		err.status = 404;
-		err.message = "Attendance between the user and the event does not exist";
-		return next(err);
-	}
-	return next();
-};
-
-const checkIfUserExists = async (req, res, next) => {
+const checkIfUserAlreadyExists = async (req, res, next) => {
 	const { email } = req.body;
 	let existingUser;
 	if (email) {
@@ -390,28 +377,7 @@ const checkIfUserExists = async (req, res, next) => {
 	next();
 };
 
-const checkIfGroupDoesNotExist = async (req, res, next) => {
-	const { groupId } = req.params;
-	const groupExists = await Group.findByPk(groupId);
-	if (!groupExists) {
-		const err = new Error("Group couldn't be found");
-		err.status = 404;
-		return next(err);
-	}
-	return next();
-};
-const checkIfEventDoesNotExist = async (req, res, next) => {
-	const { eventId } = req.params;
-	const eventExists = await Event.findByPk(eventId);
-	if (!eventExists) {
-		const err = new Error("Event couldn't be found");
-		err.status = 404;
-		return next(err);
-	}
-	return next();
-};
-
-const checkIfUserIsNotMemberOfEventGroup = async (req, res, next) => {
+const requireMemberOfEventGroup = async (req, res, next) => {
 	const userId = req.user.id;
 	const { eventId } = req.params;
 	const isMember = await Event.findByPk(eventId, {
@@ -443,49 +409,19 @@ const checkIfUserIsNotMemberOfEventGroup = async (req, res, next) => {
 	return next(err);
 };
 
-const checkIfAttendanceRequestAlreadyExists = async (req, res, next) => {
-	const { eventId } = req.params;
-	const userId = req.user.id;
-	const attendanceRequest = await Attendance.findOne({
-		where: {
-			eventId,
-			userId
-		}
-	});
-
-	if (attendanceRequest) {
-		const err = new Error();
-		err.status = 400;
-		if (attendanceRequest.status === "pending") {
-			err.message = "Attendance has already been requested";
-		} else {
-			err.message = "User is already an attendee of the event";
-		}
-		return next(err);
-	}
-	return next();
-};
-
 module.exports = {
-	setTokenCookie,
-	restoreUser,
-	requireAuthentication,
-	requireAuthorization,
-	checkIfUserExists,
-	checkIfMembershipExists,
-	checkIfGroupDoesNotExist,
+	checkIfUserAlreadyExists,
+	requireMemberOfEventGroup,
+	requireOrganizerForGroup,
 	requireOrganizerOrCoHost,
+	requireOrganizerOrCoHostForGroup,
 	requireOrganizerOrCoHostToEditVenue,
+	requireCorrectUserPermissionsToEditMembership,
+	requireOrganizerOrCoHostOrIsUserToDeleteMember,
 	requireOrganizerOrCoHostOrIsUser,
 	requireOrganizerOrCoHostForEvent,
 	requireOrganizerOrCoHostOrAttendeeForEvent,
-	checkIfMembershipDoesNotExist,
-	checkIfEventDoesNotExist,
-	checkIfUserIsNotMemberOfEventGroup,
-	checkIfAttendanceRequestAlreadyExists,
-	checkIfAttendanceDoesNotExist,
 	requireOrganizerOrCohostOrIsUserToDeleteAttendance,
-	requireOrganizerOrCoHostForEventImage,
-	checkIfEventImageDoesNotExist,
-	checkIfVenueDoesNotExist
+	requireOrganizerOrCoHostForGroupImage,
+	requireOrganizerOrCoHostForEventImage
 };

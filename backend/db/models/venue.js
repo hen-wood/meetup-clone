@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const { types } = require("pg");
 module.exports = (sequelize, DataTypes) => {
 	class Venue extends Model {
 		static associate(models) {
@@ -42,11 +43,11 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false
 			},
 			lat: {
-				type: DataTypes.DECIMAL,
+				type: DataTypes.FLOAT,
 				allowNull: false
 			},
 			lng: {
-				type: DataTypes.DECIMAL,
+				type: DataTypes.FLOAT,
 				allowNull: false
 			}
 		},
