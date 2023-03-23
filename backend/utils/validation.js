@@ -1,7 +1,7 @@
 // backend/utils/validation.js
 const { validationResult } = require("express-validator");
-const { ValidationError } = require("sequelize");
-const { User } = require("../db/models");
+const { Op, ValidationError } = require("sequelize");
+const { User, Membership, Attendance } = require("../db/models");
 
 // middleware for formatting errors from express-validator middleware
 const handleValidationErrors = (req, _res, next) => {
@@ -51,8 +51,56 @@ const checkIfUserDoesNotExist = async (req, res, next) => {
 	return next();
 };
 
+const checkIfMembershipAlreadyExists = async (req, res, next) => {
+	const { groupId } = req.params;
+	const userId = req.user.id;
+	const existingMembership = await Membership.findOne({
+		where: {
+			[Op.and]: [{ groupId }, { userId }]
+		}
+	});
+
+	if (existingMembership) {
+		const err = new Error();
+		err.status = 400;
+		if (existingMembership.status === "pending") {
+			err.message = "Membership has already been requested";
+		} else {
+			err.message = "User is already a member of the group";
+		}
+		return next(err);
+	} else {
+		return next();
+	}
+};
+
+const checkIfAttendanceRequestAlreadyExists = async (req, res, next) => {
+	const { eventId } = req.params;
+	const userId = req.user.id;
+	const attendanceRequest = await Attendance.findOne({
+		where: {
+			eventId,
+			userId
+		}
+	});
+
+	if (attendanceRequest) {
+		const err = new Error();
+		err.status = 400;
+		if (attendanceRequest.status === "pending") {
+			err.message = "Attendance has already been requested";
+		} else {
+			err.message = "User is already an attendee of the event";
+		}
+		return next(err);
+	}
+	return next();
+};
+
 module.exports = {
 	handleValidationErrors,
 	checkForValidStatus,
-	checkIfUserDoesNotExist
+	checkIfUserDoesNotExist,
+	checkIfAttendanceRequestAlreadyExists,
+	checkIfMembershipAlreadyExists
 };
