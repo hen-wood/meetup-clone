@@ -56,7 +56,6 @@ const actionPostEvent = newEvent => {
 
 // DELETE actions
 const actionDeleteEvent = eventId => {
-	console.log(eventId);
 	return {
 		type: DELETE_GROUP_EVENT,
 		payload: eventId
@@ -66,8 +65,8 @@ const actionDeleteEvent = eventId => {
 // Thunks
 
 // GET thunks
-export const thunkGetAllEvents = () => async dispatch => {
-	const response = await fetch("/api/events");
+export const thunkGetAllEvents = page => async dispatch => {
+	const response = await fetch(`/api/events?page=${page}`);
 	if (response.ok) {
 		const data = await response.json();
 		dispatch(actionGetAllEvents(data.Events));
@@ -164,8 +163,7 @@ export default function eventsReducer(state = initialState, action) {
 	switch (action.type) {
 		case GET_ALL_EVENTS:
 			newState = { ...state };
-			newState.allEvents = { ...state.allEvents };
-			newState.allEvents = action.payload;
+			newState.allEvents = { ...state.allEvents, ...action.payload };
 			return newState;
 		case GET_ALL_GROUP_EVENTS:
 			newState = { ...state };
@@ -190,7 +188,6 @@ export default function eventsReducer(state = initialState, action) {
 		case DELETE_GROUP_EVENT:
 			newState = { ...state };
 			newState.allGroupEvents = { ...state.allGroupEvents };
-			console.log(action.payload);
 			delete newState.allGroupEvents[action.payload];
 			return newState;
 		default:
