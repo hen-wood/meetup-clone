@@ -8,13 +8,11 @@ import { thunkGetSingleEvent } from "../../store/eventsReducer";
 import { useHistory } from "react-router-dom";
 import { useRef } from "react";
 
-export default function Events() {
+export default function Events({ atBottom }) {
 	const dispatch = useDispatch();
 	const history = useHistory();
-	const scrollDiv = useRef(null);
 	const [isLoaded, setIsLoaded] = useState(false);
 	const [page, setPage] = useState(1);
-	const [atBottom, setAtBottom] = useState(false);
 
 	useEffect(() => {
 		dispatch(thunkGetAllEvents(page)).then(() => {
@@ -22,18 +20,19 @@ export default function Events() {
 		});
 	}, [dispatch]);
 
+	useEffect(() => {
+		if (atBottom) {
+			dispatch(thunkGetAllEvents(page + 1)).then(() =>
+				setPage(prev => prev + 1)
+			);
+		}
+	}, [atBottom]);
+
 	const handleEventClick = eventId => {
 		dispatch(thunkGetSingleEvent(eventId)).then(() => {
 			history.push(`/events/${eventId}`);
 		});
 	};
-	useEffect(() => {
-		console.log(page);
-	}, [page]);
-
-	useEffect(() => {
-		setPage(prev => prev + 1);
-	}, [atBottom]);
 
 	const eventsObj = useSelector(state => state.events.allEvents);
 	const eventKeys = Object.keys(eventsObj);
@@ -82,19 +81,7 @@ export default function Events() {
 	);
 
 	return isLoaded ? (
-		<div
-			id="group-event-list-container"
-			onScroll={e => {
-				const { scrollHeight, scrollTop, clientHeight } = e.target;
-				if (scrollHeight - scrollTop === clientHeight) {
-					setAtBottom(true);
-				} else {
-					setAtBottom(false);
-				}
-			}}
-		>
-			{content}
-		</div>
+		<div id="group-event-list-container">{content}</div>
 	) : (
 		<div id="group-event-list-container">
 			<h1>Loading events...</h1>

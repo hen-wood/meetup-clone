@@ -188,7 +188,9 @@ export default function eventsReducer(state = initialState, action) {
 		case DELETE_GROUP_EVENT:
 			newState = { ...state };
 			newState.allGroupEvents = { ...state.allGroupEvents };
+			newState.allEvents = { ...state.allEvents };
 			delete newState.allGroupEvents[action.payload];
+			delete newState.allEvents[action.payload];
 			return newState;
 		default:
 			return state;
