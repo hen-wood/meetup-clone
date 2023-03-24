@@ -94,12 +94,11 @@ module.exports = (sequelize, DataTypes) => {
 				allEvents(queryParams) {
 					const { EventImage, Attendance, Group, Venue } = require("../models");
 					let { page, size, name, type, startDate } = queryParams;
-
 					page = +page;
 					size = +size;
 
 					if (Number.isNaN(page) || page < 1) page = 1;
-					if (Number.isNaN(size) || size > 20) size = 20;
+					if (Number.isNaN(size) || size > 20) size = 5;
 
 					if (page > 10) page = 10;
 					if (size < 1) size = 1;
@@ -111,6 +110,7 @@ module.exports = (sequelize, DataTypes) => {
 					if (startDate) {
 						where.startDate = startDate;
 					}
+					const pagination = { limit: size, offset: size * (page - 1) };
 					return {
 						attributes: {
 							include: [
@@ -172,14 +172,13 @@ module.exports = (sequelize, DataTypes) => {
 							}
 						],
 						subQuery: false,
-						limit: size,
-						offset: size * (page - 1),
+						...pagination,
 						group: [
-							"Event.id",
-							"Attendances.id",
-							"EventImages.url",
-							"Group.id",
-							"Venue.id"
+							"Event.id"
+							// "Attendances.id"
+							// "EventImages.url",
+							// "Group.id",
+							// "Venue.id"
 						]
 					};
 				},

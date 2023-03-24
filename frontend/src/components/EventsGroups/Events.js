@@ -6,16 +6,27 @@ import { useEffect, useState } from "react";
 import dayMonthDate from "../../utils/dayMonthDate";
 import { thunkGetSingleEvent } from "../../store/eventsReducer";
 import { useHistory } from "react-router-dom";
+import { useRef } from "react";
 
-export default function Events() {
+export default function Events({ atBottom }) {
 	const dispatch = useDispatch();
 	const history = useHistory();
 	const [isLoaded, setIsLoaded] = useState(false);
+	const [page, setPage] = useState(1);
+
 	useEffect(() => {
-		dispatch(thunkGetAllEvents()).then(() => {
+		dispatch(thunkGetAllEvents(page)).then(() => {
 			setIsLoaded(true);
 		});
 	}, [dispatch]);
+
+	useEffect(() => {
+		if (atBottom) {
+			dispatch(thunkGetAllEvents(page + 1)).then(() =>
+				setPage(prev => prev + 1)
+			);
+		}
+	}, [atBottom]);
 
 	const handleEventClick = eventId => {
 		dispatch(thunkGetSingleEvent(eventId)).then(() => {

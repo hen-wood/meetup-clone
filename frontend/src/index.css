@@ -4,10 +4,6 @@ body{
     margin: 0;
     font-family: 'Outfit', sans-serif;
 }
-.root{
-    display: flex;
-    flex-direction: column;
-}
 button{
     font-family: 'Outfit', sans-serif;
 }

@@ -31,8 +31,6 @@ export default function CreateEvent() {
 		const valErrors = {};
 
 		if (new Date(start) > new Date(end)) {
-			console.log(start);
-			console.log(end);
 			valErrors.startDate =
 				"Event start time/date must be before end time/date";
 		}
@@ -51,7 +49,6 @@ export default function CreateEvent() {
 			valErrors.capacity = "Capacity must be less than a million";
 		if (Object.keys(valErrors).length) {
 			setErrors(valErrors);
-			console.log(valErrors);
 			return;
 		}
 

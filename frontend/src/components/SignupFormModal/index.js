@@ -40,7 +40,6 @@ function SignupFormModal() {
 				})
 				.catch(async res => {
 					const data = await res.json();
-					console.log(data);
 					if (data && data.errors) setErrors(data.errors);
 					if (data && data.statusCode === 403)
 						setErrors({ message: data.message });

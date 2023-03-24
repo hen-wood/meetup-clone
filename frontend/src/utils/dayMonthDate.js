@@ -1,9 +1,5 @@
 export default function dayMonthDate(inputDate) {
-	console.log({ inputDate });
 	const date = new Date(inputDate);
-	console.log({
-		date
-	});
 
 	const dayStr = date.toString().slice(0, 3);
 	const monthStr = date.toString().slice(4, 7);

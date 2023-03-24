@@ -23,7 +23,6 @@ export default function SingleGroupPage() {
 	useEffect(() => {
 		dispatch(thunkGetSingleGroup(groupId)).then(async res => {
 			const data = await res;
-			console.log(data);
 			dispatch(thunkGetGroupMemberships(data.id)).then(() => {
 				setIsLoaded(true);
 			});

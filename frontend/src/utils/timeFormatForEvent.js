@@ -1,5 +1,4 @@
 export const timeFormatForEvent = date => {
-	console.log(date);
 	let day = new Date(date).toString().slice(0, 3).toLowerCase();
 	if (day === "tue") {
 		day = "Tuesday";
@@ -17,9 +16,7 @@ export const timeFormatForEvent = date => {
 		day = "Friday";
 	}
 	let time = date.slice(11, 16);
-	console.log(time);
 	let hours = time.slice(0, 2);
-	console.log(hours);
 	let amPm = "AM";
 	if (hours === "12") {
 		amPm = "PM";

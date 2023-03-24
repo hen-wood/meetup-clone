@@ -38,7 +38,6 @@ export default function SingleEventDetails() {
 			})
 			.catch(async res => {
 				const data = await res;
-				console.log(data);
 			});
 	};
 
@@ -51,8 +50,6 @@ export default function SingleEventDetails() {
 		Object.values(groupMembers).some(member => {
 			return member.id === user.id && member.Membership.status === "co-host";
 		});
-
-	console.log(isCohost);
 
 	const cohostOptions = isCohost && (
 		<div>

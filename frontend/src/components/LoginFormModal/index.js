@@ -29,7 +29,6 @@ function LoginFormModal() {
 			})
 			.catch(async res => {
 				const data = await res.json();
-				console.log(data);
 				if (data && data.statusCode === 400) setErrors(data.errors);
 				if (data && data.statusCode === 401)
 					setErrors({ message: data.message });
