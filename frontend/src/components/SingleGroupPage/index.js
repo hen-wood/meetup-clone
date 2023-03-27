@@ -2,19 +2,27 @@ import "./SingleGroupPage.css";
 import {
 	thunkGetSingleGroup,
 	thunkGetUserGroups,
-	thunkGetGroupMemberships
+	thunkGetGroupMemberships,
+	actionResetSingleGroup,
+	thunkDeleteMember,
+	thunkAddMembership
 } from "../../store/groupsReducer";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams, NavLink } from "react-router-dom";
 import { thunkDeleteGroup } from "../../store/groupsReducer";
 import GroupEvents from "./GroupEvents";
+import {
+	thunkDeletePendingMembership,
+	thunkRequestMembership
+} from "../../store/membershipsReducer";
 
 export default function SingleGroupPage() {
 	const dispatch = useDispatch();
 	const { groupId } = useParams();
 	const history = useHistory();
 	const [isLoaded, setIsLoaded] = useState(false);
+	const [status, setStatus] = useState("");
 
 	const deleteRedirect = () => history.push("/home");
 	const editRedirect = () => history.push(`/edit-group/${groupId}`);
@@ -28,24 +36,34 @@ export default function SingleGroupPage() {
 				setIsLoaded(true);
 			});
 		});
+
+		return () => {
+			dispatch(actionResetSingleGroup());
+		};
 	}, [dispatch]);
 
+	const user = useSelector(state => state.session.user);
 	const currentGroup = useSelector(state => state.groups.singleGroup);
+	const members = useSelector(state => state.groups.groupMembers);
+	const usersPendingMemberships = useSelector(
+		state => state.memberships.pending
+	);
+
 	const preview = currentGroup.GroupImages?.find(
 		img => img.preview === true
 	).url;
-	const user = useSelector(state => state.session.user);
 
-	const members = useSelector(state => state.groups.groupMembers);
-
-	const membership = members[user.id];
-
-	const isOrganizer =
-		membership && currentGroup && currentGroup.organizerId === user.id;
-
-	const isCohost = membership && membership.Membership.status === "co-host";
-
-	const isPending = membership && membership.Membership.states === "pending";
+	useEffect(() => {
+		if (user && currentGroup.Organizer && members) {
+			if (currentGroup.Organizer.id === user.id) {
+				setStatus("organizer");
+			} else if (members[user.id]) {
+				setStatus(members[user.id].Membership.status);
+			} else if (usersPendingMemberships[groupId]) {
+				setStatus("pending");
+			}
+		}
+	}, [user, usersPendingMemberships, members, currentGroup]);
 
 	const handleDelete = () => {
 		dispatch(thunkDeleteGroup(groupId))
@@ -69,18 +87,41 @@ export default function SingleGroupPage() {
 		createEventRedirect();
 	};
 
-	const handleRequestMembership = () => {};
+	const handleRequestMembership = async () => {
+		if (currentGroup.private) {
+			dispatch(thunkRequestMembership(groupId));
+		} else {
+			dispatch(thunkAddMembership(user, groupId));
+		}
+	};
+
+	const handleDeletePendingMembership = async () => {
+		dispatch(thunkDeletePendingMembership(groupId, user.id)).then(() => {
+			setStatus("");
+		});
+	};
+
+	const handleDeleteMembership = async () => {
+		dispatch(thunkDeleteMember(groupId, user.id))
+			.catch(async e => {
+				const err = await e.json();
+				console.log(err);
+			})
+			.then(() => {
+				setStatus("");
+			});
+	};
 
 	const organizerOptions = (
 		<div id="organizer-options">
 			<p>Organizer options</p>
-			<button id="delete-group-button" onClick={handleDelete}>
+			<button className="group-event-option-button" onClick={handleDelete}>
 				Delete group
 			</button>
-			<button id="edit-group-button" onClick={handleEdit}>
+			<button className="group-event-option-button" onClick={handleEdit}>
 				Edit group
 			</button>
-			<button id="add-group-event-button" onClick={handleCreateEvent}>
+			<button className="group-event-option-button" onClick={handleCreateEvent}>
 				Add event
 			</button>
 		</div>
@@ -89,22 +130,50 @@ export default function SingleGroupPage() {
 	const cohostOptions = (
 		<div id="organizer-options">
 			<p>Co-host options</p>
-			<button id="add-group-event-button" onClick={handleCreateEvent}>
+			<button className="group-event-option-button" onClick={handleCreateEvent}>
 				Add event
+			</button>
+			<button
+				className="group-event-option-button"
+				onClick={handleDeleteMembership}
+			>
+				Leave group
 			</button>
 		</div>
 	);
 
-	const pendingContent = (
+	const pendingOptions = (
 		<div id="organizer-options">
-			<p>You have a pending membership</p>
+			<p>Your membership is pending</p>
+			<button
+				className="group-event-option-button"
+				onClick={handleDeletePendingMembership}
+			>
+				Delete membership request
+			</button>
 		</div>
 	);
 
-	const joinGroup = (
+	const joinOptions = (
 		<div id="organizer-options">
-			<button id="join-group-button" onClick={handleRequestMembership}>
+			<p>You are not a member of this group</p>
+			<button
+				className="group-event-option-button"
+				onClick={handleRequestMembership}
+			>
 				Join this group
+			</button>
+		</div>
+	);
+
+	const memberOptions = (
+		<div id="organizer-options">
+			<p>You are a member of this group</p>
+			<button
+				className="group-event-option-button"
+				onClick={handleDeleteMembership}
+			>
+				Leave group
 			</button>
 		</div>
 	);
@@ -144,13 +213,15 @@ export default function SingleGroupPage() {
 								</b>{" "}
 							</pre>
 						</div>
-						{isOrganizer
+						{status === "organizer"
 							? organizerOptions
-							: isCohost
+							: status === "co-host"
 							? cohostOptions
-							: isPending
-							? pendingContent
-							: joinGroup}
+							: status === "pending"
+							? pendingOptions
+							: status === "member"
+							? memberOptions
+							: joinOptions}
 						<div id="group-title-and-nav-link">
 							<NavLink to="/all-groups">See all groups</NavLink>
 						</div>

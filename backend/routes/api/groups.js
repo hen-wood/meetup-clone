@@ -154,19 +154,17 @@ router.post(
 	async (req, res, next) => {
 		const userId = req.user.id;
 		const { groupId } = req.params;
+		const { private } = req.group;
+
+		const status = private ? "pending" : "member";
 
 		const newMember = await Membership.create({
 			userId,
 			groupId,
-			status: "pending"
+			status
 		});
 
-		const resBody = {
-			memberId: userId,
-			status: newMember.status
-		};
-
-		return res.json(resBody);
+		return res.json(newMember);
 	}
 );
 
