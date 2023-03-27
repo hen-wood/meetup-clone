@@ -173,13 +173,7 @@ module.exports = (sequelize, DataTypes) => {
 						],
 						subQuery: false,
 						...pagination,
-						group: [
-							"Event.id"
-							// "Attendances.id"
-							// "EventImages.url",
-							// "Group.id",
-							// "Venue.id"
-						]
+						group: ["Event.id", "EventImages.url", "Group.id", "Venue.id"]
 					};
 				},
 				allEventsByGroup(groupId) {

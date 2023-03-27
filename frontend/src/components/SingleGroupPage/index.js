@@ -15,6 +15,7 @@ export default function SingleGroupPage() {
 	const { groupId } = useParams();
 	const history = useHistory();
 	const [isLoaded, setIsLoaded] = useState(false);
+
 	const deleteRedirect = () => history.push("/home");
 	const editRedirect = () => history.push(`/edit-group/${groupId}`);
 	const createEventRedirect = () =>
@@ -37,21 +38,14 @@ export default function SingleGroupPage() {
 
 	const members = useSelector(state => state.groups.groupMembers);
 
-	const membersArr = Object.values(members);
+	const membership = members[user.id];
 
-	const userMembership =
-		user &&
-		membersArr.find(member => {
-			return member.id === user.id;
-		});
+	const isOrganizer =
+		membership && currentGroup && currentGroup.organizerId === user.id;
 
-	const isCohost =
-		userMembership && userMembership.Membership.status === "co-host";
+	const isCohost = membership && membership.Membership.status === "co-host";
 
-	const showOrgOptions =
-		user && currentGroup && currentGroup.organizerId === user.id;
-
-	const showCohostOptions = user && isCohost && !showOrgOptions;
+	const isPending = membership && membership.Membership.states === "pending";
 
 	const handleDelete = () => {
 		dispatch(thunkDeleteGroup(groupId))
@@ -75,6 +69,8 @@ export default function SingleGroupPage() {
 		createEventRedirect();
 	};
 
+	const handleRequestMembership = () => {};
+
 	const organizerOptions = (
 		<div id="organizer-options">
 			<p>Organizer options</p>
@@ -95,6 +91,20 @@ export default function SingleGroupPage() {
 			<p>Co-host options</p>
 			<button id="add-group-event-button" onClick={handleCreateEvent}>
 				Add event
+			</button>
+		</div>
+	);
+
+	const pendingContent = (
+		<div id="organizer-options">
+			<p>You have a pending membership</p>
+		</div>
+	);
+
+	const joinGroup = (
+		<div id="organizer-options">
+			<button id="join-group-button" onClick={handleRequestMembership}>
+				Join this group
 			</button>
 		</div>
 	);
@@ -134,8 +144,13 @@ export default function SingleGroupPage() {
 								</b>{" "}
 							</pre>
 						</div>
-						{showOrgOptions && organizerOptions}
-						{showCohostOptions && cohostOptions}
+						{isOrganizer
+							? organizerOptions
+							: isCohost
+							? cohostOptions
+							: isPending
+							? pendingContent
+							: joinGroup}
 						<div id="group-title-and-nav-link">
 							<NavLink to="/all-groups">See all groups</NavLink>
 						</div>

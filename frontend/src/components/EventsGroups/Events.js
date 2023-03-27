@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import dayMonthDate from "../../utils/dayMonthDate";
 import { thunkGetSingleEvent } from "../../store/eventsReducer";
 import { useHistory } from "react-router-dom";
-import { useRef } from "react";
 
 export default function Events({ atBottom }) {
 	const dispatch = useDispatch();
