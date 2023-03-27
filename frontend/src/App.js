@@ -12,13 +12,18 @@ import SingleGroupPage from "./components/SingleGroupPage";
 import EditGroup from "./components/EditGroup";
 import SingleEventDetails from "./components/SingleEventDetails";
 import CreateEvent from "./components/CreateEvent";
+import { thunkGetPendingMemberships } from "./store/membershipsReducer";
 
 function App() {
 	const user = useSelector(state => state.session.user);
 	const dispatch = useDispatch();
 	const [isLoaded, setIsLoaded] = useState(false);
 	useEffect(() => {
-		dispatch(sessionActions.restoreUser()).then(() => setIsLoaded(true));
+		dispatch(sessionActions.restoreUser()).then(() =>
+			dispatch(thunkGetPendingMemberships()).then(() => {
+				setIsLoaded(true);
+			})
+		);
 	}, [dispatch]);
 
 	const content = isLoaded && <SplashPage />;

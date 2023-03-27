@@ -2,6 +2,7 @@
 const router = require("express").Router();
 const sessionRouter = require("./session.js");
 const usersRouter = require("./users.js");
+const userMembershipsRouter = require("./user-memberships.js");
 const groupsRouter = require("./groups.js");
 const venuesRouter = require("./venues.js");
 const groupImagesRouter = require("./group-images.js");
@@ -16,6 +17,8 @@ router.use("/session", sessionRouter);
 
 router.use("/users", usersRouter);
 
+router.use("/user-memberships", userMembershipsRouter);
+
 router.use("/groups", groupsRouter);
 
 router.use("/venues", venuesRouter);
@@ -25,9 +28,5 @@ router.use("/group-images", groupImagesRouter);
 router.use("/events", eventsRouter);
 
 router.use("/event-images", eventImagesRouter);
-
-// router.post("/test", (req, res) => {
-// 	res.json({ requestBody: req.body });
-// });
 
 module.exports = router;

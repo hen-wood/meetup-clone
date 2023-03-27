@@ -5,9 +5,12 @@ const GET_USER_GROUPS = "groups/GET_USER_GROUPS";
 const GET_SINGLE_GROUP = "groups/GET_SINGLE_GROUP";
 const GET_GROUP_MEMBERSHIPS = "groups/GET_GROUP_MEMBERSHIPS";
 const POST_GROUP = "groups/POST_GROUP";
+const ADD_MEMBERSHIP = "groups/ADD_MEMBERSHIP";
 const PUT_GROUP = "groups/PUT_GROUP";
 const POST_GROUP_IMAGE = "groupImages/POST_GROUP_IMAGE";
 const DELETE_GROUP = "groups/DELETE_GROUP";
+const DELETE_MEMBERSHIP = "groups/DELETE_MEMBERSHIP";
+const RESET_SINGLE_GROUP = "groups/RESET_SINGLE_GROUP";
 
 // Action creators
 
@@ -67,6 +70,13 @@ const actionPostGroupImage = image => {
 	};
 };
 
+const actionAddMembership = (user, membership) => {
+	return {
+		type: ADD_MEMBERSHIP,
+		payload: { ...user, Membership: membership }
+	};
+};
+
 // PUT actions
 const actionPutGroup = updatedGroup => {
 	return {
@@ -80,6 +90,20 @@ const actionDeleteGroup = groupId => {
 	return {
 		type: DELETE_GROUP,
 		payload: groupId
+	};
+};
+
+const actionDeleteMembership = userId => {
+	return {
+		type: DELETE_MEMBERSHIP,
+		payload: userId
+	};
+};
+
+// RESET action (cleanup function)
+export const actionResetSingleGroup = () => {
+	return {
+		type: RESET_SINGLE_GROUP
 	};
 };
 
@@ -155,6 +179,7 @@ export const thunkPostGroup = newGroup => async dispatch => {
 		return response;
 	}
 };
+
 export const thunkPostGroupImage = (image, groupId) => async dispatch => {
 	const response = await csrfFetch(`/api/groups/${groupId}/images`, {
 		method: "POST",
@@ -173,6 +198,19 @@ export const thunkPostGroupImage = (image, groupId) => async dispatch => {
 	}
 };
 
+export const thunkAddMembership = (user, groupId) => async dispatch => {
+	const response = await csrfFetch(`/api/groups/${groupId}/membership`, {
+		method: "POST"
+	});
+	const data = await response.json();
+	if (response.ok) {
+		dispatch(actionAddMembership(user, data));
+		return;
+	} else {
+		return response;
+	}
+};
+
 // DELETE thunks
 export const thunkDeleteGroup = groupId => async dispatch => {
 	const response = await csrfFetch(`/api/groups/${groupId}`, {
@@ -183,6 +221,20 @@ export const thunkDeleteGroup = groupId => async dispatch => {
 		const data = await response.json();
 		dispatch(actionDeleteGroup(groupId));
 		return data;
+	} else {
+		return response;
+	}
+};
+
+export const thunkDeleteMember = (groupId, memberId) => async dispatch => {
+	const response = await csrfFetch(`/api/groups/${groupId}/membership`, {
+		method: "DELETE",
+		body: JSON.stringify({ memberId })
+	});
+	if (response.ok) {
+		await response.json();
+		dispatch(actionDeleteMembership(memberId));
+		return;
 	} else {
 		return response;
 	}
@@ -207,6 +259,19 @@ export default function groupsReducer(state = initialState, action) {
 			const { id } = action.payload;
 			newState.allGroups[id] = action.payload;
 			return newState;
+		case ADD_MEMBERSHIP:
+			newState = {
+				...state,
+				groupMembers: {
+					...state.groupMembers,
+					[action.payload.id]: action.payload
+				},
+				singleGroup: {
+					...state.singleGroup,
+					numMembers: state.singleGroup.numMembers + 1
+				}
+			};
+			return newState;
 		case GET_USER_GROUPS:
 			newState = { ...state };
 			newState.userGroups = { ...action.payload };
@@ -229,6 +294,14 @@ export default function groupsReducer(state = initialState, action) {
 			newState = { ...state };
 			newState.groupMembers = { ...state.groupMembers };
 			newState.groupMembers = action.payload;
+			return newState;
+		case RESET_SINGLE_GROUP:
+			newState = { ...state, groupMembers: {}, singleGroup: {} };
+			return newState;
+		case DELETE_MEMBERSHIP:
+			newState = { ...state };
+			state.singleGroup.numMembers--;
+			delete state.groupMembers[action.payload];
 			return newState;
 		default:
 			return state;
