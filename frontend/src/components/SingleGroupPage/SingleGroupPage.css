@@ -242,11 +242,13 @@
     border-top: #7e7e7e;
     border-bottom: #7e7e7e;
     background-color: white;
-    padding: 10px 0;
+    padding: 10px 10px;
     cursor: pointer;
     color:#2e3e48;
     font-weight: 100;
     font-size: 14px;
+    display: flex;
+    justify-content: flex-start;
 }
 
 .member-options__menu__button:hover{

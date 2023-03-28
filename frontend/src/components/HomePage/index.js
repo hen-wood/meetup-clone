@@ -97,7 +97,7 @@ export default function HomePage() {
 	) : (
 		<div className="home-page-outer-container">
 			<div className="home-page-inner-container">
-				<h1>Loading home..</h1>
+				<h1>Loading home page...</h1>
 			</div>
 		</div>
 	);
