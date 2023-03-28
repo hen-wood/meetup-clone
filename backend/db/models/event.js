@@ -188,13 +188,7 @@ module.exports = (sequelize, DataTypes) => {
 								],
 								[sequelize.col("EventImages.url"), "previewImage"]
 							],
-							exclude: [
-								"description",
-								"capacity",
-								"price",
-								"createdAt",
-								"updatedAt"
-							]
+							exclude: ["capacity", "price", "createdAt", "updatedAt"]
 						},
 						include: [
 							{
@@ -239,13 +233,7 @@ module.exports = (sequelize, DataTypes) => {
 							}
 						],
 						where: { groupId },
-						group: [
-							"Event.id",
-							"Attendances.id",
-							"EventImages.url",
-							"Group.id",
-							"Venue.id"
-						]
+						group: ["Event.id", "EventImages.url", "Group.id", "Venue.id"]
 					};
 				}
 			}

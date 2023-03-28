@@ -19,11 +19,13 @@ function App() {
 	const dispatch = useDispatch();
 	const [isLoaded, setIsLoaded] = useState(false);
 	useEffect(() => {
-		dispatch(sessionActions.restoreUser()).then(() =>
-			dispatch(thunkGetPendingMemberships()).then(() => {
+		dispatch(sessionActions.restoreUser()).then(() => {
+			if (user) {
+				dispatch(thunkGetPendingMemberships()).then(() => setIsLoaded(true));
+			} else {
 				setIsLoaded(true);
-			})
-		);
+			}
+		});
 	}, [dispatch]);
 
 	const content = isLoaded && <SplashPage />;
