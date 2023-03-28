@@ -69,52 +69,60 @@ export function MemberOptions({ status, setStatus }) {
 
 	const handleRequestMembership = async () => {
 		if (group.private) {
-			dispatch(thunkRequestMembership(groupId));
+			dispatch(thunkRequestMembership(groupId)).then(() => setShowMenu(false));
 		} else {
-			dispatch(thunkAddMembership(user, groupId));
+			dispatch(thunkAddMembership(user, groupId)).then(() =>
+				setShowMenu(false)
+			);
 		}
 	};
 
 	const handleDeletePendingMembership = async () => {
 		dispatch(thunkDeletePendingMembership(groupId, user.id)).then(() => {
 			setStatus("");
+			setShowMenu(false);
 		});
 	};
 
 	const handleDeleteMembership = async () => {
 		dispatch(thunkDeleteMember(groupId, user.id))
+			.then(() => {
+				setStatus("");
+				setShowMenu(false);
+			})
 			.catch(async e => {
 				const err = await e.json();
 				console.log(err);
-			})
-			.then(() => {
-				setStatus("");
 			});
 	};
 
 	const organizerOptions = (
-		<div id="organizer-options">
-			<p>Organizer options</p>
-			<button className="group-event-option-button" onClick={handleDelete}>
+		<div className="member-options__menu__inner">
+			<button className="member-options__menu__button" onClick={handleDelete}>
 				Delete group
 			</button>
-			<button className="group-event-option-button" onClick={handleEdit}>
+			<button className="member-options__menu__button" onClick={handleEdit}>
 				Edit group
 			</button>
-			<button className="group-event-option-button" onClick={handleCreateEvent}>
+			<button
+				className="member-options__menu__button"
+				onClick={handleCreateEvent}
+			>
 				Add event
 			</button>
 		</div>
 	);
 
 	const cohostOptions = (
-		<div id="organizer-options">
-			<p>Co-host options</p>
-			<button className="group-event-option-button" onClick={handleCreateEvent}>
+		<div className="member-options__menu__inner">
+			<button
+				className="member-options__menu__button"
+				onClick={handleCreateEvent}
+			>
 				Add event
 			</button>
 			<button
-				className="group-event-option-button"
+				className="member-options__menu__button"
 				onClick={handleDeleteMembership}
 			>
 				Leave group
@@ -123,10 +131,9 @@ export function MemberOptions({ status, setStatus }) {
 	);
 
 	const pendingOptions = (
-		<div id="organizer-options">
-			<p>Your membership is pending</p>
+		<div className="member-options__menu__inner">
 			<button
-				className="group-event-option-button"
+				className="member-options__menu__button"
 				onClick={handleDeletePendingMembership}
 			>
 				Delete membership request
@@ -135,10 +142,9 @@ export function MemberOptions({ status, setStatus }) {
 	);
 
 	const memberOptions = (
-		<div id="organizer-options">
-			<p>You are a member of this group</p>
+		<div className="member-options__menu__inner">
 			<button
-				className="group-event-option-button"
+				className="member-options__menu__button"
 				onClick={handleDeleteMembership}
 			>
 				Leave group
@@ -146,42 +152,31 @@ export function MemberOptions({ status, setStatus }) {
 		</div>
 	);
 
-	const joinOptions = (
-		<div id="organizer-options">
-			<p>You are not a member of this group</p>
-			<button
-				className="group-event-option-button"
-				onClick={handleRequestMembership}
-			>
-				Join this group
-			</button>
-		</div>
-	);
-
-	return (
-		<div className="member-option__button" onClick={() => setShowMenu(true)}>
+	return status === "" ? (
+		<button className="join-group-button" onClick={handleRequestMembership}>
+			Join this group
+		</button>
+	) : (
+		<div className="member-options__button" onClick={() => setShowMenu(true)}>
 			{status === "organizer" ? (
-				<p>You organized this group</p>
+				<p>Organizer options</p>
 			) : status === "co-host" ? (
-				<p>You are a co-host of this group</p>
+				<p>Co-host options</p>
 			) : status === "pending" ? (
 				<p>Your membership is pending</p>
-			) : status === "member" ? (
-				<p>Member options</p>
 			) : (
-				<p>Join this group</p>
+				<p>You're a member</p>
 			)}
+			<i className="fa-solid fa-chevron-down member-options__chev"></i>
 			{showMenu && (
-				<div className="member-option__dropdown" ref={menuRef}>
+				<div className="member-options__dropdown" ref={menuRef}>
 					{status === "organizer"
 						? organizerOptions
 						: status === "co-host"
 						? cohostOptions
 						: status === "pending"
 						? pendingOptions
-						: status === "member"
-						? memberOptions
-						: joinOptions}
+						: memberOptions}
 				</div>
 			)}
 		</div>

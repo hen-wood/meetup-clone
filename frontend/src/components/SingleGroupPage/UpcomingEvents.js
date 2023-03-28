@@ -27,8 +27,8 @@ export function UpcomingEvents({ groupId }) {
 	const findNumOfEvents = (pastOrFuture, eventsArr) => {
 		return eventsArr.filter(event =>
 			pastOrFuture === "past"
-				? new Date(event.startDate) > new Date(Date.now())
-				: new Date(event.startDate) < new Date(Date.now())
+				? new Date(event.startDate) < new Date(Date.now())
+				: new Date(event.startDate) > new Date(Date.now())
 		).length;
 	};
 
@@ -52,12 +52,14 @@ export function UpcomingEvents({ groupId }) {
 								<div className="gr-about__event-card__stats">
 									<p className="gr-about__event-card__date">{date}</p>
 									<h2 className="gr-about__event-card__title">{event.name}</h2>
-									<div className="gr-about__event-card__stat">
-										<i className="fa-solid fa-location-dot gr-about__event-card__loc__icon"></i>
-										<p className="gr-about__event-card__loc__text">
-											{event.Venue.city}, {event.Venue.state}
-										</p>
-									</div>
+									{event.venueId && (
+										<div className="gr-about__event-card__stat">
+											<i className="fa-solid fa-location-dot gr-about__event-card__loc__icon"></i>
+											<p className="gr-about__event-card__loc__text">
+												{event.Venue.city}, {event.Venue.state}
+											</p>
+										</div>
+									)}
 								</div>
 								<img
 									className="gr-about__event-card__image"
@@ -79,7 +81,7 @@ export function UpcomingEvents({ groupId }) {
 				);
 			})}
 			<h2 className="group-about__title">
-				Past Events ({findNumOfEvents("Past", eventsValues)})
+				Past Events ({findNumOfEvents("past", eventsValues)})
 			</h2>
 			{eventsValues.map(event => {
 				const date = formatEventDate(event.startDate);
