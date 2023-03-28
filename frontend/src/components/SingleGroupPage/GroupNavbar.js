@@ -1,4 +1,6 @@
-export function GroupNavbar({ currTab, setCurrTab }) {
+import { MemberOptions } from "./MemberOptions";
+
+export function GroupNavbar({ currTab, setCurrTab, status, setStatus }) {
 	const tabs = ["About", "Events", "Members", "Photos"];
 	return (
 		<div className="group-navbar">
@@ -14,6 +16,7 @@ export function GroupNavbar({ currTab, setCurrTab }) {
 						{tab}
 					</button>
 				))}
+				<MemberOptions status={status} setStatus={setStatus} />
 			</div>
 		</div>
 	);

@@ -149,6 +149,9 @@
 
 /* Single Group Page Navbar */
 .group-navbar{
+    position: sticky;
+    top: 0;
+    background-color: white;
     border-top: 1px solid #e2e2e2;
     border-bottom: 1px solid #e2e2e2;
     padding: 20px 0;
@@ -159,6 +162,7 @@
 
 .group-navbar__button-container{
     width: 85%;
+    display: flex;
 }
 
 .group-navbar__button{
@@ -176,6 +180,25 @@
 
 .group-navbar__button--active{
     color:#008294;
+}
+
+.member-option__button{
+    position: relative;
+    display: flex;
+    border: 1px solid #dfdfdf;
+    border-radius: 8px;
+    padding: 0 20px;
+    margin-left: 200px;
+    background-color: #f6f7f8;
+    cursor: pointer;
+}
+
+.member-option__dropdown{
+    position: absolute;
+    bottom: -100%;
+    background-color: white;
+    border: 1px solid #dfdfdf;
+    border-radius: 8px;
 }
 
 

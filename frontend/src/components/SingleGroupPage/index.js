@@ -7,7 +7,7 @@ import {
 	thunkDeleteMember,
 	thunkAddMembership
 } from "../../store/groupsReducer";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
 	useHistory,
@@ -263,6 +263,9 @@ export default function SingleGroupPage() {
 	const [isLoaded, setIsLoaded] = useState(false);
 	const [currTab, setCurrTab] = useState("About");
 	const [status, setStatus] = useState("");
+	const [showMenu, setShowMenu] = useState(false);
+
+	const menuRef = useRef(null);
 
 	const user = useSelector(state => state.session.user);
 	const usersPendingMemberships = useSelector(
@@ -284,6 +287,18 @@ export default function SingleGroupPage() {
 			dispatch(actionResetSingleGroup());
 		};
 	}, [dispatch]);
+
+	useEffect(() => {
+		if (user && group.Organizer && members) {
+			if (group.Organizer.id === user.id) {
+				setStatus("organizer");
+			} else if (members[user.id]) {
+				setStatus(members[user.id].Membership.status);
+			} else if (usersPendingMemberships[groupId]) {
+				setStatus("pending");
+			}
+		}
+	}, [user, usersPendingMemberships, members, group]);
 
 	return isLoaded ? (
 		<div className="main-container">
@@ -320,7 +335,12 @@ export default function SingleGroupPage() {
 					</div>
 				</div>
 			</div>
-			<GroupNavbar currTab={currTab} setCurrTab={setCurrTab} />
+			<GroupNavbar
+				currTab={currTab}
+				setCurrTab={setCurrTab}
+				status={status}
+				setStatus={setStatus}
+			/>
 			<div className="group-page-content">
 				<div className="group-page-content__inner">
 					{currTab === "About" ? (
