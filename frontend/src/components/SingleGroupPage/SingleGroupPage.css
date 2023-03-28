@@ -90,3 +90,212 @@
     font-size: 16px;
     font-weight: 300;
 }
+
+
+
+/* Main Single Group Page */
+
+.group-page-container{
+    height: 100%;
+    width: 85%;
+}
+
+.group-page__top{
+    padding: 20px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.group-page__preview-image{
+    border-radius: 8px;
+    height: 300px;
+    min-width: 600px;
+    object-fit: cover;
+}
+
+.group-page__info{
+    width: 100%;
+    padding: 0 20px;
+}
+
+.group-page__name{
+    margin: 0;
+}
+
+.group-page__stats-container{
+    display: flex;
+    flex-direction: column;
+}
+
+.group-page__stat{
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+}
+
+.group-page__stat__icon{
+    color:#a8a8a8;
+    width: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.group-page__stat__text{
+    margin: 0 10px;
+    font-size: 14px;
+    font-weight: 100;
+    color: black;
+}
+
+/* Single Group Page Navbar */
+.group-navbar{
+    border-top: 1px solid #e2e2e2;
+    border-bottom: 1px solid #e2e2e2;
+    padding: 20px 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.group-navbar__button-container{
+    width: 85%;
+}
+
+.group-navbar__button{
+    background-color: unset;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 100;
+    margin-right: 35px;
+}
+
+.group-navbar__button:hover{
+    color:#008294;
+}
+
+.group-navbar__button--active{
+    color:#008294;
+}
+
+
+/* Group Page Content */
+.group-page-content{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: #f6f7f8;
+}
+
+.group-page-content__inner{
+    width: 85%;
+}
+
+/* Group Page About Tab */
+.group-about{
+}
+
+.group-about__left{
+    width: 55%;
+}
+
+.group-about__description{
+    margin-bottom: 140px;
+}
+
+.group-about__title{
+    font-size: 22px;
+    font-weight: 400;
+}
+
+.group-about__text{
+    font-size: 16px;
+    font-weight: 100;
+}
+
+.group-about__events{
+    display: flex;
+    flex-direction: column;
+}
+
+.gr-about__event-card{
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: .2s;
+    width: 100%;
+    margin-bottom: 50px;
+}
+
+.gr-about__event-card:hover{
+    box-shadow: 0 3px 10px -7px black;
+    transform: translateY(-2px);
+}
+
+.gr-about__event-card__top{
+    display: flex;
+    justify-content: space-between;
+}
+
+.gr-about__event-card__date{
+    margin-top: 0;
+    color:#0398ab;
+}
+
+.gr-about__event-card__title{
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.gr-about__event-card__stat{
+    color: #7e7e7e;
+    display: flex;
+    align-items: flex-end;
+}
+
+.gr-about__event-card__loc__icon{
+    margin-right: 10px;
+}
+
+.gr-about__event-card__loc__text{
+    margin: 0;
+    font-weight: 100;
+}
+
+.gr-about__event-card__stats{
+    width: 70%;
+}
+
+.gr-about__event-card__image{
+    width: 30%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.gr-about__event-card__description{
+    font-weight: 100;
+}
+
+.gr-about__event-card__bottom{
+    display: flex;
+    justify-content: space-between;
+}
+
+.gr-about__event-card__num-att{
+    font-weight: 100;
+    color:#7e7e7e;
+}
+
+.gr-about__event-card__button{
+    border: 1px solid #0398ab;
+    color:#0398ab;
+    background-color: white;
+    border-radius: 8px;
+    height: fit-content;
+    padding: 10px 25px;
+    cursor: pointer;
+}
