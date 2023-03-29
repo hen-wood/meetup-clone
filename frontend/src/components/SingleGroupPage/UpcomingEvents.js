@@ -1,15 +1,10 @@
-import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { formatEventDate } from "./formatEventDate";
-import { thunkGetSingleEvent } from "../../store/eventsReducer";
 
-export function UpcomingEvents({ events }) {
+export default function UpcomingEvents({ events }) {
 	const history = useHistory();
-	const dispatch = useDispatch;
 	const handleEventClick = eventId => {
-		dispatch(thunkGetSingleEvent(eventId)).then(() => {
-			history.push(`/events/${eventId}`);
-		});
+		history.push(`/events/${eventId}`);
 	};
 	return events.length ? (
 		events.map(event => {
@@ -47,7 +42,6 @@ export function UpcomingEvents({ events }) {
 							<p className="gr-about__event-card__num-att">
 								{event.numAttending} attendees
 							</p>
-							<button className="gr-about__event-card__button">Attend</button>
 						</div>
 					</div>
 				)

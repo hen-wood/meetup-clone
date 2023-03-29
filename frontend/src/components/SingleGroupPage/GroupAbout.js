@@ -1,7 +1,8 @@
-import { UpcomingEvents } from "./UpcomingEvents";
-import { PastEvents } from "./PastEvents";
+import UpcomingEvents from "./UpcomingEvents";
+import PastEvents from "./PastEvents";
+import AboutMembers from "./AboutMembers";
 
-export function GroupAbout({ group, events }) {
+export default function GroupAbout({ group, events, members, organizer }) {
 	const eventsArr = Object.values(events);
 	const pastEvents = eventsArr.filter(event => {
 		return new Date(event.startDate) < new Date(Date.now());
@@ -25,7 +26,9 @@ export function GroupAbout({ group, events }) {
 				</h2>
 				<PastEvents events={pastEvents} />
 			</div>
-			<div className="group-about__right"></div>
+			<div className="group-about__right">
+				{<AboutMembers members={members} organizer={organizer} />}
+			</div>
 		</div>
 	);
 }

@@ -12,9 +12,8 @@ import {
 	thunkDeletePendingMembership,
 	thunkRequestMembership
 } from "../../store/membershipsReducer";
-import SignupFormModal from "../SignupFormModal";
 
-export function MemberOptions({ status, setStatus }) {
+export default function MemberOptions({ status, setStatus }) {
 	const dispatch = useDispatch();
 	const history = useHistory();
 	const { groupId } = useParams();
@@ -67,7 +66,12 @@ export function MemberOptions({ status, setStatus }) {
 
 	const handleRequestMembership = async () => {
 		if (group.private) {
-			dispatch(thunkRequestMembership(groupId)).then(() => setShowMenu(false));
+			dispatch(thunkRequestMembership(groupId))
+				.then(() => setShowMenu(false))
+				.catch(async res => {
+					const err = await res.json();
+					console.log(err);
+				});
 		} else {
 			dispatch(thunkAddMembership(user, groupId)).then(() =>
 				setShowMenu(false)
@@ -156,7 +160,10 @@ export function MemberOptions({ status, setStatus }) {
 		</button>
 	) : (
 		user && (
-			<div className="member-options__button" onClick={() => setShowMenu(true)}>
+			<button
+				className="member-options__button"
+				onClick={() => setShowMenu(true)}
+			>
 				{status === "organizer" ? (
 					<p>You're the organizer</p>
 				) : status === "co-host" ? (
@@ -178,7 +185,7 @@ export function MemberOptions({ status, setStatus }) {
 							: memberOptions}
 					</div>
 				)}
-			</div>
+			</button>
 		)
 	);
 }

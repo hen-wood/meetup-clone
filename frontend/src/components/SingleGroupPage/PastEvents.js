@@ -1,15 +1,10 @@
-import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { formatEventDate } from "./formatEventDate";
-import { thunkGetSingleEvent } from "../../store/eventsReducer";
 
-export function PastEvents({ events }) {
+export default function PastEvents({ events }) {
 	const history = useHistory();
-	const dispatch = useDispatch;
 	const handleEventClick = eventId => {
-		dispatch(thunkGetSingleEvent(eventId)).then(() => {
-			history.push(`/events/${eventId}`);
-		});
+		history.push(`/events/${eventId}`);
 	};
 
 	return events.length ? (
@@ -39,7 +34,7 @@ export function PastEvents({ events }) {
 		})
 	) : (
 		<div className="no-events__container">
-			<h2 className="no-events__title">No upcoming events</h2>
+			<h2 className="no-events__title">No past events</h2>
 		</div>
 	);
 }

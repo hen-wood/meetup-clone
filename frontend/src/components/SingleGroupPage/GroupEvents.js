@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { PastEvents } from "./PastEvents";
-import { UpcomingEvents } from "./UpcomingEvents";
+import PastEvents from "./PastEvents";
+import UpcomingEvents from "./UpcomingEvents";
 
-export function GroupEvents({ events }) {
+export default function GroupEvents({ events }) {
 	const [eventList, setEventList] = useState("future");
 
 	const eventsArr = Object.values(events);
@@ -18,7 +18,7 @@ export function GroupEvents({ events }) {
 				<button
 					className={
 						eventList === "future"
-							? "up-past-box__tab--selected"
+							? "up-past-box__tab up-past-box__tab--selected"
 							: "up-past-box__tab"
 					}
 					onClick={() => setEventList("future")}
@@ -28,7 +28,7 @@ export function GroupEvents({ events }) {
 				<button
 					className={
 						eventList === "past"
-							? "up-past-box__tab--selected"
+							? "up-past-box__tab up-past-box__tab--selected"
 							: "up-past-box__tab"
 					}
 					onClick={() => setEventList("past")}
@@ -36,11 +36,13 @@ export function GroupEvents({ events }) {
 					Past
 				</button>
 			</div>
-			{eventList === "future" ? (
-				<UpcomingEvents events={futureEvents} />
-			) : (
-				<PastEvents events={pastEvents} />
-			)}
+			<div className="group-event__cards">
+				{eventList === "future" ? (
+					<UpcomingEvents events={futureEvents} />
+				) : (
+					<PastEvents events={pastEvents} />
+				)}
+			</div>
 		</div>
 	);
 }

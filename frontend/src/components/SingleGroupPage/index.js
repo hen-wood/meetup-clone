@@ -6,11 +6,12 @@ import {
 } from "../../store/groupsReducer";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
-import { GroupNavbar } from "./GroupNavbar";
-import { GroupAbout } from "./GroupAbout";
-import { GroupEvents } from "./GroupEvents";
+import { useParams } from "react-router-dom";
 import { thunkGetAllGroupEvents } from "../../store/eventsReducer";
+import GroupNavbar from "./GroupNavbar";
+import GroupAbout from "./GroupAbout";
+import GroupEvents from "./GroupEvents";
+import { thunkGetPendingMemberships } from "../../store/membershipsReducer";
 
 export default function SingleGroupPage() {
 	const dispatch = useDispatch();
@@ -31,9 +32,11 @@ export default function SingleGroupPage() {
 
 	useEffect(() => {
 		dispatch(thunkGetSingleGroup(groupId)).then(() => {
-			dispatch(thunkGetGroupMemberships(groupId)).then(() => {
-				dispatch(thunkGetAllGroupEvents(groupId)).then(() => {
-					setIsLoaded(true);
+			dispatch(thunkGetPendingMemberships()).then(() => {
+				dispatch(thunkGetGroupMemberships(groupId)).then(() => {
+					dispatch(thunkGetAllGroupEvents(groupId)).then(() => {
+						setIsLoaded(true);
+					});
 				});
 			});
 		});
@@ -98,7 +101,12 @@ export default function SingleGroupPage() {
 			<div className="group-page-content">
 				<div className="group-page-content__inner">
 					{currTab === "About" ? (
-						<GroupAbout group={group} events={events} />
+						<GroupAbout
+							group={group}
+							events={events}
+							members={members}
+							organizer={group.Organizer}
+						/>
 					) : currTab === "Events" ? (
 						<GroupEvents events={events} />
 					) : (
