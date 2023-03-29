@@ -343,8 +343,11 @@
     display: flex;
 }
 
+.about-members__organizer__name{
+    margin-left: 15px;
+}
+
 .about-members__organizer__photo{
-    background-color: #008294;
     height: 60px;
     width: 60px;
     border-radius: 50%;

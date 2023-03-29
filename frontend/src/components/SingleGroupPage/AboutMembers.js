@@ -8,7 +8,11 @@ export default function AboutMembers({ members, organizer }) {
 			<div className="about-members__organizer">
 				<h2 className="about-members__organizer__title">Organizer</h2>
 				<div className="about-members__organizer__info">
-					<div className="about-members__organizer__photo"></div>
+					<img
+						src={organizer.profileImageUrl}
+						alt={organizer.firstName + " " + organizer.lastName}
+						className="profile-image--small"
+					/>
 					<p className="about-members__organizer__name">
 						{organizer.firstName} {organizer.lastName}
 					</p>
@@ -21,7 +25,10 @@ export default function AboutMembers({ members, organizer }) {
 					</h2>
 					<div className="about-members__grid">
 						{membersArr.map(member => (
-							<div className="about-members__member-photo"></div>
+							<img
+								src={member.profileImageUrl}
+								className="profile-image--small"
+							/>
 						))}
 					</div>
 				</div>

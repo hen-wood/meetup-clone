@@ -372,19 +372,20 @@ const checkIfUserAlreadyExists = async (req, res, next) => {
 		});
 	}
 	console.log(existingUser);
-
-	if (existingUser.email === email && existingUser.username === username) {
-		const err = new Error("User with that email and username already exists");
-		err.status = 403;
-		return next(err);
-	} else if (existingUser.email === email) {
-		const err = new Error("User with that email already exists");
-		err.status = 403;
-		return next(err);
-	} else if (existingUser.username === username) {
-		const err = new Error("User with that username already exists");
-		err.status = 403;
-		return next(err);
+	if (existingUser) {
+		if (existingUser.email === email && existingUser.username === username) {
+			const err = new Error("User with that email and username already exists");
+			err.status = 403;
+			return next(err);
+		} else if (existingUser.email === email) {
+			const err = new Error("User with that email already exists");
+			err.status = 403;
+			return next(err);
+		} else if (existingUser.username === username) {
+			const err = new Error("User with that username already exists");
+			err.status = 403;
+			return next(err);
+		}
 	}
 
 	next();
