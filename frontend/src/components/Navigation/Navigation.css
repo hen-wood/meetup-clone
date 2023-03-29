@@ -61,7 +61,7 @@
 }
 
 .drop-down-link{
-    width: max-content;
+    width: 100%;
     margin: 10px 0;
 }
 .drop-down-link:hover{

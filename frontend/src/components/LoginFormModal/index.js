@@ -85,7 +85,7 @@ function LoginFormModal() {
 						<p key={key}>{errors[key]}</p>
 					))}
 				</div>{" "}
-				<div id="label-input-div">
+				<div className="label-input-div">
 					<label htmlFor="email">Email</label>
 					<input
 						name="email"
@@ -95,7 +95,7 @@ function LoginFormModal() {
 						required
 					/>
 				</div>
-				<div id="label-input-div">
+				<div className="label-input-div">
 					<label htmlFor="password">Password</label>
 					<input
 						name="password"
