@@ -53,7 +53,12 @@ function ProfileButton({ user }) {
 	return (
 		<>
 			<div className="profile-button-container" onClick={openMenu}>
-				<i id="profile-button" className="fas fa-user-circle" />
+				<img
+					className="profile-image--small"
+					src={user.profileImageUrl}
+					alt={user.username}
+				/>
+				{/* <i id="profile-button" className="fas fa-user-circle" /> */}
 				<i id="drop-down-chevron" className={chevronClassName} />
 				<div className={menuClassName} ref={ulRef}>
 					<p className="drop-down-link" onClick={handleHomeClick}>

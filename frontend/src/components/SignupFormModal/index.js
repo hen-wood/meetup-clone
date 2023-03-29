@@ -16,6 +16,7 @@ function SignupFormModal() {
 	const [lastName, setLastName] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
+	const [image, setImage] = useState(null);
 	const [errors, setErrors] = useState({});
 	const { closeModal } = useModal();
 
@@ -23,15 +24,16 @@ function SignupFormModal() {
 		e.preventDefault();
 		if (password === confirmPassword) {
 			setErrors([]);
-			return dispatch(
-				sessionActions.signup({
-					email,
-					username,
-					firstName,
-					lastName,
-					password
-				})
-			)
+			const formData = new FormData();
+			if (image) {
+				formData.append("image", image);
+			}
+			formData.append("email", email);
+			formData.append("username", username);
+			formData.append("firstName", firstName);
+			formData.append("lastName", lastName);
+			formData.append("password", password);
+			return dispatch(sessionActions.signup(formData))
 				.then(() => {
 					closeModal();
 					const navBar = document.querySelector(".navigation");
@@ -48,6 +50,11 @@ function SignupFormModal() {
 		return setErrors([
 			"Confirm Password field must be the same as the Password field"
 		]);
+	};
+
+	const updateFile = e => {
+		const file = e.target.files[0];
+		if (file) setImage(file);
 	};
 	const errorKeys = Object.keys(errors);
 	return (
@@ -140,6 +147,13 @@ function SignupFormModal() {
 						required
 					/>
 				</div>
+				<div id="label-input-div">
+					<label htmlFor="image-upload-field">
+						Upload new group pic (optional)
+					</label>
+					<input id="image-upload-field" type="file" onChange={updateFile} />
+				</div>
+
 				<div>
 					<button type="submit">Sign Up</button>
 				</div>

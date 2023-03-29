@@ -52,6 +52,13 @@
     align-items: center;
     justify-content: space-between;
 }
+
+.profile-image--small{
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+}
+
 .drop-down-link{
     width: max-content;
     margin: 10px 0;
