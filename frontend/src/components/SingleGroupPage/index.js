@@ -32,11 +32,15 @@ export default function SingleGroupPage() {
 
 	useEffect(() => {
 		dispatch(thunkGetSingleGroup(groupId)).then(() => {
-			dispatch(thunkGetPendingMemberships()).then(() => {
-				dispatch(thunkGetGroupMemberships(groupId)).then(() => {
-					dispatch(thunkGetAllGroupEvents(groupId)).then(() => {
+			dispatch(thunkGetGroupMemberships(groupId)).then(() => {
+				dispatch(thunkGetAllGroupEvents(groupId)).then(() => {
+					if (user) {
+						dispatch(thunkGetPendingMemberships()).then(() => {
+							setIsLoaded(true);
+						});
+					} else {
 						setIsLoaded(true);
-					});
+					}
 				});
 			});
 		});
