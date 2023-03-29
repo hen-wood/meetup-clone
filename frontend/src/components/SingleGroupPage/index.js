@@ -102,6 +102,7 @@ export default function SingleGroupPage() {
 				setCurrTab={setCurrTab}
 				status={status}
 				setStatus={setStatus}
+				user={user}
 			/>
 			<div className="group-page-content">
 				<div className="group-page-content__inner">

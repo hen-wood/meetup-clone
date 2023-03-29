@@ -32,6 +32,7 @@ export default function GroupAbout({ group, events, members, organizer }) {
 						members={members}
 						organizer={organizer}
 						isPrivate={group.private}
+						group={group}
 					/>
 				}
 			</div>

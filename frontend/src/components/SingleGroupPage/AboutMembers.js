@@ -1,12 +1,12 @@
 import { useSelector } from "react-redux";
 
-export default function AboutMembers({ members, organizer, isPrivate }) {
+export default function AboutMembers({ members, organizer, isPrivate, group }) {
 	const membersArr = Object.values(members);
 	const user = useSelector(state => state.session.user);
 	return (
 		<div className="about-members">
 			<div className="about-members__organizer">
-				<h2 className="about-members__organizer__title">Organizer</h2>
+				<h2 className="about-members__list__title">Organizer</h2>
 				<div className="about-members__organizer__info">
 					<img
 						src={organizer.profileImageUrl}
@@ -34,11 +34,16 @@ export default function AboutMembers({ members, organizer, isPrivate }) {
 					</div>
 				</div>
 			) : (
-				<div className="about-members__list--private">
-					<i className="fa-solid fa-lock private-icon"></i>
-					<h2 className="ab-members-private__warning">
-						This content is available only to members
+				<div className="about-members__list">
+					<h2 className="about-members__list__title">
+						Members ({group.numMembers})
 					</h2>
+					<div className="about-members__list--private">
+						<i className="fa-solid fa-lock private-icon"></i>
+						<h2 className="ab-members-private__warning">
+							This content is available only to members
+						</h2>
+					</div>
 				</div>
 			)}
 		</div>

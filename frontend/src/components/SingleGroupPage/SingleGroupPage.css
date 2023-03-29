@@ -339,11 +339,35 @@
     flex-direction: column;
 }
 
+.about-members__list__title{
+    font-weight: 500;
+    font-size: 18px;
+}
+
+.about-members__list--private{
+    background-color: #f0f1f2;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+    margin-top: 20px;
+}
+
+.ab-members-private__warning{
+    font-weight: 500;
+    text-align: center;
+    font-size: 14px;
+    color:#7e7e7e;
+}
+
 .about-members__organizer{
 }
 
 .about-members__organizer__info{
     display: flex;
+    margin-bottom: 30px;
 }
 
 .about-members__organizer__name{
