@@ -13,16 +13,13 @@ import {
 	thunkRequestMembership
 } from "../../store/membershipsReducer";
 
-export function MemberOptions({ status, setStatus }) {
+export default function MemberOptions({ status, setStatus }) {
 	const dispatch = useDispatch();
 	const history = useHistory();
 	const { groupId } = useParams();
 
 	const [showMenu, setShowMenu] = useState(false);
 	const user = useSelector(state => state.session.user);
-	const usersPendingMemberships = useSelector(
-		state => state.memberships.pending
-	);
 	const group = useSelector(state => state.groups.singleGroup);
 
 	const menuRef = useRef(null);
@@ -69,7 +66,12 @@ export function MemberOptions({ status, setStatus }) {
 
 	const handleRequestMembership = async () => {
 		if (group.private) {
-			dispatch(thunkRequestMembership(groupId)).then(() => setShowMenu(false));
+			dispatch(thunkRequestMembership(groupId))
+				.then(() => setShowMenu(false))
+				.catch(async res => {
+					const err = await res.json();
+					console.log(err);
+				});
 		} else {
 			dispatch(thunkAddMembership(user, groupId)).then(() =>
 				setShowMenu(false)
@@ -152,33 +154,38 @@ export function MemberOptions({ status, setStatus }) {
 		</div>
 	);
 
-	return status === "" ? (
+	return status === "" && user ? (
 		<button className="join-group-button" onClick={handleRequestMembership}>
 			Join this group
 		</button>
 	) : (
-		<div className="member-options__button" onClick={() => setShowMenu(true)}>
-			{status === "organizer" ? (
-				<p>Organizer options</p>
-			) : status === "co-host" ? (
-				<p>Co-host options</p>
-			) : status === "pending" ? (
-				<p>Your membership is pending</p>
-			) : (
-				<p>You're a member</p>
-			)}
-			<i className="fa-solid fa-chevron-down member-options__chev"></i>
-			{showMenu && (
-				<div className="member-options__dropdown" ref={menuRef}>
-					{status === "organizer"
-						? organizerOptions
-						: status === "co-host"
-						? cohostOptions
-						: status === "pending"
-						? pendingOptions
-						: memberOptions}
-				</div>
-			)}
-		</div>
+		user && (
+			<button
+				className="member-options__button"
+				onClick={() => setShowMenu(true)}
+			>
+				{status === "organizer" ? (
+					<p>You're the organizer</p>
+				) : status === "co-host" ? (
+					<p>You're a co-host</p>
+				) : status === "pending" ? (
+					<p>Membership pending</p>
+				) : (
+					<p>You're a member</p>
+				)}
+				<i className="fa-solid fa-chevron-down member-options__chev"></i>
+				{showMenu && (
+					<div className="member-options__dropdown" ref={menuRef}>
+						{status === "organizer"
+							? organizerOptions
+							: status === "co-host"
+							? cohostOptions
+							: status === "pending"
+							? pendingOptions
+							: memberOptions}
+					</div>
+				)}
+			</button>
+		)
 	);
 }
