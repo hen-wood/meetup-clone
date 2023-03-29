@@ -89,7 +89,7 @@ router.get(
 				as: "Members",
 				through: {
 					attributes: {
-						exclude: ["id", "userId", "groupId", "createdAt", "updatedAt"]
+						exclude: ["id", "userId", "groupId", "updatedAt"]
 					},
 					where
 				},

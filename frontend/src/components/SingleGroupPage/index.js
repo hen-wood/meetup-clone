@@ -12,6 +12,7 @@ import GroupNavbar from "./GroupNavbar";
 import GroupAbout from "./GroupAbout";
 import GroupEvents from "./GroupEvents";
 import { thunkGetPendingMemberships } from "../../store/membershipsReducer";
+import GroupMembers from "./GroupMembers";
 
 export default function SingleGroupPage() {
 	const dispatch = useDispatch();
@@ -113,6 +114,8 @@ export default function SingleGroupPage() {
 						/>
 					) : currTab === "Events" ? (
 						<GroupEvents events={events} />
+					) : currTab === "Members" ? (
+						<GroupMembers members={members} isPrivate={group.private} />
 					) : (
 						<h1>nothing</h1>
 					)}

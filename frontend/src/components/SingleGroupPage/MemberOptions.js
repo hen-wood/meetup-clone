@@ -156,36 +156,38 @@ export default function MemberOptions({ status, setStatus }) {
 
 	return status === "" && user ? (
 		<button className="join-group-button" onClick={handleRequestMembership}>
-			Join this group
+			{group.private ? "Request to join" : "Join this group"}
 		</button>
 	) : (
 		user && (
-			<button
-				className="member-options__button"
-				onClick={() => setShowMenu(true)}
-			>
-				{status === "organizer" ? (
-					<p>You're the organizer</p>
-				) : status === "co-host" ? (
-					<p>You're a co-host</p>
-				) : status === "pending" ? (
-					<p>Membership pending</p>
-				) : (
-					<p>You're a member</p>
-				)}
-				<i className="fa-solid fa-chevron-down member-options__chev"></i>
-				{showMenu && (
-					<div className="member-options__dropdown" ref={menuRef}>
-						{status === "organizer"
-							? organizerOptions
-							: status === "co-host"
-							? cohostOptions
-							: status === "pending"
-							? pendingOptions
-							: memberOptions}
-					</div>
-				)}
-			</button>
+			<div className="member-options__button-container">
+				<button
+					className="member-options__button"
+					onClick={() => setShowMenu(true)}
+				>
+					{status === "organizer" ? (
+						<p>You're the organizer</p>
+					) : status === "co-host" ? (
+						<p>You're a co-host</p>
+					) : status === "pending" ? (
+						<p>Membership pending</p>
+					) : (
+						<p>You're a member</p>
+					)}
+					<i className="fa-solid fa-chevron-down member-options__chev"></i>
+					{showMenu && (
+						<div className="member-options__dropdown" ref={menuRef}>
+							{status === "organizer"
+								? organizerOptions
+								: status === "co-host"
+								? cohostOptions
+								: status === "pending"
+								? pendingOptions
+								: memberOptions}
+						</div>
+					)}
+				</button>
+			</div>
 		)
 	);
 }

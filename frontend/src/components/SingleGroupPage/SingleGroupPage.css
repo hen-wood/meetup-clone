@@ -120,8 +120,11 @@
     width: 100%;
 }
 
-.member-options__button{
+.member-options__button-container{
     position: relative;
+}
+
+.member-options__button{
     display: flex;
     align-items: center;
     border: 1px solid #dfdfdf;
@@ -376,7 +379,9 @@
     width: 100%;
 }
 
-.group-events__up-past-box{
+.switch-box{
+    position:sticky;
+    top: 100px;
     width: 45%;
     display: flex;
     flex-direction: column;
@@ -387,7 +392,7 @@
     border-radius: 4px;
 }
 
-.up-past-box__tab{
+.switch-box__tab{
     cursor: pointer;
     border: none;
     background-color: unset;
@@ -396,9 +401,11 @@
     margin: 10px 0;
     padding: 0 20px;
     font-weight: 100;
+    width: 100%;
+    justify-content: space-between;
 }
 
-.up-past-box__tab--selected{
+.switch-box__tab--selected{
     color:#0098ae;
     border-right: 3px solid #0098ae;
     font-weight: 500;
@@ -411,10 +418,105 @@
 }
 
 .no-events__container{
-    background-color: white;
+    background-color: #f0f1f2;
     border-radius: 8px;
     display: flex;
     justify-content: center;
     width: 100%;
-    height: 200px;
+    height: 40vh;
+    margin-bottom: 10vh;
+}
+
+
+/* Group Members Tab */
+.gr-members__right{
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 85vh;
+}
+
+.gr-members__right--private{
+    background-color: #f0f1f2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    border-radius: 8px;
+}
+
+.gr-private__warning{
+    font-weight: 400;
+    margin: 5px 0;
+}
+
+.private-icon{
+    color:#7e7e7e;
+}
+
+.gr-members__title{
+    font-weight: 600;
+    font-size: 20px;
+    margin:0;
+}
+
+.gr-members__search{
+    position: relative;
+    color: #7e7e7e;
+    margin-top: 20px;
+}
+
+.member-search-icon{
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.gr-members__search__input{
+    width: 100%;
+    display: flex;
+    border: 1px solid #c9c7c7;
+    padding: 20px 40px;
+    box-sizing: border-box;
+    border-radius: 4px;
+}
+
+.gr-members__search__input:hover{
+    border: 1px solid #7e7e7e;
+}
+
+.gr-members__search__input:focus{
+    border: 1px solid #0097ae;
+    outline: none;
+}
+
+.member-card{
+    display: flex;
+    align-items: center;
+    margin: 30px 0;
+}
+
+.member-card__text-container{
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+}
+
+.member-card__name{
+    margin: 0;
+}
+
+.member-card__join-date{
+    margin: 0;
+    font-weight: 100;
+    font-size: 14px;
+}
+
+.switch-box__text{
+    margin: 0
 }

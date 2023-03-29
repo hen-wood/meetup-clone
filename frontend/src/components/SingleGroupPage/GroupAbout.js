@@ -27,7 +27,13 @@ export default function GroupAbout({ group, events, members, organizer }) {
 				<PastEvents events={pastEvents} />
 			</div>
 			<div className="group-about__right">
-				{<AboutMembers members={members} organizer={organizer} />}
+				{
+					<AboutMembers
+						members={members}
+						organizer={organizer}
+						isPrivate={group.private}
+					/>
+				}
 			</div>
 		</div>
 	);

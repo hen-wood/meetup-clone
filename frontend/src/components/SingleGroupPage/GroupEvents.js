@@ -14,12 +14,12 @@ export default function GroupEvents({ events }) {
 	});
 	return (
 		<div className="group-events__container">
-			<div className="group-events__up-past-box">
+			<div className="switch-box">
 				<button
 					className={
 						eventList === "future"
-							? "up-past-box__tab up-past-box__tab--selected"
-							: "up-past-box__tab"
+							? "switch-box__tab switch-box__tab--selected"
+							: "switch-box__tab"
 					}
 					onClick={() => setEventList("future")}
 				>
@@ -28,8 +28,8 @@ export default function GroupEvents({ events }) {
 				<button
 					className={
 						eventList === "past"
-							? "up-past-box__tab up-past-box__tab--selected"
-							: "up-past-box__tab"
+							? "switch-box__tab switch-box__tab--selected"
+							: "switch-box__tab"
 					}
 					onClick={() => setEventList("past")}
 				>

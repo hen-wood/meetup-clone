@@ -59,6 +59,12 @@
     border-radius: 50%;
     object-fit: cover;
 }
+.profile-image--med{
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
 
 .drop-down-link{
     width: 100%;
