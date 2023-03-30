@@ -4,9 +4,12 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { thunkPostGroupImage } from "../../store/groupsReducer";
 import { formatEventDate } from "./formatEventDate";
+import { useModal } from "../../context/Modal";
+import PhotoModal from "../PhotoModal";
 
 export default function GroupPhotos({ group, events, status, isPrivate }) {
 	const dispatch = useDispatch();
+	const { setModalContent, setOnModalClose } = useModal();
 	const [image, setImage] = useState(null);
 	const [albums, setAlbums] = useState([
 		{ title: "Meetdown Group Photo Album", photos: group.GroupImages },
@@ -67,6 +70,10 @@ export default function GroupPhotos({ group, events, status, isPrivate }) {
 		});
 	};
 
+	const openPhoto = (idx, img) => {
+		setModalContent(<PhotoModal img={img} />);
+	};
+
 	const updateFile = e => {
 		const file = e.target.files[0];
 		if (file) setImage(file);
@@ -112,13 +119,15 @@ export default function GroupPhotos({ group, events, status, isPrivate }) {
 							showThumbs={false}
 							renderArrowPrev={renderArrowPrev}
 							renderArrowNext={renderArrowNext}
+							showIndicators={false}
+							onClickItem={openPhoto}
 						>
 							{albumObj.photos.map((photo, i) => (
 								<img
 									key={i}
 									src={photo.url}
 									alt={albumObj.title}
-									className="gr-photos-car__image"
+									className={`gr-photos-car__image`}
 								/>
 							))}
 						</Carousel>
