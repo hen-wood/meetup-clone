@@ -1,6 +1,12 @@
 import { useSelector } from "react-redux";
 
-export default function AboutMembers({ members, organizer, isPrivate, group }) {
+export default function AboutMembers({
+	members,
+	organizer,
+	isPrivate,
+	group,
+	status
+}) {
 	const membersArr = Object.values(members);
 	const user = useSelector(state => state.session.user);
 	return (
@@ -18,7 +24,19 @@ export default function AboutMembers({ members, organizer, isPrivate, group }) {
 					</p>
 				</div>
 			</div>
-			{user && !isPrivate ? (
+			{isPrivate && status === "" ? (
+				<div className="about-members__list">
+					<h2 className="about-members__list__title">
+						Members ({group.numMembers})
+					</h2>
+					<div className="about-members__list--private">
+						<i className="fa-solid fa-lock private-icon"></i>
+						<h2 className="ab-members-private__warning">
+							This content is available only to members
+						</h2>
+					</div>
+				</div>
+			) : (
 				<div className="about-members__list">
 					<h2 className="about-members__list__title">
 						Members ({membersArr.length})
@@ -31,18 +49,6 @@ export default function AboutMembers({ members, organizer, isPrivate, group }) {
 								className="profile-image--small"
 							/>
 						))}
-					</div>
-				</div>
-			) : (
-				<div className="about-members__list">
-					<h2 className="about-members__list__title">
-						Members ({group.numMembers})
-					</h2>
-					<div className="about-members__list--private">
-						<i className="fa-solid fa-lock private-icon"></i>
-						<h2 className="ab-members-private__warning">
-							This content is available only to members
-						</h2>
 					</div>
 				</div>
 			)}

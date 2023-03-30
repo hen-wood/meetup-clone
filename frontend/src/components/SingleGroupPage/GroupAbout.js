@@ -2,7 +2,13 @@ import UpcomingEvents from "./UpcomingEvents";
 import PastEvents from "./PastEvents";
 import AboutMembers from "./AboutMembers";
 
-export default function GroupAbout({ group, events, members, organizer }) {
+export default function GroupAbout({
+	group,
+	events,
+	members,
+	organizer,
+	status
+}) {
 	const eventsArr = Object.values(events);
 	const pastEvents = eventsArr.filter(event => {
 		return new Date(event.startDate) < new Date(Date.now());
@@ -32,6 +38,7 @@ export default function GroupAbout({ group, events, members, organizer }) {
 						members={members}
 						organizer={organizer}
 						isPrivate={group.private}
+						status={status}
 						group={group}
 					/>
 				}

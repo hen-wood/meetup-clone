@@ -1,5 +1,4 @@
 import MemberOptions from "./MemberOptions";
-import { useModal } from "../../context/Modal";
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
 import LoginFormModal from "../LoginFormModal";
 
@@ -17,7 +16,7 @@ export default function GroupNavbar({
 			<div className="group-navbar__inner">
 				<div className="group-navbar__button-container">
 					{tabs.map((tab, i) =>
-						user || tab === "About" ? (
+						user || tab === "About" || tab === "Events" ? (
 							<button
 								className={`group-navbar__button ${
 									currTab === tab ? "group-navbar__button--active" : ""
@@ -31,6 +30,7 @@ export default function GroupNavbar({
 							</button>
 						) : (
 							<OpenModalMenuItem
+								key={i}
 								itemText={tab}
 								modalComponent={<LoginFormModal />}
 								className={"group-navbar__button"}

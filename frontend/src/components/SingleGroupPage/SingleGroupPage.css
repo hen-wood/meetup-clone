@@ -25,6 +25,14 @@
     max-width: 1070px;
 }
 
+.gr-loading__container{
+    width: 100%;
+    height: 50vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .group-page__top{
     padding: 20px 0;
     display: flex;
@@ -191,7 +199,7 @@
 }
 
 .member-options__menu__button:hover{
-    background-color: #7e7e7e;
+    background-color: #e4e9ed;
 }
 
 /* Group Page Content */
@@ -445,12 +453,23 @@
     background-color: #f0f1f2;
     border-radius: 8px;
     display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
     width: 100%;
     height: 40vh;
     margin-bottom: 10vh;
 }
 
+.no-events__title{
+    font-weight: 500;
+    margin: 5px;
+}
+
+.no-events-icon{
+    color:#7e7e7e;
+    font-size: 25px;
+}
 
 /* Group Members Tab */
 .gr-members__right{
@@ -533,6 +552,11 @@
 
 .member-card__name{
     margin: 0;
+}
+
+.member-card__leader-text{
+    margin: 1px 0;
+    font-size: 14px;
 }
 
 .member-card__join-date{
