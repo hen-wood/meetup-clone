@@ -1,9 +1,14 @@
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { thunkPostGroupImage } from "../../store/groupsReducer";
 import { formatEventDate } from "./formatEventDate";
 
 export default function GroupPhotos({ group, events, status, isPrivate }) {
-	const albums = [
+	const dispatch = useDispatch();
+	const [image, setImage] = useState(null);
+	const [albums, setAlbums] = useState([
 		{ title: "Meetdown Group Photo Album", photos: group.GroupImages },
 		...events.map(event => {
 			return {
@@ -14,7 +19,21 @@ export default function GroupPhotos({ group, events, status, isPrivate }) {
 				photos: event.images
 			};
 		})
-	];
+	]);
+	useEffect(() => {
+		setAlbums([
+			{ title: "Meetdown Group Photo Album", photos: group.GroupImages },
+			...events.map(event => {
+				return {
+					title: `${event.name} (${formatEventDate(event.startDate).slice(
+						5,
+						17
+					)})`,
+					photos: event.images
+				};
+			})
+		]);
+	}, [group.GroupImages]);
 
 	const renderArrowPrev = (onClickHandler, hasPrev, label) =>
 		hasPrev && (
@@ -40,6 +59,19 @@ export default function GroupPhotos({ group, events, status, isPrivate }) {
 			</button>
 		);
 
+	const saveGroupPhoto = () => {
+		const formData = new FormData();
+		formData.append("image", image);
+		dispatch(thunkPostGroupImage(formData, group.id)).then(() => {
+			setImage(null);
+		});
+	};
+
+	const updateFile = e => {
+		const file = e.target.files[0];
+		if (file) setImage(file);
+	};
+
 	return isPrivate && (status === "" || status === "pending") ? (
 		<div className="about-members__list--private">
 			<i className="fa-solid fa-lock private-icon"></i>
@@ -51,6 +83,27 @@ export default function GroupPhotos({ group, events, status, isPrivate }) {
 		<div className="gr-photos__container">
 			<div className="gr-photos__top">
 				<h2 className="gr-photos__title">Albums ({albums.length})</h2>
+				{status === "organizer" && !image && (
+					<div className="gr-photos__form">
+						<label htmlFor="image-upload-input" className="custom-file-input">
+							<i className="fa fa-cloud-upload upload-file-icon"></i> Upload
+							photo to group album
+						</label>
+						<input
+							id="image-upload-input"
+							name="image-upload-input"
+							className="image-upload-input"
+							type="file"
+							onChange={updateFile}
+						/>
+					</div>
+				)}
+				{image && (
+					<button className="gr-photos__save-button" onClick={saveGroupPhoto}>
+						<i className="fa-solid fa-floppy-disk upload-file-icon"></i>
+						Save group photo
+					</button>
+				)}
 			</div>
 			<div className="gr-photos__album-grid">
 				{albums.map(albumObj => (

@@ -56,6 +56,7 @@ function SignupFormModal() {
 		const file = e.target.files[0];
 		if (file) setImage(file);
 	};
+
 	const errorKeys = Object.keys(errors);
 	return (
 		<>

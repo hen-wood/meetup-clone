@@ -582,6 +582,43 @@
 .gr-photos__top{
     border-bottom: 1px solid #a8a8a8;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 20px;
+}
+
+.gr-photos__form .custom-file-input{
+    margin: 0;
+    border: 2px solid #0097ae;
+    color: #0097ae;
+    padding: 10px;
+}
+.gr-photos__form .custom-file-input:hover{
+    margin: 0;
+    border: 2px solid #0097ae;
+    color: white;
+    background-color: #0097ae;
+    padding: 10px;
+}
+
+.gr-photos__save-button{
+    margin: 0;
+    border: 2px solid #0097ae;
+    color: #0097ae;
+    background-color: unset;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.gr-photos__save-button:hover{
+    margin: 0;
+    border: 2px solid #0097ae;
+    color: white;
+    background-color: #0097ae;
+    padding: 10px;
+    border-radius: 8px;
 }
 
 .gr-photos__title{

@@ -35,16 +35,16 @@ export default function SingleGroupPage() {
 	useEffect(() => {
 		setIsLoaded(false);
 		dispatch(thunkGetSingleGroup(groupId)).then(() => {
-			dispatch(thunkGetGroupMemberships(groupId)).then(() => {
-				dispatch(thunkGetAllGroupEvents(groupId)).then(() => {
-					if (user) {
+			dispatch(thunkGetAllGroupEvents(groupId)).then(() => {
+				if (user) {
+					dispatch(thunkGetGroupMemberships(groupId)).then(() => {
 						dispatch(thunkGetPendingMemberships()).then(() => {
 							setIsLoaded(true);
 						});
-					} else {
-						setIsLoaded(true);
-					}
-				});
+					});
+				} else {
+					setIsLoaded(true);
+				}
 			});
 		});
 		return () => {
