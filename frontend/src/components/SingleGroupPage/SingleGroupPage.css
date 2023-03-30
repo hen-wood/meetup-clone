@@ -568,3 +568,81 @@
 .switch-box__text{
     margin: 0
 }
+
+/* Group Photos Tab */
+.gr-photos__container{
+    border-radius: 8px;
+    padding: 20px;
+    margin: 40px 0;
+    background-color: white;
+}
+
+.gr-photos__top{
+    border-bottom: 1px solid #a8a8a8;
+    margin-bottom: 20px;
+}
+
+.gr-photos__title{
+    font-weight: 400;
+    font-size: 20px;
+    margin: 0;
+}
+
+.gr-photos__album-grid{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(32%, 1fr));
+    gap: 20px;
+}
+
+.gr-photos__card{
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+}
+
+.carousel-root{
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.gr-photos-car__image{
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.gr-photos__album-title{
+    font-weight: 400;
+}
+
+.car-button{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.5);
+    color: #000;
+    border: none;
+    padding: 10px;
+    font-size: 24px;
+    height: 30px;
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.car-button.prev{
+    left: 20px;
+    z-index: 1;
+}
+
+.car-button.next{
+    right: 20px;
+}
+
+.photo-car__arrow{
+    font-size: 14px;
+}

@@ -13,6 +13,7 @@ import GroupAbout from "./GroupAbout";
 import GroupEvents from "./GroupEvents";
 import { thunkGetPendingMemberships } from "../../store/membershipsReducer";
 import GroupMembers from "./GroupMembers";
+import GroupPhotos from "./GroupPhotos";
 
 export default function SingleGroupPage() {
 	const dispatch = useDispatch();
@@ -129,7 +130,7 @@ export default function SingleGroupPage() {
 							organizer={group.Organizer}
 						/>
 					) : (
-						<h1>nothing</h1>
+						<GroupPhotos group={group} events={Object.values(events)} />
 					)}
 				</div>
 			</div>
