@@ -1,5 +1,5 @@
 "use strict";
-const { Model } = require("sequelize");
+const { Model, Op } = require("sequelize");
 const { types } = require("pg");
 module.exports = (sequelize, DataTypes) => {
 	class Event extends Model {
@@ -27,6 +27,11 @@ module.exports = (sequelize, DataTypes) => {
 			Event.hasMany(models.EventImage, {
 				foreignKey: "eventId",
 				onDelete: "CASCADE"
+			});
+
+			Event.hasMany(models.EventImage, {
+				foreignKey: "eventId",
+				as: "images"
 			});
 		}
 	}
@@ -139,11 +144,10 @@ module.exports = (sequelize, DataTypes) => {
 							{
 								model: EventImage,
 								attributes: [],
-								where: {
-									preview: true
-								},
+								where: { preview: true },
 								required: false
 							},
+
 							{
 								model: Group,
 								attributes: {
@@ -200,9 +204,13 @@ module.exports = (sequelize, DataTypes) => {
 							{
 								model: EventImage,
 								attributes: [],
-								where: {
-									preview: true
-								},
+								where: { preview: true },
+								required: false
+							},
+							{
+								model: EventImage,
+								attributes: ["id", "url", "preview"],
+								as: "images",
 								required: false
 							},
 							{
@@ -233,7 +241,13 @@ module.exports = (sequelize, DataTypes) => {
 							}
 						],
 						where: { groupId },
-						group: ["Event.id", "EventImages.url", "Group.id", "Venue.id"]
+						group: [
+							"Event.id",
+							"EventImages.url",
+							"Group.id",
+							"Venue.id",
+							"images.id"
+						]
 					};
 				}
 			}

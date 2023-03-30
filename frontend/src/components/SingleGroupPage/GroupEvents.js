@@ -2,7 +2,7 @@ import { useState } from "react";
 import PastEvents from "./PastEvents";
 import UpcomingEvents from "./UpcomingEvents";
 
-export default function GroupEvents({ events }) {
+export default function GroupEvents({ events, status, isPrivate }) {
 	const [eventList, setEventList] = useState("future");
 
 	const eventsArr = Object.values(events);
@@ -38,7 +38,11 @@ export default function GroupEvents({ events }) {
 			</div>
 			<div className="group-event__cards">
 				{eventList === "future" ? (
-					<UpcomingEvents events={futureEvents} />
+					<UpcomingEvents
+						events={futureEvents}
+						status={status}
+						isPrivate={isPrivate}
+					/>
 				) : (
 					<PastEvents events={pastEvents} />
 				)}

@@ -34,6 +34,8 @@ export default function PastEvents({ events }) {
 		})
 	) : (
 		<div className="no-events__container">
+			<i className="fa-regular fa-calendar no-events-icon"></i>
+
 			<h2 className="no-events__title">No past events</h2>
 		</div>
 	);

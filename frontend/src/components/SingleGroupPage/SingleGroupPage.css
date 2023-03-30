@@ -25,6 +25,14 @@
     max-width: 1070px;
 }
 
+.gr-loading__container{
+    width: 100%;
+    height: 50vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .group-page__top{
     padding: 20px 0;
     display: flex;
@@ -191,7 +199,7 @@
 }
 
 .member-options__menu__button:hover{
-    background-color: #7e7e7e;
+    background-color: #e4e9ed;
 }
 
 /* Group Page Content */
@@ -200,6 +208,7 @@
     display: flex;
     justify-content: center;
     background-color: #f6f7f8;
+    padding: 20px 0;
 }
 
 .group-page-content__inner{
@@ -352,7 +361,9 @@
     align-items: center;
     justify-content: center;
     padding: 50px;
-    margin-top: 20px;
+    /* margin-top: 20px; */
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .ab-members-private__warning{
@@ -399,7 +410,6 @@
 /* Group Events Tab */
 .group-events__container{
     display: flex;
-    margin: 20px 0;
     width: 100%;
 }
 
@@ -445,12 +455,23 @@
     background-color: #f0f1f2;
     border-radius: 8px;
     display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
     width: 100%;
     height: 40vh;
     margin-bottom: 10vh;
 }
 
+.no-events__title{
+    font-weight: 500;
+    margin: 5px;
+}
+
+.no-events-icon{
+    color:#7e7e7e;
+    font-size: 25px;
+}
 
 /* Group Members Tab */
 .gr-members__right{
@@ -535,6 +556,11 @@
     margin: 0;
 }
 
+.member-card__leader-text{
+    margin: 1px 0;
+    font-size: 14px;
+}
+
 .member-card__join-date{
     margin: 0;
     font-weight: 100;
@@ -543,4 +569,119 @@
 
 .switch-box__text{
     margin: 0
+}
+
+/* Group Photos Tab */
+.gr-photos__container{
+    border-radius: 8px;
+    padding: 20px;
+    margin: 40px 0;
+    background-color: white;
+}
+
+.gr-photos__top{
+    border-bottom: 1px solid #a8a8a8;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 20px;
+}
+
+.gr-photos__form .custom-file-input{
+    margin: 0;
+    border: 2px solid #0097ae;
+    color: #0097ae;
+    padding: 10px;
+}
+.gr-photos__form .custom-file-input:hover{
+    margin: 0;
+    border: 2px solid #0097ae;
+    color: white;
+    background-color: #0097ae;
+    padding: 10px;
+}
+
+.gr-photos__save-button{
+    margin: 0;
+    border: 2px solid #0097ae;
+    color: #0097ae;
+    background-color: unset;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.gr-photos__save-button:hover{
+    margin: 0;
+    border: 2px solid #0097ae;
+    color: white;
+    background-color: #0097ae;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.gr-photos__title{
+    font-weight: 400;
+    font-size: 20px;
+    margin: 0;
+}
+
+.gr-photos__album-grid{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(32%, 1fr));
+    gap: 20px;
+}
+
+.gr-photos__card{
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+}
+
+.carousel-root{
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.gr-photos-car__image{
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.gr-photos__album-title{
+    font-weight: 400;
+}
+
+.car-button{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.5);
+    color: #000;
+    border: none;
+    padding: 10px;
+    font-size: 24px;
+    height: 30px;
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.car-button.prev{
+    left: 20px;
+    z-index: 1;
+}
+
+.car-button.next{
+    right: 20px;
+}
+
+.photo-car__arrow{
+    font-size: 14px;
 }

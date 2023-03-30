@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { formatJoinDate } from "./formatJoinDate";
 
-export default function GroupMembers({ isPrivate, members }) {
+export default function GroupMembers({
+	isPrivate,
+	members,
+	organizer,
+	status
+}) {
 	const allMembers = Object.values(members);
 	const leadershipTeam = allMembers.filter(
 		member => member.Membership.status === "co-host"
@@ -56,10 +61,10 @@ export default function GroupMembers({ isPrivate, members }) {
 					<p className="switch-box__text">{leadershipTeam.length}</p>
 				</button>
 			</div>
-			{isPrivate ? (
-				<div className="gr-members__right--private">
+			{isPrivate && (status === "" || status === "pending") ? (
+				<div className="about-members__list--private">
 					<i className="fa-solid fa-lock private-icon"></i>
-					<h2 className="gr-private__warning">
+					<h2 className="ab-members-private__warning">
 						This content is available only to members
 					</h2>
 				</div>
@@ -93,6 +98,13 @@ export default function GroupMembers({ isPrivate, members }) {
 									<p className="member-card__name">
 										{member.firstName} {member.lastName}
 									</p>
+									{member.id === organizer.id ? (
+										<p className="member-card__leader-text">Organizer</p>
+									) : member.Membership.status === "co-host" ? (
+										<p className="member-card__leader-text">Co-organizer</p>
+									) : (
+										<></>
+									)}
 									<p className="member-card__join-date">
 										Joined {formatJoinDate(member.Membership.createdAt)}
 									</p>

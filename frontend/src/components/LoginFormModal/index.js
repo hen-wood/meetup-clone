@@ -1,6 +1,6 @@
 // frontend/src/components/LoginFormModal/index.js
 import React, { useState } from "react";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import * as sessionActions from "../../store/session";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
@@ -10,12 +10,14 @@ import SignupFormModal from "../SignupFormModal";
 
 function LoginFormModal() {
 	const history = useHistory();
-	const redirect = () => history.push("/home");
+	const redirect = path => history.push(path);
 	const dispatch = useDispatch();
 	const [credential, setCredential] = useState("");
 	const [password, setPassword] = useState("");
 	const [errors, setErrors] = useState({});
 	const { closeModal } = useModal();
+	const location = useLocation();
+	const isRootPath = location.pathname === "/";
 
 	const handleSubmit = e => {
 		e.preventDefault();
@@ -25,7 +27,9 @@ function LoginFormModal() {
 				closeModal();
 				const navBar = document.querySelector(".navigation");
 				navBar.className = "navigation splash-exit";
-				redirect();
+				if (isRootPath) {
+					redirect("/home");
+				}
 			})
 			.catch(async res => {
 				const data = await res.json();
@@ -43,7 +47,9 @@ function LoginFormModal() {
 				closeModal();
 				const navBar = document.querySelector(".navigation");
 				navBar.className = "navigation splash-exit";
-				redirect();
+				if (isRootPath) {
+					redirect("/home");
+				}
 			})
 			.catch(async res => {
 				const data = await res.json();

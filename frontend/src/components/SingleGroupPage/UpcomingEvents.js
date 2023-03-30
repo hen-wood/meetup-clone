@@ -1,7 +1,7 @@
 import { useHistory } from "react-router-dom";
 import { formatEventDate } from "./formatEventDate";
 
-export default function UpcomingEvents({ events }) {
+export default function UpcomingEvents({ events, status, isPrivate }) {
 	const history = useHistory();
 	const handleEventClick = eventId => {
 		history.push(`/events/${eventId}`);
@@ -23,9 +23,15 @@ export default function UpcomingEvents({ events }) {
 								{event.venueId && (
 									<div className="gr-about__event-card__stat">
 										<i className="fa-solid fa-location-dot gr-about__event-card__loc__icon"></i>
-										<p className="gr-about__event-card__loc__text">
-											{event.Venue.city}, {event.Venue.state}
-										</p>
+										{!isPrivate || status.length > 0 ? (
+											<p className="gr-about__event-card__loc__text">
+												{event.Venue.city}, {event.Venue.state}
+											</p>
+										) : (
+											<p className="gr-about__event-card__loc__text">
+												Location visible to members
+											</p>
+										)}
 									</div>
 								)}
 							</div>
@@ -49,6 +55,7 @@ export default function UpcomingEvents({ events }) {
 		})
 	) : (
 		<div className="no-events__container">
+			<i className="fa-regular fa-calendar no-events-icon"></i>
 			<h2 className="no-events__title">No upcoming events</h2>
 		</div>
 	);

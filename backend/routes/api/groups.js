@@ -32,6 +32,7 @@ const {
 	requireCorrectUserPermissionsToEditMembership,
 	requireOrganizerOrCoHostOrIsUserToDeleteMember
 } = require("../../utils/authorization");
+const { singleMulterUpload, uploadImageToS3 } = require("../../awsS3");
 
 const router = express.Router();
 
@@ -171,21 +172,23 @@ router.post(
 // Create an image for a group
 router.post(
 	"/:groupId/images",
+	singleMulterUpload("image"),
 	requireAuthentication,
 	checkIfGroupDoesNotExist,
 	requireOrganizerForGroup,
 	async (req, res, next) => {
 		const { groupId } = req.params;
 
-		const { url, preview } = req.body;
+		const url = await uploadImageToS3(req.file);
+
 		const newGroupImage = await GroupImage.create({
 			groupId,
 			url,
-			preview
+			preview: false
 		});
 		const { id } = newGroupImage;
 
-		res.json({ id, url, preview });
+		res.json({ id, url, preview: false });
 	}
 );
 

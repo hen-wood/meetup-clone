@@ -1,0 +1,21 @@
+.warning-modal__container{
+    display: flex;
+    flex-direction: column;
+    max-width: 80%;
+}
+
+.close-warning__button{
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+    color: #a2a2a2;
+    cursor: pointer;
+}
+
+.warning-modal__message{
+    margin: 0;
+    font-size: 22px;
+    font-weight: 400;
+    text-align: center;
+}

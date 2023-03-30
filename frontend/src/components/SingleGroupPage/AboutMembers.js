@@ -1,8 +1,11 @@
-import { useSelector } from "react-redux";
-
-export default function AboutMembers({ members, organizer, isPrivate, group }) {
+export default function AboutMembers({
+	members,
+	organizer,
+	isPrivate,
+	group,
+	status
+}) {
 	const membersArr = Object.values(members);
-	const user = useSelector(state => state.session.user);
 	return (
 		<div className="about-members">
 			<div className="about-members__organizer">
@@ -18,22 +21,7 @@ export default function AboutMembers({ members, organizer, isPrivate, group }) {
 					</p>
 				</div>
 			</div>
-			{user && !isPrivate ? (
-				<div className="about-members__list">
-					<h2 className="about-members__list__title">
-						Members ({membersArr.length})
-					</h2>
-					<div className="about-members__grid">
-						{membersArr.map((member, i) => (
-							<img
-								key={i}
-								src={member.profileImageUrl}
-								className="profile-image--small"
-							/>
-						))}
-					</div>
-				</div>
-			) : (
+			{isPrivate && (status === "" || status === "pending") ? (
 				<div className="about-members__list">
 					<h2 className="about-members__list__title">
 						Members ({group.numMembers})
@@ -43,6 +31,21 @@ export default function AboutMembers({ members, organizer, isPrivate, group }) {
 						<h2 className="ab-members-private__warning">
 							This content is available only to members
 						</h2>
+					</div>
+				</div>
+			) : (
+				<div className="about-members__list">
+					<h2 className="about-members__list__title">
+						Members ({group.numMembers})
+					</h2>
+					<div className="about-members__grid">
+						{membersArr.map((member, i) => (
+							<img
+								key={i}
+								src={member.profileImageUrl}
+								className="profile-image--small"
+							/>
+						))}
 					</div>
 				</div>
 			)}

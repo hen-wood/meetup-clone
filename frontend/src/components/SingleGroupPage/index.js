@@ -13,6 +13,7 @@ import GroupAbout from "./GroupAbout";
 import GroupEvents from "./GroupEvents";
 import { thunkGetPendingMemberships } from "../../store/membershipsReducer";
 import GroupMembers from "./GroupMembers";
+import GroupPhotos from "./GroupPhotos";
 
 export default function SingleGroupPage() {
 	const dispatch = useDispatch();
@@ -32,23 +33,24 @@ export default function SingleGroupPage() {
 	const preview = group.GroupImages?.find(img => img.preview === true).url;
 
 	useEffect(() => {
+		setIsLoaded(false);
 		dispatch(thunkGetSingleGroup(groupId)).then(() => {
-			dispatch(thunkGetGroupMemberships(groupId)).then(() => {
-				dispatch(thunkGetAllGroupEvents(groupId)).then(() => {
-					if (user) {
+			dispatch(thunkGetAllGroupEvents(groupId)).then(() => {
+				if (user) {
+					dispatch(thunkGetGroupMemberships(groupId)).then(() => {
 						dispatch(thunkGetPendingMemberships()).then(() => {
 							setIsLoaded(true);
 						});
-					} else {
-						setIsLoaded(true);
-					}
-				});
+					});
+				} else {
+					setIsLoaded(true);
+				}
 			});
 		});
 		return () => {
 			dispatch(actionResetSingleGroup());
 		};
-	}, [dispatch]);
+	}, [dispatch, user]);
 
 	useEffect(() => {
 		if (user && group.Organizer && members) {
@@ -111,14 +113,29 @@ export default function SingleGroupPage() {
 							group={group}
 							events={events}
 							members={members}
+							status={status}
 							organizer={group.Organizer}
 						/>
 					) : currTab === "Events" ? (
-						<GroupEvents events={events} />
+						<GroupEvents
+							events={events}
+							status={status}
+							isPrivate={group.private}
+						/>
 					) : currTab === "Members" ? (
-						<GroupMembers members={members} isPrivate={group.private} />
+						<GroupMembers
+							members={members}
+							status={status}
+							isPrivate={group.private}
+							organizer={group.Organizer}
+						/>
 					) : (
-						<h1>nothing</h1>
+						<GroupPhotos
+							group={group}
+							events={Object.values(events)}
+							status={status}
+							isPrivate={group.private}
+						/>
 					)}
 				</div>
 			</div>
@@ -126,7 +143,9 @@ export default function SingleGroupPage() {
 	) : (
 		<div className="main-container">
 			<div className="group-page-container">
-				<h1>Loading group...</h1>
+				<div className="gr-loading__container">
+					<h1 className="loading-text">Loading group...</h1>
+				</div>
 			</div>
 		</div>
 	);

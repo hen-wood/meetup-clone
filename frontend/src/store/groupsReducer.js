@@ -180,12 +180,12 @@ export const thunkPostGroup = newGroup => async dispatch => {
 	}
 };
 
-export const thunkPostGroupImage = (image, groupId) => async dispatch => {
+export const thunkPostGroupImage = (formData, groupId) => async dispatch => {
 	const response = await csrfFetch(`/api/groups/${groupId}/images`, {
 		method: "POST",
-		body: JSON.stringify(image),
+		body: formData,
 		headers: {
-			"Content-Type": "application/json"
+			"Content-Type": "multipart/form-data"
 		}
 	});
 
@@ -303,6 +303,15 @@ export default function groupsReducer(state = initialState, action) {
 			state.singleGroup.numMembers--;
 			delete state.groupMembers[action.payload];
 			return newState;
+		case POST_GROUP_IMAGE:
+			return {
+				...state,
+				singleGroup: {
+					...state.singleGroup,
+					GroupImages: [...state.singleGroup.GroupImages, action.payload]
+				}
+			};
+
 		default:
 			return state;
 	}

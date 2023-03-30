@@ -16,3 +16,22 @@ button{
     align-items: center;
     position: relative;
 }
+
+.loading-text{
+    font-weight: 500;
+    animation: slide-in-out 1s ease-in-out infinite;
+}
+
+@keyframes slide-in-out {
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
