@@ -24,7 +24,7 @@ export default function AboutMembers({
 					</p>
 				</div>
 			</div>
-			{isPrivate && status === "" ? (
+			{isPrivate && (status === "" || status === "pending") ? (
 				<div className="about-members__list">
 					<h2 className="about-members__list__title">
 						Members ({group.numMembers})

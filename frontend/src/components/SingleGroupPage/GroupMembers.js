@@ -61,10 +61,10 @@ export default function GroupMembers({
 					<p className="switch-box__text">{leadershipTeam.length}</p>
 				</button>
 			</div>
-			{isPrivate && status === "" ? (
-				<div className="gr-members__right--private">
+			{isPrivate && (status === "" || status === "pending") ? (
+				<div className="about-members__list--private">
 					<i className="fa-solid fa-lock private-icon"></i>
-					<h2 className="gr-private__warning">
+					<h2 className="ab-members-private__warning">
 						This content is available only to members
 					</h2>
 				</div>

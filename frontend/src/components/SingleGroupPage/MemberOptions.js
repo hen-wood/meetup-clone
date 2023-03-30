@@ -108,14 +108,11 @@ export default function MemberOptions({ status, setStatus }) {
 				modalComponent={
 					<WarningModal
 						callBack={handleDeleteGroup}
-						message={`Delete ${group.name}?`}
+						message={`Are you sure you want to delete ${group.name}?`}
 						confirmMessage={"Delete group"}
 					/>
 				}
 			/>
-			{/* <button className="member-options__menu__button" onClick={handleDelete}>
-				Delete group
-			</button> */}
 			<button className="member-options__menu__button" onClick={handleEdit}>
 				Edit group
 			</button>
@@ -136,34 +133,49 @@ export default function MemberOptions({ status, setStatus }) {
 			>
 				Add event
 			</button>
-			<button
-				className="member-options__menu__button"
-				onClick={handleDeleteMembership}
-			>
-				Leave group
-			</button>
+			<OpenModalMenuItem
+				itemText="Leave group"
+				className={"member-options__menu__button"}
+				modalComponent={
+					<WarningModal
+						callBack={handleDeleteMembership}
+						message={`Are you sure you want to leave ${group.name}?`}
+						confirmMessage={"Leave group"}
+					/>
+				}
+			/>
 		</div>
 	);
 
 	const pendingOptions = (
 		<div className="member-options__menu__inner">
-			<button
-				className="member-options__menu__button"
-				onClick={handleDeletePendingMembership}
-			>
-				Delete membership request
-			</button>
+			<OpenModalMenuItem
+				itemText="Delete request"
+				className={"member-options__menu__button"}
+				modalComponent={
+					<WarningModal
+						callBack={handleDeletePendingMembership}
+						message={`Are you sure you want to delete your membership request?`}
+						confirmMessage={"Delete request"}
+					/>
+				}
+			/>
 		</div>
 	);
 
 	const memberOptions = (
 		<div className="member-options__menu__inner">
-			<button
-				className="member-options__menu__button"
-				onClick={handleDeleteMembership}
-			>
-				Leave group
-			</button>
+			<OpenModalMenuItem
+				itemText="Leave group"
+				className={"member-options__menu__button"}
+				modalComponent={
+					<WarningModal
+						callBack={handleDeleteMembership}
+						message={`Are you sure you want to leave ${group.name}?`}
+						confirmMessage={"Leave group"}
+					/>
+				}
+			/>
 		</div>
 	);
 

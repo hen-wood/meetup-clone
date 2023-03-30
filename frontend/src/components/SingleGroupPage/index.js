@@ -130,7 +130,12 @@ export default function SingleGroupPage() {
 							organizer={group.Organizer}
 						/>
 					) : (
-						<GroupPhotos group={group} events={Object.values(events)} />
+						<GroupPhotos
+							group={group}
+							events={Object.values(events)}
+							status={status}
+							isPrivate={group.private}
+						/>
 					)}
 				</div>
 			</div>

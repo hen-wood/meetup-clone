@@ -2,7 +2,7 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { formatEventDate } from "./formatEventDate";
 
-export default function GroupPhotos({ group, events }) {
+export default function GroupPhotos({ group, events, status, isPrivate }) {
 	const albums = [
 		{ title: "Meetdown Group Photo Album", photos: group.GroupImages },
 		...events.map(event => {
@@ -40,7 +40,14 @@ export default function GroupPhotos({ group, events }) {
 			</button>
 		);
 
-	return (
+	return isPrivate && (status === "" || status === "pending") ? (
+		<div className="about-members__list--private">
+			<i className="fa-solid fa-lock private-icon"></i>
+			<h2 className="ab-members-private__warning">
+				This content is available only to members
+			</h2>
+		</div>
+	) : (
 		<div className="gr-photos__container">
 			<div className="gr-photos__top">
 				<h2 className="gr-photos__title">Albums ({albums.length})</h2>
