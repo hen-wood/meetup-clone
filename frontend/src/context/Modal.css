@@ -75,6 +75,23 @@
     overflow-y: auto;
 }
 
+#modal-content form::-webkit-scrollbar {
+    width: 8px;
+}
+
+#modal-content form::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+}
+
+#modal-content form::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 4px;
+}
+
+#modal-content form::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}
+
 #modal-content label {
     margin-bottom: 10px;
     font-size: 16px;
@@ -83,7 +100,7 @@
 
 #modal-content input {
     height: 48px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     border-radius: 10px;
     border: 1px solid rgb(209, 209, 209);
     padding: 0 10px;
@@ -108,6 +125,7 @@
     border-radius: 10px;
     font-size: 20px;
     font-weight: 600;
+    margin-top: 20px;
 }
 
 #modal-content button:hover {
@@ -127,11 +145,40 @@
     cursor: pointer;
 }
 
-#label-input-div {
+.label-input-div {
     display: flex;
     flex-direction: column;
     margin-bottom: 5px;
 }
+
+.image-upload-input{
+    display: none;
+}
+
+.custom-file-input{
+    border-radius: 10px;
+    border: 1px solid rgb(209, 209, 209);
+    padding: 15px 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.upload-file-icon{
+    margin-right: 10px;
+}
+
+.custom-file-input:hover{
+    border: .5px solid rgb(148, 148, 148);
+}
+
+.custom-file-input:active{
+    outline: none;
+    border: 1px solid rgb(75, 163, 175);
+}
+
 
 @keyframes modal-content-enter {
     from {

@@ -206,7 +206,7 @@ module.exports = (sequelize, DataTypes) => {
 							{
 								model: User,
 								as: "Organizer",
-								attributes: ["id", "firstName", "lastName"]
+								attributes: ["id", "firstName", "lastName", "profileImageUrl"]
 							},
 							{
 								model: Venue,

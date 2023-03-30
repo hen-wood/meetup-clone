@@ -360,20 +360,34 @@ const requireOrganizerOrCoHostOrIsUser = async (req, res, next) => {
 };
 
 const checkIfUserAlreadyExists = async (req, res, next) => {
-	const { email } = req.body;
+	console.log(req.body);
+	const { email, username } = req.body;
 	let existingUser;
 	if (email) {
 		existingUser = await User.findOne({
 			where: {
-				email
-			}
+				[Op.or]: [{ email }, { username }]
+			},
+			attributes: ["email", "username"]
 		});
 	}
+	console.log(existingUser);
 	if (existingUser) {
-		const err = new Error("User with that email already exists");
-		err.status = 403;
-		return next(err);
+		if (existingUser.email === email && existingUser.username === username) {
+			const err = new Error("User with that email and username already exists");
+			err.status = 403;
+			return next(err);
+		} else if (existingUser.email === email) {
+			const err = new Error("User with that email already exists");
+			err.status = 403;
+			return next(err);
+		} else if (existingUser.username === username) {
+			const err = new Error("User with that username already exists");
+			err.status = 403;
+			return next(err);
+		}
 	}
+
 	next();
 };
 

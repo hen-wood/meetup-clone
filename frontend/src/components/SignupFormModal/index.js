@@ -16,6 +16,7 @@ function SignupFormModal() {
 	const [lastName, setLastName] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
+	const [image, setImage] = useState(null);
 	const [errors, setErrors] = useState({});
 	const { closeModal } = useModal();
 
@@ -23,15 +24,16 @@ function SignupFormModal() {
 		e.preventDefault();
 		if (password === confirmPassword) {
 			setErrors([]);
-			return dispatch(
-				sessionActions.signup({
-					email,
-					username,
-					firstName,
-					lastName,
-					password
-				})
-			)
+			const formData = new FormData();
+			if (image) {
+				formData.append("image", image);
+			}
+			formData.append("email", email);
+			formData.append("username", username);
+			formData.append("firstName", firstName);
+			formData.append("lastName", lastName);
+			formData.append("password", password);
+			return dispatch(sessionActions.signup(formData))
 				.then(() => {
 					closeModal();
 					const navBar = document.querySelector(".navigation");
@@ -48,6 +50,11 @@ function SignupFormModal() {
 		return setErrors([
 			"Confirm Password field must be the same as the Password field"
 		]);
+	};
+
+	const updateFile = e => {
+		const file = e.target.files[0];
+		if (file) setImage(file);
 	};
 	const errorKeys = Object.keys(errors);
 	return (
@@ -74,65 +81,71 @@ function SignupFormModal() {
 					/>
 				</span>
 			</div>
+			<div id="signup-errors">
+				{errorKeys.map(key => (
+					<p key={key}>{errors[key]}</p>
+				))}
+			</div>
 			<form onSubmit={handleSubmit} id="signup-form">
-				<div id="signup-errors">
-					{errorKeys.map(key => (
-						<p key={key}>{errors[key]}</p>
-					))}
-				</div>
-				<div id="label-input-div">
+				<div className="label-input-div">
 					<label htmlFor="email">Email</label>
 					<input
 						type="text"
+						id="email"
 						name="email"
 						value={email}
 						onChange={e => setEmail(e.target.value)}
 						required
 					/>
 				</div>
-				<div id="label-input-div">
+				<div className="label-input-div">
 					<label htmlFor="username">Username</label>
 					<input
 						type="text"
+						id="username"
 						name="username"
 						value={username}
 						onChange={e => setUsername(e.target.value)}
 						required
 					/>
 				</div>
-				<div id="label-input-div">
+				<div className="label-input-div">
 					<label htmlFor="first-name">First Name</label>
 					<input
 						type="text"
+						id="first-name"
 						name="first-name"
 						value={firstName}
 						onChange={e => setFirstName(e.target.value)}
 						required
 					/>
 				</div>
-				<div id="label-input-div">
+				<div className="label-input-div">
 					<label htmlFor="last-name">Last Name</label>
 					<input
 						type="text"
+						id="last-name"
 						name="last-name"
 						value={lastName}
 						onChange={e => setLastName(e.target.value)}
 						required
 					/>
 				</div>
-				<div id="label-input-div">
+				<div className="label-input-div">
 					<label htmlFor="password">Password</label>
 					<input
 						type="password"
+						id="password"
 						name="password"
 						value={password}
 						onChange={e => setPassword(e.target.value)}
 						required
 					/>
 				</div>
-				<div id="label-input-div">
+				<div className="label-input-div">
 					<label htmlFor="confirm-password">Confirm Password</label>
 					<input
+						id="confirm-password"
 						name="confirm-password"
 						type="password"
 						value={confirmPassword}
@@ -140,6 +153,17 @@ function SignupFormModal() {
 						required
 					/>
 				</div>
+				<label htmlFor="image-upload-input" className="custom-file-input">
+					<i className="fa fa-cloud-upload upload-file-icon"></i> Upload profile
+					picture (optional)
+				</label>
+				<input
+					id="image-upload-input"
+					name="image-upload-input"
+					className="image-upload-input"
+					type="file"
+					onChange={updateFile}
+				/>
 				<div>
 					<button type="submit">Sign Up</button>
 				</div>
