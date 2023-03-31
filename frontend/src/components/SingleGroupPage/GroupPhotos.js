@@ -70,6 +70,12 @@ export default function GroupPhotos({ group, events, status, isPrivate }) {
 		});
 	};
 
+	useEffect(() => {
+		if (image) {
+			saveGroupPhoto();
+		}
+	}, [image]);
+
 	const openPhoto = (idx, img) => {
 		setModalContent(<PhotoModal img={img} />);
 	};
@@ -90,26 +96,21 @@ export default function GroupPhotos({ group, events, status, isPrivate }) {
 		<div className="gr-photos__container">
 			<div className="gr-photos__top">
 				<h2 className="gr-photos__title">Albums ({albums.length})</h2>
-				{status === "organizer" && !image && (
+				{status === "organizer" && (
 					<div className="gr-photos__form">
 						<label htmlFor="image-upload-input" className="custom-file-input">
-							<i className="fa fa-cloud-upload upload-file-icon"></i> Upload
-							photo to group album
+							<i className="fa fa-cloud-upload upload-file-icon"></i>
+							{image ? "Uploading photo..." : "Upload photo to group album"}
 						</label>
 						<input
 							id="image-upload-input"
 							name="image-upload-input"
 							className="image-upload-input"
 							type="file"
+							accept="image/png, image/jpeg, image/gif, image/webp, image/bmp, image/svg+xml"
 							onChange={updateFile}
 						/>
 					</div>
-				)}
-				{image && (
-					<button className="gr-photos__save-button" onClick={saveGroupPhoto}>
-						<i className="fa-solid fa-floppy-disk upload-file-icon"></i>
-						Save group photo
-					</button>
 				)}
 			</div>
 			<div className="gr-photos__album-grid">
@@ -121,6 +122,7 @@ export default function GroupPhotos({ group, events, status, isPrivate }) {
 							renderArrowNext={renderArrowNext}
 							showIndicators={false}
 							onClickItem={openPhoto}
+							selectedItem={albumObj.photos.length - 1}
 						>
 							{albumObj.photos.map((photo, i) => (
 								<img
