@@ -258,6 +258,7 @@ export default function groupsReducer(state = initialState, action) {
 			newState = { ...state };
 			const { id } = action.payload;
 			newState.allGroups[id] = action.payload;
+			newState.singleGroup = action.payload;
 			return newState;
 		case ADD_MEMBERSHIP:
 			newState = {
@@ -304,13 +305,23 @@ export default function groupsReducer(state = initialState, action) {
 			delete state.groupMembers[action.payload];
 			return newState;
 		case POST_GROUP_IMAGE:
-			return {
-				...state,
-				singleGroup: {
-					...state.singleGroup,
-					GroupImages: [...state.singleGroup.GroupImages, action.payload]
-				}
-			};
+			if (!state.singleGroup.GroupImages) {
+				return {
+					...state,
+					singleGroup: {
+						...state.singleGroup,
+						GroupImages: [{ ...action.payload, preview: true }]
+					}
+				};
+			} else {
+				return {
+					...state,
+					singleGroup: {
+						...state.singleGroup,
+						GroupImages: [...state.singleGroup.GroupImages, action.payload]
+					}
+				};
+			}
 
 		default:
 			return state;

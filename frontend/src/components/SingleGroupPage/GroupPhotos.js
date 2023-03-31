@@ -9,7 +9,7 @@ import PhotoModal from "../PhotoModal";
 
 export default function GroupPhotos({ group, events, status, isPrivate }) {
 	const dispatch = useDispatch();
-	const { setModalContent, setOnModalClose } = useModal();
+	const { setModalContent } = useModal();
 	const [image, setImage] = useState(null);
 	const [albums, setAlbums] = useState([
 		{ title: "Meetdown Group Photo Album", photos: group.GroupImages },
@@ -65,6 +65,7 @@ export default function GroupPhotos({ group, events, status, isPrivate }) {
 	const saveGroupPhoto = () => {
 		const formData = new FormData();
 		formData.append("image", image);
+		formData.append("preview", false);
 		dispatch(thunkPostGroupImage(formData, group.id)).then(() => {
 			setImage(null);
 		});

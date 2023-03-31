@@ -178,13 +178,14 @@ router.post(
 	requireOrganizerForGroup,
 	async (req, res, next) => {
 		const { groupId } = req.params;
+		const { preview } = req.body;
 
 		const url = await uploadImageToS3(req.file);
 
 		const newGroupImage = await GroupImage.create({
 			groupId,
 			url,
-			preview: false
+			preview
 		});
 		const { id } = newGroupImage;
 

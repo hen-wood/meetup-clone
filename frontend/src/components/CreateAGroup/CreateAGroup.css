@@ -102,6 +102,10 @@
     cursor: default;
 }
 
+#create-group-form .custom-file-input{
+    margin-top: 25px;
+}
+
 .create-group-errors{
     margin: 3px 0;
     color: red;

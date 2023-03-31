@@ -13,9 +13,9 @@ export default function CreateAGroup() {
 	const [privacy, setPrivacy] = useState(false);
 	const [city, setCity] = useState("");
 	const [state, setState] = useState("");
-	const [previewImageUrl, setPreviewImageUrl] = useState("");
 	const [onlineChecked, setOnlineChecked] = useState(true);
 	const [publicChecked, setPublicChecked] = useState(true);
+	const [image, setImage] = useState(null);
 
 	const [errors, setErrors] = useState({});
 	const history = useHistory();
@@ -26,8 +26,7 @@ export default function CreateAGroup() {
 
 		const valErrors = {};
 
-		if (!previewImageUrl.length)
-			valErrors.previewImageUrl = "Preview Image is required";
+		if (!image) valErrors.previewImage = "Preview Image is required";
 		if (!name.length) valErrors.name = "Name is required";
 		if (name.length > 60)
 			valErrors.name = "Name must be shorter than 60 characters";
@@ -60,14 +59,13 @@ export default function CreateAGroup() {
 			state: state.toUpperCase()
 		};
 
-		const newImage = {
-			url: previewImageUrl,
-			preview: true
-		};
+		const formData = new FormData();
+		formData.append("image", image);
+		formData.append("preview", true);
 
 		dispatch(thunkPostGroup(newGroup))
 			.then(res => {
-				dispatch(thunkPostGroupImage(newImage, res.id))
+				dispatch(thunkPostGroupImage(formData, res.id))
 					.then(() => {
 						redirect(`/groups/${res.id}`);
 					})
@@ -80,6 +78,11 @@ export default function CreateAGroup() {
 				const data = await res.json();
 				setErrors(data.errors);
 			});
+	};
+
+	const updateFile = e => {
+		const file = e.target.files[0];
+		if (file) setImage(file);
 	};
 	return (
 		<div id="create-group-outer-container">
@@ -181,13 +184,18 @@ export default function CreateAGroup() {
 					{errors.state && (
 						<p className="create-group-errors">{errors.state}</p>
 					)}
-					<label htmlFor="group-preview-image">Preview Image URL</label>
+					<label htmlFor="image-upload-input" className="custom-file-input">
+						<i className="fa fa-cloud-upload upload-file-icon"></i> Upload group
+						preview image
+					</label>
 					<input
-						id="group-preview-image"
-						type="url"
-						onChange={e => setPreviewImageUrl(e.target.value)}
+						id="image-upload-input"
+						name="image-upload-input"
+						className="image-upload-input"
+						type="file"
+						onChange={updateFile}
 					/>
-					{errors.previewImageUrl && (
+					{errors.previewImage && (
 						<p className="create-group-errors">{errors.previewImageUrl}</p>
 					)}
 					<button type="submit">Submit</button>
