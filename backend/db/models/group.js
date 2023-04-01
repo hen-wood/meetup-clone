@@ -144,15 +144,6 @@ module.exports = (sequelize, DataTypes) => {
 					} = require("../models");
 					const { Op } = require("sequelize");
 					return {
-						attributes: {
-							include: [
-								[
-									sequelize.fn("COUNT", sequelize.col("Memberships.id")),
-									"numMembers"
-								],
-								[sequelize.col("GroupImages.url"), "previewImage"]
-							]
-						},
 						include: [
 							{
 								model: Membership,
@@ -176,7 +167,7 @@ module.exports = (sequelize, DataTypes) => {
 							},
 							{
 								model: GroupImage,
-								attributes: [],
+								attributes: ["url", "preview"],
 								where: {
 									preview: true
 								},
@@ -189,19 +180,12 @@ module.exports = (sequelize, DataTypes) => {
 									{
 										model: Attendance,
 										as: "Attendances",
-										attributes: ["userId"]
+										attributes: ["userId"],
+										required: false
 									},
-									{ model: EventImage }
+									{ model: EventImage, required: false }
 								]
 							}
-						],
-						group: [
-							"Group.id",
-							"GroupImages.url",
-							"Members.Membership.id",
-							"Events.id",
-							"Events.Attendances.id",
-							"Events.Attendances.EventImages.id"
 						]
 					};
 				},
