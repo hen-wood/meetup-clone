@@ -134,7 +134,13 @@ module.exports = (sequelize, DataTypes) => {
 					};
 				},
 				currentUserGroups(userId) {
-					const { Membership, GroupImage, User } = require("../models");
+					const {
+						Membership,
+						GroupImage,
+						User,
+						Event,
+						Attendance
+					} = require("../models");
 					const { Op } = require("sequelize");
 					return {
 						attributes: {
@@ -174,6 +180,15 @@ module.exports = (sequelize, DataTypes) => {
 									preview: true
 								},
 								required: false
+							},
+							{
+								model: Event,
+								required: false,
+								include: {
+									model: Attendance,
+									as: "Attendances",
+									attributes: ["userId"]
+								}
 							}
 						],
 						group: ["Group.id", "GroupImages.url", "Members.Membership.id"]
