@@ -200,7 +200,8 @@ module.exports = (sequelize, DataTypes) => {
 							"GroupImages.url",
 							"Members.Membership.id",
 							"Events.id",
-							"Events.Attendances.id"
+							"Events.Attendances.id",
+							"Events.Attendances.EventImages.id"
 						]
 					};
 				},
