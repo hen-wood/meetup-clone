@@ -16,6 +16,8 @@ import GroupMembers from "./GroupMembers";
 import GroupPhotos from "./GroupPhotos";
 
 export default function SingleGroupPage() {
+	const navBar = document.querySelector(".navigation");
+	navBar.className = "navigation splash-exit";
 	const dispatch = useDispatch();
 	const { groupId } = useParams();
 	const [isLoaded, setIsLoaded] = useState(false);

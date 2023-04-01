@@ -3,7 +3,7 @@
 }
 
 .individual-group-container{
-    height: 180px;
+    height: 120px;
     border-bottom: 1px solid #d9d9d9;
     display: flex;
     padding: 12px 0;
@@ -18,7 +18,7 @@
 .individual-group-container:hover,
 .individual-user-group-container:hover{
     cursor: pointer;
-    padding: 12px 4px;
+    /* padding: 12px 4px; */
     opacity: .7;
 }
 

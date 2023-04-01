@@ -14,11 +14,13 @@ export default function GroupPhotos({ group, events, status, isPrivate }) {
 	const [albums, setAlbums] = useState([
 		{ title: "Meetdown Group Photo Album", photos: group.GroupImages },
 		...events.map(event => {
+			const albumDate = formatEventDate(event.startDate);
 			return {
-				title: `${event.name} (${formatEventDate(event.startDate).slice(
-					5,
-					17
-				)})`,
+				title: `${event.name} (${
+					albumDate[16] === ","
+						? albumDate.slice(5, 16)
+						: albumDate.slice(5, 17)
+				})`,
 				photos: event.images
 			};
 		})
@@ -27,11 +29,13 @@ export default function GroupPhotos({ group, events, status, isPrivate }) {
 		setAlbums([
 			{ title: "Meetdown Group Photo Album", photos: group.GroupImages },
 			...events.map(event => {
+				const albumDate = formatEventDate(event.startDate);
 				return {
-					title: `${event.name} (${formatEventDate(event.startDate).slice(
-						5,
-						17
-					)})`,
+					title: `${event.name} (${
+						albumDate[16] === ","
+							? albumDate.slice(5, 16)
+							: albumDate.slice(5, 17)
+					})`,
 					photos: event.images
 				};
 			})

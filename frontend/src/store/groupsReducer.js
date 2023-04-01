@@ -1,4 +1,5 @@
 import { csrfFetch } from "./csrf";
+import { actionGetUserEvents } from "./eventsReducer";
 
 const GET_ALL_GROUPS = "groups/GET_ALL_GROUPS";
 const GET_USER_GROUPS = "groups/GET_USER_GROUPS";
@@ -131,6 +132,7 @@ export const thunkGetUserGroups = () => async dispatch => {
 	if (response.ok) {
 		const data = await response.json();
 		dispatch(actionGetUserGroups(data.Groups));
+		dispatch(actionGetUserEvents(data.Groups));
 		return data;
 	}
 };

@@ -2,6 +2,7 @@ import { csrfFetch } from "./csrf";
 
 const GET_ALL_EVENTS = "events/GET_ALL_EVENTS";
 const GET_ALL_GROUP_EVENTS = "events/GET_ALL_GROUP_EVENTS";
+const GET_ALL_USER_GROUP_EVENTS = "events/GET_ALL_USER_GROUP_EVENTS";
 const GET_EVENT_DETAILS = "events/GET_EVENT_DETAILS";
 const POST_EVENT = "events/POST_EVENT";
 const POST_EVENT_IMAGE = "events/POST_EVENT_IMAGE";
@@ -29,6 +30,20 @@ const actionGetGroupEvents = allGroupEvents => {
 	return {
 		type: GET_ALL_GROUP_EVENTS,
 		payload: allGroupEventsObj
+	};
+};
+
+export const actionGetUserEvents = userGroups => {
+	const userEventsObj = {};
+	userGroups.forEach(group => {
+		const { Events } = group;
+		Events.forEach(event => {
+			userEventsObj[event.id] = event;
+		});
+	});
+	return {
+		type: GET_ALL_USER_GROUP_EVENTS,
+		payload: userEventsObj
 	};
 };
 
@@ -155,6 +170,7 @@ const initialState = {
 	allEvents: {},
 	singleEvent: {},
 	allGroupEvents: {},
+	allUserGroupEvents: {},
 	eventImages: {}
 };
 
@@ -170,6 +186,11 @@ export default function eventsReducer(state = initialState, action) {
 			newState.allGroupEvents = { ...state.allGroupEvents };
 			newState.allGroupEvents = action.payload;
 			return newState;
+		case GET_ALL_USER_GROUP_EVENTS:
+			return {
+				...state,
+				allUserGroupEvents: { ...state.allUserGroupEvents, ...action.payload }
+			};
 		case GET_EVENT_DETAILS:
 			newState = { ...state };
 			newState.singleEvent = { ...state.singleEvent };
