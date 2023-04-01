@@ -8,7 +8,7 @@ import Groups from "./Groups";
 import Events from "./Events";
 export default function EventsGroups({ activeTab }) {
 	const navBar = document.querySelector(".navigation");
-	navBar.className = "navigation splash-exit";
+	navBar.className = "navigation event-groups-nav splash-exit";
 	const groupEventsDiv = useRef(null);
 	const [atBottom, setAtBottom] = useState(false);
 
