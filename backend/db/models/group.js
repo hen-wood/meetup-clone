@@ -139,7 +139,8 @@ module.exports = (sequelize, DataTypes) => {
 						GroupImage,
 						User,
 						Event,
-						Attendance
+						Attendance,
+						EventImage
 					} = require("../models");
 					const { Op } = require("sequelize");
 					return {
@@ -184,14 +185,23 @@ module.exports = (sequelize, DataTypes) => {
 							{
 								model: Event,
 								required: false,
-								include: {
-									model: Attendance,
-									as: "Attendances",
-									attributes: ["userId"]
-								}
+								include: [
+									{
+										model: Attendance,
+										as: "Attendances",
+										attributes: ["userId"]
+									},
+									{ model: EventImage }
+								]
 							}
 						],
-						group: ["Group.id", "GroupImages.url", "Members.Membership.id"]
+						group: [
+							"Group.id",
+							"GroupImages.url",
+							"Members.Membership.id",
+							"Events.id",
+							"Events.Attendances.id"
+						]
 					};
 				},
 				singleGroup() {
