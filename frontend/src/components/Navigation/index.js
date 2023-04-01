@@ -11,7 +11,14 @@ import Logo from "../SVGComponents/Logo";
 function Navigation({ isLoaded }) {
 	const sessionUser = useSelector(state => state.session.user);
 	const content = sessionUser ? (
-		isLoaded && <ProfileButton user={sessionUser} />
+		isLoaded && (
+			<div className="logged-in-user-nav">
+				<Link className="start-group-link" to="/create-group">
+					Start a group - 100% off!
+				</Link>
+				<ProfileButton user={sessionUser} />
+			</div>
+		)
 	) : (
 		<div className="login-signup-container">
 			<OpenModalMenuItem

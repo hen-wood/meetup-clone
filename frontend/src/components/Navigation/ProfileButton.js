@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import * as sessionActions from "../../store/session";
 import { useHistory } from "react-router";
@@ -44,7 +45,7 @@ function ProfileButton({ user }) {
 	const handleHomeClick = () => {
 		closeMenu();
 		const navBar = document.querySelector(".navigation");
-		navBar.className = "navigation splash-exit";
+		navBar.className = "navigation event-groups-nav splash-exit";
 		redirectHome();
 	};
 
@@ -58,9 +59,14 @@ function ProfileButton({ user }) {
 					src={user.profileImageUrl}
 					alt={user.username}
 				/>
-				{/* <i id="profile-button" className="fas fa-user-circle" /> */}
 				<i id="drop-down-chevron" className={chevronClassName} />
 				<div className={menuClassName} ref={ulRef}>
+					<Link className="drop-down-link" to="/all-groups" onClick={closeMenu}>
+						See all groups
+					</Link>
+					<Link className="drop-down-link" to="/all-events" onClick={closeMenu}>
+						See all events
+					</Link>
 					<p className="drop-down-link" onClick={handleHomeClick}>
 						Home
 					</p>

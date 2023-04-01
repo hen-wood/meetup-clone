@@ -6,6 +6,8 @@ import { thunkGetUserGroups } from "../../store/groupsReducer";
 import * as sessionActions from "../../store/session";
 
 export default function HomePage() {
+	const navBar = document.querySelector(".navigation");
+	navBar.className = "navigation event-groups-nav splash-exit";
 	const history = useHistory();
 	const redirectSingleGroup = groupId => history.push(`/groups/${groupId}`);
 	const dispatch = useDispatch();
@@ -76,9 +78,6 @@ export default function HomePage() {
 							<h2>Welcome, {user.firstName + "👋"}</h2>
 						</div>
 						<div id="user-links">
-							<Link className="user-link" to="create-group">
-								Start a new group
-							</Link>
 							<Link className="user-link" to="/all-groups">
 								See all groups
 							</Link>
