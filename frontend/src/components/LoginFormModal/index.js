@@ -1,4 +1,3 @@
-// frontend/src/components/LoginFormModal/index.js
 import React, { useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import * as sessionActions from "../../store/session";

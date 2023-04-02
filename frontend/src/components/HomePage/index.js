@@ -16,17 +16,18 @@ export default function HomePage() {
 	const [isLoaded, setIsLoaded] = useState(false);
 
 	useEffect(() => {
-		dispatch(sessionActions.restoreUser()).then(async res => {
-			const user = await res;
-			dispatch(thunkGetUserGroups(user.id))
-				.then(() => {
-					setIsLoaded(true);
-				})
-				.catch(() => {
+		console.log({ user });
+		if (user)
+			dispatch(thunkGetUserGroups(user.id)).then(() => {
+				setIsLoaded(true);
+			});
+		else
+			dispatch(sessionActions.restoreUser()).then(data => {
+				if (!data.user) {
 					history.push("/");
-				});
-		});
-	}, [dispatch]);
+				}
+			});
+	}, [dispatch, user]);
 
 	const userGroups = useSelector(state => state.groups.userGroups);
 

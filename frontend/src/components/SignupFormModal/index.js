@@ -6,6 +6,7 @@ import SmallLogo from "../SVGComponents/SmallLogo";
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
 import LoginFormModal from "../LoginFormModal";
 import { useHistory } from "react-router-dom";
+import { thunkGetUserGroups } from "../../store/groupsReducer";
 function SignupFormModal() {
 	const dispatch = useDispatch();
 	const history = useHistory();
@@ -35,10 +36,12 @@ function SignupFormModal() {
 			formData.append("password", password);
 			return dispatch(sessionActions.signup(formData))
 				.then(() => {
-					closeModal();
-					const navBar = document.querySelector(".navigation");
-					navBar.className = "navigation splash-exit";
-					redirect();
+					dispatch(thunkGetUserGroups()).then(() => {
+						closeModal();
+						const navBar = document.querySelector(".navigation");
+						navBar.className = "navigation splash-exit";
+						redirect();
+					});
 				})
 				.catch(async res => {
 					const data = await res.json();
