@@ -45,6 +45,10 @@ export default function UserGroupEvents({ eventsObj, groupsObj }) {
 					<h3 className="user-group-events__title">Your groups</h3>
 					<div className="your-groups__container">
 						{Object.values(groupsObj).map(group => {
+							const preview = group.GroupImages.find(
+								img => img.preview === true
+							);
+							console.log(preview);
 							return (
 								<div
 									className="your-groups-card"
@@ -52,7 +56,7 @@ export default function UserGroupEvents({ eventsObj, groupsObj }) {
 								>
 									<img
 										className="your-groups-card__image"
-										src={group.previewImage}
+										src={preview ? preview.url : ""}
 										alt={group.name}
 									/>
 									<p>{group.name}</p>
