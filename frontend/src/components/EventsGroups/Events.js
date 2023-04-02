@@ -83,7 +83,9 @@ export default function Events({ atBottom }) {
 		<div id="group-event-list-container">{content}</div>
 	) : (
 		<div id="group-event-list-container">
-			<h1>Loading events...</h1>
+			<div className="gr-loading__container">
+				<h1 className="loading-text">Loading events...</h1>
+			</div>
 		</div>
 	);
 }

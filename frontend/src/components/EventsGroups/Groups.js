@@ -75,7 +75,9 @@ export default function Groups() {
 		<div id="group-event-list-container">{content}</div>
 	) : (
 		<div id="group-event-list-container">
-			<h1>Loading groups...</h1>
+			<div className="gr-loading__container">
+				<h1 className="loading-text">Loading groups...</h1>
+			</div>
 		</div>
 	);
 }

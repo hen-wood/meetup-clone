@@ -154,17 +154,38 @@ function SignupFormModal() {
 						required
 					/>
 				</div>
-				<label htmlFor="image-upload-input" className="custom-file-input">
-					<i className="fa fa-cloud-upload upload-file-icon"></i> Upload profile
-					picture (optional)
-				</label>
-				<input
-					id="image-upload-input"
-					name="image-upload-input"
-					className="image-upload-input"
-					type="file"
-					onChange={updateFile}
-				/>
+				{!image ? (
+					<>
+						<label htmlFor="image-upload-input" className="custom-file-input">
+							<i className="fa fa-cloud-upload upload-file-icon"></i> Upload
+							profile picture (optional)
+						</label>
+						<input
+							id="image-upload-input"
+							name="image-upload-input"
+							className="image-upload-input"
+							type="file"
+							onChange={updateFile}
+						/>
+					</>
+				) : (
+					<>
+						<label
+							htmlFor="image-upload-input"
+							className="custom-file-input custom-file-input--loaded"
+						>
+							<i className="fa fa-check upload-file-icon"></i> Upload profile
+							picture (optional)
+						</label>
+						<input
+							id="image-upload-input"
+							name="image-upload-input"
+							className="image-upload-input"
+							type="file"
+							onChange={updateFile}
+						/>
+					</>
+				)}
 				<div>
 					<button type="submit">Sign Up</button>
 				</div>
