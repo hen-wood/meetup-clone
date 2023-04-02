@@ -126,6 +126,8 @@ export default function SingleGroupPage() {
 						/>
 					) : currTab === "Members" ? (
 						<GroupMembers
+							user={user}
+							group={group}
 							members={members}
 							status={status}
 							isPrivate={group.private}
