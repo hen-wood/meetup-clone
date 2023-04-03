@@ -14,6 +14,7 @@ const POST_GROUP_IMAGE = "groupImages/POST_GROUP_IMAGE";
 const DELETE_GROUP = "groups/DELETE_GROUP";
 const DELETE_MEMBERSHIP = "groups/DELETE_MEMBERSHIP";
 const RESET_SINGLE_GROUP = "groups/RESET_SINGLE_GROUP";
+const RESET_GROUPS = "groups/RESET_GROUPS";
 
 // Action creators
 
@@ -121,6 +122,10 @@ export const actionResetSingleGroup = () => {
 	return {
 		type: RESET_SINGLE_GROUP
 	};
+};
+
+export const actionResetGroups = () => {
+	return { type: RESET_GROUPS };
 };
 
 // Thunks
@@ -379,6 +384,8 @@ export default function groupsReducer(state = initialState, action) {
 		case RESET_SINGLE_GROUP:
 			newState = { ...state, groupMembers: {}, singleGroup: {} };
 			return newState;
+		case RESET_GROUPS:
+			return initialState;
 		case DELETE_MEMBERSHIP:
 			newState = { ...state };
 			state.singleGroup.numMembers--;

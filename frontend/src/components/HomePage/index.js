@@ -29,7 +29,6 @@ export default function HomePage() {
 	}, [dispatch, user]);
 
 	const userGroups = useSelector(state => state.groups.userGroups);
-
 	const userGroupEvents = useSelector(state => state.events.allUserGroupEvents);
 	return isLoaded ? (
 		<div className="home-page-outer-container">
@@ -40,6 +39,7 @@ export default function HomePage() {
 							<h2>Welcome, {user.firstName + "👋"}</h2>
 						</div>
 					</div>
+					{console.log({ userGroupEvents, userGroups })}
 					<UserGroupEvents eventsObj={userGroupEvents} groupsObj={userGroups} />
 				</div>
 			</div>

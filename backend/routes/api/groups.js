@@ -128,7 +128,6 @@ router.get("/current", requireAuthentication, async (req, res, next) => {
 	const Groups = await Group.scope({
 		method: ["currentUserGroups", currUserId]
 	}).findAll();
-
 	res.json({ Groups });
 });
 
