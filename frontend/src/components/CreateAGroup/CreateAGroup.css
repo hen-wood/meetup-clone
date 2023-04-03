@@ -113,6 +113,19 @@
     font-weight: 300;
 }
 
+.file-loaded-div{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    color: green;
+    border: 2px solid green;
+    box-sizing: border-box;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 25px;
+}
+
 #group-image-svg {
     position: absolute;
     opacity: .8;

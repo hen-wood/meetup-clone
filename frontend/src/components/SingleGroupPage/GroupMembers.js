@@ -1,4 +1,13 @@
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
+import WarningModal from "../WarningModal";
+import {
+	thunkDeleteMember,
+	thunkUpgradeToCohost,
+	thunkUpgradeToMember
+} from "../../store/groupsReducer";
+import { useParams } from "react-router-dom";
 import { formatJoinDate } from "./formatJoinDate";
 
 export default function GroupMembers({
@@ -7,18 +16,16 @@ export default function GroupMembers({
 	organizer,
 	status
 }) {
-	const allMembers = Object.values(members);
-	const leadershipTeam = allMembers.filter(
-		member => member.Membership.status === "co-host"
-	);
+	const dispatch = useDispatch();
+	const { groupId } = useParams();
+
 	const [memberType, setMemberType] = useState("All members");
-	const [sortBy, setSortBy] = useState("Name");
 	const [searchTerm, setSearchTerm] = useState("");
-	const [memberList, setMemberList] = useState(allMembers);
+	const [memberList, setMemberList] = useState(Object.values(members));
 
 	useEffect(() => {
 		setMemberList(
-			allMembers.filter(member => {
+			Object.values(members).filter(member => {
 				return (
 					member.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
 					member.lastName.toLowerCase().includes(searchTerm.toLowerCase())
@@ -29,11 +36,57 @@ export default function GroupMembers({
 
 	useEffect(() => {
 		if (memberType === "All members") {
-			setMemberList(allMembers);
+			setMemberList(
+				Object.values(members).filter(
+					member => member.Membership.status !== "pending"
+				)
+			);
+		} else if (memberType === "Leadership team") {
+			setMemberList(
+				Object.values(members).filter(
+					member => member.Membership.status === "co-host"
+				)
+			);
 		} else {
-			setMemberList(leadershipTeam);
+			setMemberList(
+				Object.values(members).filter(
+					member => member.Membership.status === "pending"
+				)
+			);
 		}
 	}, [memberType]);
+
+	const upgradeToCohost = member => {
+		dispatch(thunkUpgradeToCohost(member, groupId)).then(() => {
+			setMemberList(prev =>
+				prev.map(m => {
+					if (m.id === member.id) {
+						m.Membership.status = "co-host";
+					}
+					return m;
+				})
+			);
+		});
+	};
+
+	const upgradeToMember = member => {
+		dispatch(thunkUpgradeToMember(member, groupId)).then(() => {
+			setMemberList(prev =>
+				prev.map(m => {
+					if (m.id === member.id) {
+						m.Membership.status = "member";
+					}
+					return m;
+				})
+			);
+		});
+	};
+
+	const deleteMember = member => {
+		dispatch(thunkDeleteMember(groupId, member.id)).then(() => {
+			setMemberList(prev => prev.filter(m => m.id !== member.id));
+		});
+	};
 
 	return (
 		<div className="group-events__container">
@@ -47,7 +100,13 @@ export default function GroupMembers({
 					onClick={() => setMemberType("All members")}
 				>
 					<p className="switch-box__text">All members</p>
-					<p className="switch-box__text">{allMembers.length}</p>
+					<p className="switch-box__text">
+						{
+							Object.values(members).filter(
+								member => member.Membership.status !== "pending"
+							).length
+						}
+					</p>
 				</button>
 				<button
 					className={
@@ -58,8 +117,33 @@ export default function GroupMembers({
 					onClick={() => setMemberType("Leadership team")}
 				>
 					<p className="switch-box__text">Leadership team</p>
-					<p className="switch-box__text">{leadershipTeam.length}</p>
+					<p className="switch-box__text">
+						{
+							Object.values(members).filter(
+								member => member.Membership.status === "co-host"
+							).length
+						}
+					</p>
 				</button>
+				{(status === "organizer" || status === "co-host") && (
+					<button
+						className={
+							memberType === "Pending members"
+								? "switch-box__tab switch-box__tab--selected"
+								: "switch-box__tab"
+						}
+						onClick={() => setMemberType("Pending members")}
+					>
+						<p className="switch-box__text">Pending members</p>
+						<p className="switch-box__text">
+							{
+								Object.values(members).filter(
+									member => member.Membership.status === "pending"
+								).length
+							}
+						</p>
+					</button>
+				)}
 			</div>
 			{isPrivate && (status === "" || status === "pending") ? (
 				<div className="about-members__list--private">
@@ -89,26 +173,65 @@ export default function GroupMembers({
 					<div className="gr-members__list">
 						{memberList.map((member, i) => (
 							<div key={i} className="member-card">
-								<img
-									className="profile-image--med"
-									src={member.profileImageUrl}
-									alt={member.firstName + " " + member.lastName}
-								/>
-								<div className="member-card__text-container">
-									<p className="member-card__name">
-										{member.firstName} {member.lastName}
-									</p>
-									{member.id === organizer.id ? (
-										<p className="member-card__leader-text">Organizer</p>
-									) : member.Membership.status === "co-host" ? (
-										<p className="member-card__leader-text">Co-organizer</p>
-									) : (
-										<></>
-									)}
-									<p className="member-card__join-date">
-										Joined {formatJoinDate(member.Membership.createdAt)}
-									</p>
+								<div className="member-card__left">
+									<img
+										className="profile-image--med"
+										src={member.profileImageUrl}
+										alt={member.firstName + " " + member.lastName}
+									/>
+									<div className="member-card__text-container">
+										<p className="member-card__name">
+											{member.firstName} {member.lastName}
+										</p>
+										{member.id === organizer.id ? (
+											<p className="member-card__leader-text">Organizer</p>
+										) : member.Membership.status === "co-host" ? (
+											<p className="member-card__leader-text">Co-organizer</p>
+										) : (
+											<></>
+										)}
+										<p className="member-card__join-date">
+											Joined {formatJoinDate(member.Membership.createdAt)}
+										</p>
+									</div>
 								</div>
+								{member.id !== organizer.id &&
+									(status === "organizer" || status === "co-host") && (
+										<div className="member-card-leader-options">
+											{status === "organizer" && (
+												<OpenModalMenuItem
+													itemText="Remove member"
+													className={"leader-option-button"}
+													modalComponent={
+														<WarningModal
+															callBack={deleteMember}
+															arg={member}
+															message={`Are you sure you want to remove ${member.firstName}?`}
+															confirmMessage={"Remove member"}
+														/>
+													}
+												/>
+											)}
+											{status === "organizer" &&
+												member.Membership.status === "member" && (
+													<button
+														className="leader-option-button"
+														onClick={() => upgradeToCohost(member)}
+													>
+														Make {member.firstName} a co-organizer
+													</button>
+												)}
+											{(status === "co-host" || status === "organizer") &&
+												member.Membership.status === "pending" && (
+													<button
+														className="leader-option-button"
+														onClick={() => upgradeToMember(member)}
+													>
+														Approve {member.firstName}'s membership request
+													</button>
+												)}
+										</div>
+									)}
 							</div>
 						))}
 					</div>

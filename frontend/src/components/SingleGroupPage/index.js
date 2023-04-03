@@ -1,19 +1,19 @@
-import "./SingleGroupPage.css";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { thunkGetAllGroupEvents } from "../../store/eventsReducer";
+import { thunkGetPendingMemberships } from "../../store/membershipsReducer";
 import {
 	thunkGetSingleGroup,
 	thunkGetGroupMemberships,
 	actionResetSingleGroup
 } from "../../store/groupsReducer";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { thunkGetAllGroupEvents } from "../../store/eventsReducer";
 import GroupNavbar from "./GroupNavbar";
 import GroupAbout from "./GroupAbout";
 import GroupEvents from "./GroupEvents";
-import { thunkGetPendingMemberships } from "../../store/membershipsReducer";
 import GroupMembers from "./GroupMembers";
 import GroupPhotos from "./GroupPhotos";
+import "./SingleGroupPage.css";
 
 export default function SingleGroupPage() {
 	const navBar = document.querySelector(".navigation");
@@ -126,6 +126,8 @@ export default function SingleGroupPage() {
 						/>
 					) : currTab === "Members" ? (
 						<GroupMembers
+							user={user}
+							group={group}
 							members={members}
 							status={status}
 							isPrivate={group.private}

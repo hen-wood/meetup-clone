@@ -6,6 +6,7 @@ import SmallLogo from "../SVGComponents/SmallLogo";
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
 import LoginFormModal from "../LoginFormModal";
 import { useHistory } from "react-router-dom";
+import { thunkGetUserGroups } from "../../store/groupsReducer";
 function SignupFormModal() {
 	const dispatch = useDispatch();
 	const history = useHistory();
@@ -35,10 +36,12 @@ function SignupFormModal() {
 			formData.append("password", password);
 			return dispatch(sessionActions.signup(formData))
 				.then(() => {
-					closeModal();
-					const navBar = document.querySelector(".navigation");
-					navBar.className = "navigation splash-exit";
-					redirect();
+					dispatch(thunkGetUserGroups()).then(() => {
+						closeModal();
+						const navBar = document.querySelector(".navigation");
+						navBar.className = "navigation splash-exit";
+						redirect();
+					});
 				})
 				.catch(async res => {
 					const data = await res.json();
@@ -154,17 +157,38 @@ function SignupFormModal() {
 						required
 					/>
 				</div>
-				<label htmlFor="image-upload-input" className="custom-file-input">
-					<i className="fa fa-cloud-upload upload-file-icon"></i> Upload profile
-					picture (optional)
-				</label>
-				<input
-					id="image-upload-input"
-					name="image-upload-input"
-					className="image-upload-input"
-					type="file"
-					onChange={updateFile}
-				/>
+				{!image ? (
+					<>
+						<label htmlFor="image-upload-input" className="custom-file-input">
+							<i className="fa fa-cloud-upload upload-file-icon"></i> Upload
+							profile picture (optional)
+						</label>
+						<input
+							id="image-upload-input"
+							name="image-upload-input"
+							className="image-upload-input"
+							type="file"
+							onChange={updateFile}
+						/>
+					</>
+				) : (
+					<>
+						<label
+							htmlFor="image-upload-input"
+							className="custom-file-input custom-file-input--loaded"
+						>
+							<i className="fa fa-check upload-file-icon"></i> Upload profile
+							picture (optional)
+						</label>
+						<input
+							id="image-upload-input"
+							name="image-upload-input"
+							className="image-upload-input"
+							type="file"
+							onChange={updateFile}
+						/>
+					</>
+				)}
 				<div>
 					<button type="submit">Sign Up</button>
 				</div>

@@ -1,12 +1,13 @@
 import "./HomePage.css";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { thunkGetUserGroups } from "../../store/groupsReducer";
 import * as sessionActions from "../../store/session";
 import UserGroupEvents from "./UserGroupEvents";
 
 export default function HomePage() {
+	const history = useHistory();
 	const navBar = document.querySelector(".navigation");
 	navBar.className = "navigation event-groups-nav splash-exit";
 	const dispatch = useDispatch();
@@ -15,13 +16,18 @@ export default function HomePage() {
 	const [isLoaded, setIsLoaded] = useState(false);
 
 	useEffect(() => {
-		dispatch(sessionActions.restoreUser()).then(async res => {
-			const user = await res;
+		console.log({ user });
+		if (user)
 			dispatch(thunkGetUserGroups(user.id)).then(() => {
 				setIsLoaded(true);
 			});
-		});
-	}, [dispatch]);
+		else
+			dispatch(sessionActions.restoreUser()).then(data => {
+				if (!data.user) {
+					history.push("/");
+				}
+			});
+	}, [dispatch, user]);
 
 	const userGroups = useSelector(state => state.groups.userGroups);
 
@@ -40,9 +46,11 @@ export default function HomePage() {
 			</div>
 		</div>
 	) : (
-		<div className="home-page-outer-container">
-			<div className="home-page-inner-container">
-				<h1>Loading home page...</h1>
+		<div className="main-container">
+			<div className="group-page-container">
+				<div className="gr-loading__container">
+					<h1 className="loading-text">Loading home page...</h1>
+				</div>
 			</div>
 		</div>
 	);

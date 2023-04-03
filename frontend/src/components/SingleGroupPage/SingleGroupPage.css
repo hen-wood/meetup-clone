@@ -543,7 +543,13 @@
 .member-card{
     display: flex;
     align-items: center;
+    justify-content: space-between;
     margin: 30px 0;
+}
+
+.member-card__left{
+    display: flex;
+    align-items: center;
 }
 
 .member-card__text-container{
@@ -565,6 +571,29 @@
     margin: 0;
     font-weight: 100;
     font-size: 14px;
+}
+
+.member-card-leader-options{
+    height: 100%;
+    padding: 15px;
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+}
+
+.leader-option-button{
+    margin: 5px;
+    cursor: pointer;
+    color: white;
+    background-color: #008294;
+    border: none;
+    padding: 10px;
+    width: fit-content;
+    border-radius: 8px;
+}
+
+.leader-option-button:hover{
+    background-color: #0398ab;
 }
 
 .switch-box__text{

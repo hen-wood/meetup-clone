@@ -184,17 +184,38 @@ export default function CreateAGroup() {
 					{errors.state && (
 						<p className="create-group-errors">{errors.state}</p>
 					)}
-					<label htmlFor="image-upload-input" className="custom-file-input">
-						<i className="fa fa-cloud-upload upload-file-icon"></i> Upload group
-						preview image
-					</label>
-					<input
-						id="image-upload-input"
-						name="image-upload-input"
-						className="image-upload-input"
-						type="file"
-						onChange={updateFile}
-					/>
+					{!image ? (
+						<>
+							<label htmlFor="image-upload-input" className="custom-file-input">
+								<i className="fa fa-cloud-upload upload-file-icon"></i> Upload
+								group preview image
+							</label>
+							<input
+								id="image-upload-input"
+								name="image-upload-input"
+								className="image-upload-input"
+								type="file"
+								onChange={updateFile}
+							/>
+						</>
+					) : (
+						<>
+							<label
+								htmlFor="image-upload-input"
+								className="custom-file-input custom-file-input--loaded"
+							>
+								<i className="fa fa-check upload-file-icon"></i> Upload group
+								preview image
+							</label>
+							<input
+								id="image-upload-input"
+								name="image-upload-input"
+								className="image-upload-input"
+								type="file"
+								onChange={updateFile}
+							/>
+						</>
+					)}
 					{errors.previewImage && (
 						<p className="create-group-errors">{errors.previewImageUrl}</p>
 					)}

@@ -51,6 +51,7 @@ export default function UserGroupEvents({ eventsObj, groupsObj }) {
 							console.log(preview);
 							return (
 								<div
+									key={group.id}
 									className="your-groups-card"
 									onClick={() => handleGroupClick(group.id)}
 								>

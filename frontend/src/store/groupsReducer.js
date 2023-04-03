@@ -7,6 +7,8 @@ const GET_SINGLE_GROUP = "groups/GET_SINGLE_GROUP";
 const GET_GROUP_MEMBERSHIPS = "groups/GET_GROUP_MEMBERSHIPS";
 const POST_GROUP = "groups/POST_GROUP";
 const ADD_MEMBERSHIP = "groups/ADD_MEMBERSHIP";
+const UPGRADE_MEMBER_TO_COHOST = "groups/UPGRADE_MEMBER_TO_COHOST";
+const UPGRADE_MEMBER_FROM_PENDING = "groups/UPGRADE_MEMBER_FROM_PENDING";
 const PUT_GROUP = "groups/PUT_GROUP";
 const POST_GROUP_IMAGE = "groupImages/POST_GROUP_IMAGE";
 const DELETE_GROUP = "groups/DELETE_GROUP";
@@ -86,6 +88,19 @@ const actionPutGroup = updatedGroup => {
 	};
 };
 
+const actionUpgradeToCohost = member => {
+	return {
+		type: UPGRADE_MEMBER_TO_COHOST,
+		payload: member
+	};
+};
+const actionUpgradeToMember = member => {
+	return {
+		type: UPGRADE_MEMBER_FROM_PENDING,
+		payload: member
+	};
+};
+
 // DELETE actions
 const actionDeleteGroup = groupId => {
 	return {
@@ -159,6 +174,39 @@ export const thunkPutGroup = (updatedGroup, groupId) => async dispatch => {
 		const data = await res.json();
 		dispatch(actionPutGroup(data));
 		return data;
+	} else {
+		return res;
+	}
+};
+
+export const thunkUpgradeToCohost = (member, groupId) => async dispatch => {
+	const res = await csrfFetch(`/api/groups/${groupId}/membership`, {
+		method: "PUT",
+		body: JSON.stringify({ memberId: member.id, status: "co-host" }),
+		headers: {
+			"Content-Type": "application/json"
+		}
+	});
+	if (res.ok) {
+		await res.json();
+		dispatch(actionUpgradeToCohost(member));
+		return;
+	} else {
+		return res;
+	}
+};
+export const thunkUpgradeToMember = (member, groupId) => async dispatch => {
+	const res = await csrfFetch(`/api/groups/${groupId}/membership`, {
+		method: "PUT",
+		body: JSON.stringify({ memberId: member.id, status: "member" }),
+		headers: {
+			"Content-Type": "application/json"
+		}
+	});
+	if (res.ok) {
+		await res.json();
+		dispatch(actionUpgradeToMember(member));
+		return;
 	} else {
 		return res;
 	}
@@ -272,6 +320,36 @@ export default function groupsReducer(state = initialState, action) {
 				singleGroup: {
 					...state.singleGroup,
 					numMembers: state.singleGroup.numMembers + 1
+				}
+			};
+			return newState;
+		case UPGRADE_MEMBER_TO_COHOST:
+			newState = {
+				...state,
+				groupMembers: {
+					...state.groupMembers,
+					[action.payload.id]: {
+						...state.groupMembers[action.payload.id],
+						Membership: {
+							...state.groupMembers[action.payload.id].Membership,
+							status: "co-host"
+						}
+					}
+				}
+			};
+			return newState;
+		case UPGRADE_MEMBER_FROM_PENDING:
+			newState = {
+				...state,
+				groupMembers: {
+					...state.groupMembers,
+					[action.payload.id]: {
+						...state.groupMembers[action.payload.id],
+						Membership: {
+							...state.groupMembers[action.payload.id].Membership,
+							status: "member"
+						}
+					}
 				}
 			};
 			return newState;

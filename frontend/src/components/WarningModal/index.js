@@ -1,7 +1,12 @@
 import { useModal } from "../../context/Modal";
 import "./WarningModal.css";
 
-export default function WarningModal({ callBack, message, confirmMessage }) {
+export default function WarningModal({
+	callBack,
+	arg,
+	message,
+	confirmMessage
+}) {
 	const { closeModal } = useModal();
 	return (
 		<div className="warning-modal__container">
@@ -13,7 +18,7 @@ export default function WarningModal({ callBack, message, confirmMessage }) {
 			<button
 				className="warning-modal__button"
 				onClick={() => {
-					callBack();
+					callBack(arg);
 					closeModal();
 				}}
 			>

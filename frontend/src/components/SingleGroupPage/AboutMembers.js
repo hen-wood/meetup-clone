@@ -5,7 +5,9 @@ export default function AboutMembers({
 	group,
 	status
 }) {
-	const membersArr = Object.values(members);
+	const membersArr = Object.values(members).filter(
+		member => member.Membership.status !== "pending"
+	);
 	return (
 		<div className="about-members">
 			<div className="about-members__organizer">
