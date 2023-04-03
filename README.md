@@ -4,18 +4,49 @@
 
 # About the project
 
-Meetdown is a clone of [meetup.com](https://www.meetup.com/). Users can create an account, and create groups. Groups can be updated and deleted as well. Depending on their status in a group, users can also create Events. Events can be deleted, but not updated (yet).
+A clone of [meetup.com](https://www.meetup.com/). Features include:
+
+- Full CRUD on groups
+- Full CRUD on group memberships (based on user status within the group)
+- Image uploads for user profile pictures and groups
+- Create/Read/Delete on events
 
 ## What I'm Most Proud Of
 
-I'm proud of the styling in general. I think it comes very close to pixel perfect, especially on the splash page. I made specific SVGs from meetup in to react components and used them throughout the site. I love vector graphics! I'm also proud of the upcoming implementation of Amazon S3, to allow uploads of user files.
+### Backend
+
+I used Sequelize as the ORM for my backend and was able to avoid using N + 1 queries to load associated aggregate data, which can be very tricky especially when switching between Sqlite for development and PostgreSQL for deployment.
+
+### Frontend
+
+I'm proud of how closely this project resembles the actual site. The most challenging aspects were handling user permissions in the front end and managing all of the various date/time elements of the site.
+
+## Highlights
+
+### Splash page
+
+<img src='./readme-images/splash.png' style='border-radius: 8px; max-width: 750px'>
+
+### User home page
+
+<img src='./readme-images/home-page.png' style='border-radius: 8px; max-width: 750px'>
+
+### Group "About" page
+
+<img src='./readme-images/group-about.png' style='border-radius: 8px; max-width: 750px'>
+
+### Group "Members" page
+
+<img src='./readme-images/group-page.png' style='border-radius: 8px; max-width: 750px'>
+
+### Group "Photos" page
+
+<img src='./readme-images/group-photos.png' style='border-radius: 8px; max-width: 750px'>
 
 ## Upcoming features
 
-- Functionality to request/approve/update membership status in a group
 - Functionality to request/approve/update attendance status for an event
-- Ability to upload images for groups and events
-- User profile pictures
+- Ability to upload images for events
 - Full CRUD on events
 
 <br>
