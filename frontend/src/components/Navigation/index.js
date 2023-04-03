@@ -36,6 +36,22 @@ function Navigation({ isLoaded }) {
 			<Link to="/">
 				<Logo />
 			</Link>
+			<a
+				className="about-links"
+				href="https://github.com/hen-wood/meetup-clone"
+				target="_blank"
+				rel="noreferrer"
+			>
+				<i className="fa-brands fa-github"></i> Project repo
+			</a>
+			<a
+				className="about-links"
+				href="https://www.linkedin.com/in/henry-woodmansee/"
+				target="_blank"
+				rel="noreferrer"
+			>
+				<i className="fa-brands fa-linkedin"></i> Henry's Linkedin
+			</a>
 			{content}
 		</div>
 	);

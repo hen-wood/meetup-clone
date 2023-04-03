@@ -360,7 +360,6 @@ const requireOrganizerOrCoHostOrIsUser = async (req, res, next) => {
 };
 
 const checkIfUserAlreadyExists = async (req, res, next) => {
-	console.log(req.body);
 	const { email, username } = req.body;
 	let existingUser;
 	if (email) {
@@ -371,7 +370,6 @@ const checkIfUserAlreadyExists = async (req, res, next) => {
 			attributes: ["email", "username"]
 		});
 	}
-	console.log(existingUser);
 	if (existingUser) {
 		if (existingUser.email === email && existingUser.username === username) {
 			const err = new Error("User with that email and username already exists");
