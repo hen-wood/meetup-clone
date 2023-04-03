@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { formatJoinDate } from "./formatJoinDate";
-import { thunkUpgradeToCohost } from "../../store/groupsReducer";
+import {
+	thunkUpgradeToCohost,
+	thunkUpgradeToMember
+} from "../../store/groupsReducer";
 import { useParams } from "react-router-dom";
 
 export default function GroupMembers({
@@ -13,23 +16,13 @@ export default function GroupMembers({
 	const dispatch = useDispatch();
 	const { groupId } = useParams();
 
-	const allMembers = Object.values(members);
-	const leadershipTeam = allMembers.filter(
-		member => member.Membership.status === "co-host"
-	);
-	const currentMembers = allMembers.filter(
-		member => member.Membership.status !== "pending"
-	);
-	const pendingMembers = allMembers.filter(
-		member => member.Membership.status === "pending"
-	);
 	const [memberType, setMemberType] = useState("All members");
 	const [searchTerm, setSearchTerm] = useState("");
-	const [memberList, setMemberList] = useState(allMembers);
+	const [memberList, setMemberList] = useState(Object.values(members));
 
 	useEffect(() => {
 		setMemberList(
-			allMembers.filter(member => {
+			Object.values(members).filter(member => {
 				return (
 					member.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
 					member.lastName.toLowerCase().includes(searchTerm.toLowerCase())
@@ -40,20 +33,51 @@ export default function GroupMembers({
 
 	useEffect(() => {
 		if (memberType === "All members") {
-			setMemberList(currentMembers);
+			setMemberList(
+				Object.values(members).filter(
+					member => member.Membership.status !== "pending"
+				)
+			);
 		} else if (memberType === "Leadership team") {
-			setMemberList(leadershipTeam);
+			setMemberList(
+				Object.values(members).filter(
+					member => member.Membership.status === "co-host"
+				)
+			);
 		} else {
-			setMemberList(pendingMembers);
+			setMemberList(
+				Object.values(members).filter(
+					member => member.Membership.status === "pending"
+				)
+			);
 		}
 	}, [memberType]);
 
 	const upgradeToCohost = member => {
 		dispatch(thunkUpgradeToCohost(member, groupId)).then(() => {
-			setMemberList();
+			setMemberList(prev =>
+				prev.map(m => {
+					if (m.id === member.id) {
+						m.Membership.status = "co-host";
+					}
+					return m;
+				})
+			);
 		});
 	};
-	const upgradeToMember = member => {};
+
+	const upgradeToMember = member => {
+		dispatch(thunkUpgradeToMember(member, groupId)).then(() => {
+			setMemberList(prev =>
+				prev.map(m => {
+					if (m.id === member.id) {
+						m.Membership.status = "member";
+					}
+					return m;
+				})
+			);
+		});
+	};
 
 	return (
 		<div className="group-events__container">
@@ -67,7 +91,13 @@ export default function GroupMembers({
 					onClick={() => setMemberType("All members")}
 				>
 					<p className="switch-box__text">All members</p>
-					<p className="switch-box__text">{currentMembers.length}</p>
+					<p className="switch-box__text">
+						{
+							Object.values(members).filter(
+								member => member.Membership.status !== "pending"
+							).length
+						}
+					</p>
 				</button>
 				<button
 					className={
@@ -78,7 +108,13 @@ export default function GroupMembers({
 					onClick={() => setMemberType("Leadership team")}
 				>
 					<p className="switch-box__text">Leadership team</p>
-					<p className="switch-box__text">{leadershipTeam.length}</p>
+					<p className="switch-box__text">
+						{
+							Object.values(members).filter(
+								member => member.Membership.status === "co-host"
+							).length
+						}
+					</p>
 				</button>
 				{(status === "organizer" || status === "co-host") && (
 					<button
@@ -90,7 +126,13 @@ export default function GroupMembers({
 						onClick={() => setMemberType("Pending members")}
 					>
 						<p className="switch-box__text">Pending members</p>
-						<p className="switch-box__text">{pendingMembers.length}</p>
+						<p className="switch-box__text">
+							{
+								Object.values(members).filter(
+									member => member.Membership.status === "pending"
+								).length
+							}
+						</p>
 					</button>
 				)}
 			</div>
@@ -156,7 +198,7 @@ export default function GroupMembers({
 												)}
 											{(status === "co-host" || status === "organizer") &&
 												member.Membership.status === "pending" && (
-													<button>
+													<button onClick={() => upgradeToMember(member)}>
 														Approve {member.firstName}'s membership request
 													</button>
 												)}

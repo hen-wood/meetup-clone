@@ -94,6 +94,12 @@ const actionUpgradeToCohost = member => {
 		payload: member
 	};
 };
+const actionUpgradeToMember = member => {
+	return {
+		type: UPGRADE_MEMBER_FROM_PENDING,
+		payload: member
+	};
+};
 
 // DELETE actions
 const actionDeleteGroup = groupId => {
@@ -184,6 +190,22 @@ export const thunkUpgradeToCohost = (member, groupId) => async dispatch => {
 	if (res.ok) {
 		await res.json();
 		dispatch(actionUpgradeToCohost(member));
+		return;
+	} else {
+		return res;
+	}
+};
+export const thunkUpgradeToMember = (member, groupId) => async dispatch => {
+	const res = await csrfFetch(`/api/groups/${groupId}/membership`, {
+		method: "PUT",
+		body: JSON.stringify({ memberId: member.id, status: "member" }),
+		headers: {
+			"Content-Type": "application/json"
+		}
+	});
+	if (res.ok) {
+		await res.json();
+		dispatch(actionUpgradeToMember(member));
 		return;
 	} else {
 		return res;
@@ -308,7 +330,25 @@ export default function groupsReducer(state = initialState, action) {
 					...state.groupMembers,
 					[action.payload.id]: {
 						...state.groupMembers[action.payload.id],
-						status: "co-host"
+						Membership: {
+							...state.groupMembers[action.payload.id].Membership,
+							status: "co-host"
+						}
+					}
+				}
+			};
+			return newState;
+		case UPGRADE_MEMBER_FROM_PENDING:
+			newState = {
+				...state,
+				groupMembers: {
+					...state.groupMembers,
+					[action.payload.id]: {
+						...state.groupMembers[action.payload.id],
+						Membership: {
+							...state.groupMembers[action.payload.id].Membership,
+							status: "member"
+						}
 					}
 				}
 			};
