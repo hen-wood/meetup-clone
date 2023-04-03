@@ -3,6 +3,7 @@ import { csrfFetch } from "./csrf";
 const GET_PENDING_MEMBERSHIPS = "memberships/GET_PENDING_MEMBERSHIPS";
 const ADD_PENDING_MEMBERSHIP = "memberships/ADD_PENDING_MEMBERSHIP";
 const DELETE_PENDING_MEMBERSHIP = "memberships/DELETE_PENDING_MEMBERSHIP";
+const RESET_PENDING_MEMBERSHIPS = "memberships/RESET_PENDING_MEMBERSHIPS";
 
 const actionSetPendingMemberships = membershipsArr => {
 	const membershipsObj = {};
@@ -27,6 +28,10 @@ const actionDeletePendingMembership = groupId => {
 		type: DELETE_PENDING_MEMBERSHIP,
 		payload: groupId
 	};
+};
+
+export const actionResetPendingMemberships = () => {
+	return { type: RESET_PENDING_MEMBERSHIPS };
 };
 
 export const thunkGetPendingMemberships = () => async dispatch => {
@@ -80,6 +85,8 @@ export default function membershipsReducer(state = initialState, action) {
 			newState = { ...state };
 			delete newState.pending[action.payload];
 			return newState;
+		case RESET_PENDING_MEMBERSHIPS:
+			return initialState;
 		default:
 			return state;
 	}

@@ -1,5 +1,8 @@
 // frontend/src/store/session.js
 import { csrfFetch } from "./csrf";
+import { actionResetEvents } from "./eventsReducer";
+import { actionResetGroups } from "./groupsReducer";
+import { actionResetPendingMemberships } from "./membershipsReducer";
 
 const SET_USER = "session/setUser";
 const REMOVE_USER = "session/removeUser";
@@ -56,6 +59,9 @@ export const logout = () => async dispatch => {
 		method: "DELETE"
 	});
 	dispatch(removeUser());
+	dispatch(actionResetGroups());
+	dispatch(actionResetEvents());
+	dispatch(actionResetPendingMemberships());
 	return response;
 };
 

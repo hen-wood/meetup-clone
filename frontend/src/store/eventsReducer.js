@@ -7,6 +7,7 @@ const GET_EVENT_DETAILS = "events/GET_EVENT_DETAILS";
 const POST_EVENT = "events/POST_EVENT";
 const POST_EVENT_IMAGE = "events/POST_EVENT_IMAGE";
 const DELETE_GROUP_EVENT = "events/DELETE_GROUP_EVENT";
+const RESET_EVENTS = "events/RESET_EVENTS";
 
 // Action creators
 
@@ -75,6 +76,11 @@ const actionDeleteEvent = eventId => {
 		type: DELETE_GROUP_EVENT,
 		payload: eventId
 	};
+};
+
+// RESET action
+export const actionResetEvents = () => {
+	return { type: RESET_EVENTS };
 };
 
 // Thunks
@@ -213,6 +219,8 @@ export default function eventsReducer(state = initialState, action) {
 			delete newState.allGroupEvents[action.payload];
 			delete newState.allEvents[action.payload];
 			return newState;
+		case RESET_EVENTS:
+			return initialState;
 		default:
 			return state;
 	}
