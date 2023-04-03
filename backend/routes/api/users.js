@@ -23,7 +23,6 @@ router.post(
 		} else {
 			profileImageUrl = "https://i.imgur.com/sEyrna2.png";
 		}
-		console.log(profileImageUrl);
 		const user = await User.signup({
 			firstName,
 			lastName,

@@ -16,7 +16,6 @@ export default function HomePage() {
 	const [isLoaded, setIsLoaded] = useState(false);
 
 	useEffect(() => {
-		console.log({ user });
 		if (user)
 			dispatch(thunkGetUserGroups(user.id)).then(() => {
 				setIsLoaded(true);

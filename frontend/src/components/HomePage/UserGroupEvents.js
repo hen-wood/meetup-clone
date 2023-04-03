@@ -48,7 +48,6 @@ export default function UserGroupEvents({ eventsObj, groupsObj }) {
 							const preview = group.GroupImages.find(
 								img => img.preview === true
 							);
-							console.log(preview);
 							return (
 								<div
 									key={group.id}
