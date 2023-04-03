@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { formatJoinDate } from "./formatJoinDate";
+import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
+import WarningModal from "../WarningModal";
 import {
+	thunkDeleteMember,
 	thunkUpgradeToCohost,
 	thunkUpgradeToMember
 } from "../../store/groupsReducer";
 import { useParams } from "react-router-dom";
+import { formatJoinDate } from "./formatJoinDate";
 
 export default function GroupMembers({
 	isPrivate,
@@ -76,6 +79,12 @@ export default function GroupMembers({
 					return m;
 				})
 			);
+		});
+	};
+
+	const deleteMember = member => {
+		dispatch(thunkDeleteMember(groupId, member.id)).then(() => {
+			setMemberList(prev => prev.filter(m => m.id !== member.id));
 		});
 	};
 
@@ -189,16 +198,35 @@ export default function GroupMembers({
 								{member.id !== organizer.id &&
 									(status === "organizer" || status === "co-host") && (
 										<div className="member-card-leader-options">
-											<button>Remove member</button>
+											{status === "organizer" && (
+												<OpenModalMenuItem
+													itemText="Remove member"
+													className={"leader-option-button"}
+													modalComponent={
+														<WarningModal
+															callBack={deleteMember}
+															arg={member}
+															message={`Are you sure you want to remove ${member.firstName}?`}
+															confirmMessage={"Remove member"}
+														/>
+													}
+												/>
+											)}
 											{status === "organizer" &&
 												member.Membership.status === "member" && (
-													<button onClick={() => upgradeToCohost(member)}>
+													<button
+														className="leader-option-button"
+														onClick={() => upgradeToCohost(member)}
+													>
 														Make {member.firstName} a co-organizer
 													</button>
 												)}
 											{(status === "co-host" || status === "organizer") &&
 												member.Membership.status === "pending" && (
-													<button onClick={() => upgradeToMember(member)}>
+													<button
+														className="leader-option-button"
+														onClick={() => upgradeToMember(member)}
+													>
 														Approve {member.firstName}'s membership request
 													</button>
 												)}
